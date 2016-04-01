@@ -34,6 +34,16 @@ function Classroom() {
     this.clearStudents = function() {
         studentList = [];
     }
+
+    //Note this assumes names are distinct. 
+    this.findStudentNamed = function(name) {
+        for (var i; i < studentList.length - 1; i++) {
+            if (studentList[i]["name"] === name) {
+                return i;
+            }
+            return null;
+        }
+    }
 }
 
 function assert(b) {
