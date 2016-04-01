@@ -1,6 +1,7 @@
-<script src="classroom.js">
+<script src="lodash.core.js"></script>
+<script src="classroom.js"></script>
 <script>
-    
+
 function assert(b) {
     if (!b) throw new Exception('failed assertion');
 }
@@ -13,4 +14,5 @@ function testClassroom() {
     console.log(JSON.stringify(recording[0]));
     c.addStudent({name: "Bob", avoid: [], prefer: []});
 }
+testClassroom();
 </script>
