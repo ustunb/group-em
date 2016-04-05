@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Load style sheets -->
+	<link rel="stylesheet" href="mainLayout.css" />
+
+	<!-- Load any supplemental Javascript libraries here -->
+	<script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
+	<script type="text/javascript">
+
+	var toggleButtonText= function() {
+		var currentText = $('#preferenceButton').text();
+		if (currentText === 'S h o w    P r e f e r e n c e s') {
+			$('#preferenceButton').text('H i d e    P r e f e r e n c e s');
+		}
+		else {
+			$('#preferenceButton').text('S h o w    P r e f e r e n c e s');
+		}
+	};
+
+	var toggleView = function() {
+		if ($('#studentTextBox').is(":visible")) {
+			$('#studentTextBox').hide();
+			$('#prefTable').show();
+		}
+		else {
+			$('#prefTable').hide()
+			$('#studentTextBox').show();
+		}
+	};
+
+	var removestudent = function(studentID, classroom) {
+		console.log("im here" + studentID);
+		classroom.removestudent(studentID);
+		drawStudentGrid();
+	};
+
+	var drawStudentGrid = function(classroom) {
+		var i = 0;
+		$('#prefTable').empty();
+		$('#prefTable').html("<tr><th>Student</th><th>Pair</th><th>Don't Pair</th></tr>");
+		for (student in classroom) {
+			$('#prefTable > tbody:last-child').append("<tr><td><button class='removestudent' id="+i+" onClick='removestudent(this.id, classroom)'></button></td></tr><tr><td>"+classroom[student]['name']+'</td><td></td><td></td></tr>'); //how to insert object classroom within inline
+			i++;
+		}
+	};
+
+	$(document).ready(function() {
+		$('#prefTable').hide();
+
+		//TEST
+		var classroom = {1:{name: "Amy", avoid: ["Susan", "Pat"], prefer: []}, 2:{name: "Bob", avoid: [], prefer: []}, 3:{name: "Carol", avoid: [], prefer: []}};
+
+		drawStudentGrid(classroom);
+
+		$("#preferenceButton").click(function(e) {
+			toggleView();
+			toggleButtonText();
+	});
+
+
+//take line of input--> update model
+// 'x' icon remove studnt
+		
+/**
+function GridView(container, classroom) {
+	//iterature thru classroom update table
+
+	var html = ['<table>', '<table'>]join()
+	$('container').html('<table>....')
+
+	$(classroom).on('classchange', function() {
+	
+	})
+
+}
+**/
+	});
+
+	</script>
+</head>
+
+<body>
+<h1>Student List</h1>
+<textarea id="studentTextBox" placeholder="Type names of students (separate with Enter) or copy-paste" rows="25" cols="75"></textarea>
+
+
+</textarea>
+
+<button id="preferenceButton">S h o w    P r e f e r e n c e s</button>
+
+<table id="prefTable">
+
+</table>
+</body>
+</html>
