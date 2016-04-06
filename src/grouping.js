@@ -7,27 +7,26 @@
 function Grouping(classroom) {
 	
 	var self = this;
-	self.pool = []
-	self.groups = []
+	self.student_pool = []
+	self.random_groups = []
 	self.pinned_groups = [] 	//#explicitly enforced groups
 	self.banned_groups = [] 	//#explicitly banned groups
-	self.preferred_groups = [] 	//#weakly enforced groups
-	self.avoided_groups = [] 	//#weakly banned groups
+	//
 	// Rep Invariants 
 	//
+	// every student has a unique student_id
+	// every group has a unique group_id
 	// every student is in exactly one group
 	// every group contains at least 1 student
-	// all groups = groups + pinned groups
-	// all students = students in groups + students in pinned_groups
-	// every student is unique
-	// every group is unique
-	// only students in student_pool are 'shuffled' to form groups randomly
-	// either groups is empty or student_pool is empty
+	// all groups = random_groups + pinned_groups
+	// all students = students in random_groups + students in pinned_groups
+	// random_groups and pinned_groups cannot contain any groups from banned_groups
+	// either random_groups.length = 0 or student_pool.length = 0
+	// only students in student_pool are 'shuffled' to form random_groups
 
-	
-	//get size of group
+	//get number of groups in the current grouping
 	function size(){
-		return self.groups.length;
+		return self.random_groups.length + self.pinned_groups.length + self.student_pool.length;
 	}
 	
     //returns true iff this grouping has the same groups as that grouping

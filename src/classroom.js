@@ -70,6 +70,3 @@ function testClassroom() {
     console.log(JSON.stringify(recording[0]));
     c.addStudent({name: "Bob", avoid: [], prefer: []});
 }
-
-
-
