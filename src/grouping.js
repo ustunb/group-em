@@ -1,102 +1,116 @@
-function Grouping() {
-	var grouping = this;
+/* Depends on
+*
+* group.js
+* classroom.js
+*
+*/
+function Grouping(classroom) {
 	
-	//grouping.classroom 
-	grouping.groups = []
-	//grouping.pinned_groups = [] #explicitly enforced groups
-	//grouping.forbidden_groups = [] #explicitly forbidden groups
-	//grouping.past_groups = [] #groups that were previously created
+	var self = this;
+	self.pool = []
+	self.groups = []
+	self.pinned_groups = [] 	//#explicitly enforced groups
+	self.banned_groups = [] 	//#explicitly banned groups
+	self.preferred_groups = [] 	//#weakly enforced groups
+	self.avoided_groups = [] 	//#weakly banned groups
+	// Rep Invariants 
+	//
+	// every student is in exactly one group
+	// every group contains at least 1 student
+	// all groups = groups + pinned groups
+	// all students = students in groups + students in pinned_groups
+	// every student is unique
+	// every group is unique
+	// only students in student_pool are 'shuffled' to form groups randomly
+	// either groups is empty or student_pool is empty
+
 	
-	/*
-	* Adds group to current grouping
-	*/
-	this.addGroup = function(group_id){
+	//get size of group
+	function size(){
+		return self.groups.length;
 	}
-
-	/*
-	* Removes group from current grouping
-	*/
-	this.removeGroup = function(group_id){
-		//TODO
-	}
-
-	/*
-	* Returns group_id of group with a given student
-	*/
-	this.findGroupOfStudent = function(student_id){
-		//TODO
-	}
-
-	/*
-	* Switches student from a given group to a different group
-	*/
-	this.switchGroups = function(student_id, old_group_id, new_group_id){
-		//TODO
-	}
-
-	/*
-	* Creates new groups of students
-	*/
-	this.shuffle = function(){
-
-		//TODO
-	}
-
-	/*
-	* Pins a group
-	* Pinned groups are "fixed" and cannot change
-	*/
-	this.pinGroup = function(group_id){
-		//TODO
-	}
-
-	/*
-	* Unpins a group
-	*/
-	this.unpinGroup = function(group_id){
-		//TODO
-	}
-
-	/*
-	* Adds group to list of forbidden groups
-	*/
-	this.forbidGroup = function(group_id){
-	}
-
-	/*
-	* Unforbid group from list of forbidden groups
-	*/
-	this.forbidGroup = function(group_id){
-	}
-
-
-	/*
-	*/
-	this.size = function() {
-		return grouping.groups.length;
-	}
-	/*
-    *	@returns true iff this grouping has the same groups as that grouping
-    */
-    this.equals = function(thatGroup) {
+	
+    //returns true iff this grouping has the same groups as that grouping
+    function equals(thatGrouping) {
     	//TODO
     }
+    
+	//returns list of groups in current grouping
+	function toString() {
+		//TODO
+	}
+	
+	//check representation invariants
+	function checkRep() {
+		//TODO
+		return true;
+	}
 
-	/*
-	* Returns list of groups in current grouping
-	*/
-	this.toString = function() {
+	//returns group_id of group with a given student
+	function groupOf(student_id){
 		//TODO
 	}
 
-	/*
-	* Checks representation invariants
-	*/
-	this.checkRep = function() {
+	//add group to current grouping
+	function addGroup(group_id){
+	}
+
+	//remove group from current grouping
+	function removeGroup(group_id){
 		//TODO
 	}
 
+	//switch student from one old group to new group
+	function switchGroups(student_id, old_group_id, new_group_id){
+		//TODO
+	}
+
+	//randomly create new groups of students
+	function shuffle(){
+		//TODO
+	}
+
+	//pins a group
+	function pinGroup(group_id){
+		var pin_flag = false;
+		//TODO
+		return pin_flag;
+	}
+	
+	//unpins a group
+	function unpinGroup(group_id){
+		var unpin_flag = false;
+		//TODO
+		return unpin_flag;
+	}
+
+	//adds group to the list of banned groups
+	function banGroup(group_id){
+		var ban_flag = false;
+		//TODO
+		return ban_flag;
+	}
+
+	//remove group from the list of banned groups
+	function unbanGroup(group_id){
+		var unban_flag = false;
+		//TODO
+		return unban_flag;
+	}
+	
+	//attach functions to object
+	self.size = size
+	self.equals = equals
+	self.toString = toString
+
+	self.groupOf = groupOf
+	self.addGroup = addGroup
+	self.removeGroup = removeGroup
+	self.switchGroups = switchGroups
+	self.shuffle = shuffle
+	self.pinGroup = pinGroup
+	self.unpinGroup = unpinGroup
+	self.banGroup = forbidGroup
+	self.unbanGroup = unforbidGroup
+	
 }
-
-
-
