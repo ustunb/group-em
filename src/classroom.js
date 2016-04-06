@@ -1,42 +1,43 @@
 // Depends on underscore/lodash.js
 
 function Classroom() {
-    var classroom = this;
+    var self = this;
     
     // This retrieves a student by number
-    this.getStudentCount = function() {
+    function getStudentCount() {
         return studentList.length;
     }
     // Retrieves a student or null if the index is not valid
-    this.getStudent = function(index) {
+    function getStudent(index) {
         if (index < 0 || index > studentList.length - 1) {
             return null;
         }
         return studentList[index];
     }
     // Call this with an object like this:
-    // classroom.setStudent({name: "Amy", avoid: ["Susan", "Pat"], prefer: []})
-    this.setStudent = function(index, obj) {
+    // self.setStudent({name: "Amy", avoid: ["Susan", "Pat"], prefer: []})
+    function setStudent(index, obj) {
         studentList[index] = _.clone(obj);
-        $(classroom).trigger({type: 'changestudents', first: index, last: index+1});
-    }
-    this.addStudent = function(obj) {
-        var index = studentList.length;
-        studentList[index] = _.clone(obj);
-        $(classroom).trigger({type: 'changestudents', first: index, last: index+1});
-    }
-    //Remove a given student from the list
-    this.removeStudent = function(index) {
-        studentList.splice(index, 1);
-        $(classroom).trigger({type: 'changestudents', first: index, last: studentList.length + 1});
+        $(self).trigger({type: 'changestudents', first: index, last: index+1});
     }
     
-    this.clearStudents = function() {
+    function addStudent(obj) {
+        var index = studentList.length;
+        studentList[index] = _.clone(obj);
+        $(self).trigger({type: 'changestudents', first: index, last: index+1});
+    }
+    //Remove a given student from the list
+    function removeStudent(index) {
+        studentList.splice(index, 1);
+        $(self).trigger({type: 'changestudents', first: index, last: studentList.length + 1});
+    }
+    
+    function clearStudents() {
         studentList = [];
     }
 
     //Note this assumes names are distinct. 
-    this.findStudentNamed = function(name) {
+    function findStudentNamed(name) {
         for (var i; i < studentList.length - 1; i++) {
             if (studentList[i]["name"] === name) {
                 return i;
@@ -44,11 +45,22 @@ function Classroom() {
             return null;
         }
     }
+
+    //public methods
+    self.getStudentCount = getStudentCount
+    self.setStudent = setStudent
+    self.getStudent = getStudent
+    self.addStudent = addStudent
+    self.removeStudent = removeStudent
+    self.studentList = studentList
+    self.clearStudents = clearStudents
+    self.findStudentNamed = findStudentNamed
 }
 
 function assert(b) {
     if (!b) throw new Exception('failed assertion');
 }
+
 function testClassroom() {
     var c = new Classroom();
     var recording = [];
@@ -59,5 +71,5 @@ function testClassroom() {
     c.addStudent({name: "Bob", avoid: [], prefer: []});
 }
 
-    
+
 
