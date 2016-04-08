@@ -2,6 +2,7 @@
 
 function Classroom() {
     var self = this;
+    var studentList = {};
     
     // This retrieves a student by number
     function getStudentCount() {
@@ -21,6 +22,7 @@ function Classroom() {
         $(self).trigger({type: 'changestudents', first: index, last: index+1});
     }
     
+
     function addStudent(obj) {
         var index = studentList.length;
         studentList[index] = _.clone(obj);

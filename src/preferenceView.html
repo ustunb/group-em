@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Load style sheets -->
+  <link rel="stylesheet" href="mainLayout.css" />
+
+  <!-- Load any supplemental Javascript libraries here -->
+  <script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
+  <script src="lodash.core.js"></script>
+  <script type="text/javascript" src="classroom.js"></script>
+  <script type="text/javascript">
+
+  var toggleButtonText= function() {
+    var currentText = $('#preferenceButton').text();
+    if (currentText === 'S h o w    P r e f e r e n c e s') {
+      $('#preferenceButton').text('H i d e    P r e f e r e n c e s');
+    }
+    else {
+      $('#preferenceButton').text('S h o w    P r e f e r e n c e s');
+    }
+  };
+
+  var toggleView = function() {
+    if ($('#studentTextBox').is(":visible")) {
+      $('#studentTextBox').hide();
+      $('#prefTable').show();
+    }
+    else {
+      $('#prefTable').hide()
+      $('#studentTextBox').show();
+    }
+  };
+
+  function loadTable(tableId, fields, data) {
+    //$('#' + tableId).empty(); //not really necessary
+    var rows = "<tr><th>Remove?</th><th>Student</th><th>Pair</th><th>Don't Pair</th></tr>";
+    for (student_index in data) {
+        var row = "<tr><td><button class = 'remove' id='"+student_index+ "'></button></td>";
+        for (field in fields) {
+            row += '<td>' + data[student_index][field] + '</td>';
+        }
+        rows += row + '<tr>';
+
+    }
+    $('#' + tableId).html(rows);
+}
+
+
+  $(document).ready(function() {
+    $('#prefTable').hide();
+
+    //TODO: BUG with classroom object. 
+    classroom = new Classroom();
+    classroom.addStudent({name: "Amy", avoid: ["Susan", "Pat"], prefer: []});
+    console.log(classroom.studentList);
+    classroom.addStudent({name: "Bob", avoid: [], prefer: []});
+    console.log(classroom.studentList);
+    classroom.addStudent({name: "Carol", avoid: [], prefer: []});
+    console.log(classroom.studentList); //why is only carol appearing...
+    console.log(classroom.studentList['name']);
+    loadTable("prefTable", ["name", "avoid", "prefer"], classroom.studentList);    
+
+    $("#preferenceButton").click(function(e) {
+      toggleView();
+      toggleButtonText();
+  });
+
+    $(".remove").click(function(e) {
+      var student_id = $(this).attr('id');
+      classroom.remove(student_id);
+    });
+
+    $(classroom).on('changestudents', function() {
+      loadTable("prefTable", ["name", "avoid", "prefer"], classroom.studentList);
+  });
+
+// want any removals or preference adds to fire a classchange
+
+//todo remove handler/event listener for remove button class
+
+
+});
+
+</script>
+</head>
+
+
+
+
+<body>
+<h1>Student List</h1>
+<textarea id="studentTextBox" placeholder="Type names of students (separate with Enter) or copy-paste" rows="25" cols="75"></textarea>
+
+<button id="preferenceButton">S h o w    P r e f e r e n c e s</button>
+
+<table id="prefTable"></table>
+
+
+</body>
+</html>
