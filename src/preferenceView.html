@@ -34,10 +34,14 @@
   function loadTable(tableId, fields, data) {
     //$('#' + tableId).empty(); //not really necessary
     var rows = "<tr><th>Remove?</th><th>Student</th><th>Pair</th><th>Don't Pair</th></tr>";
+
     for (student_index in data) {
         var row = "<tr><td><button class = 'remove' id='"+student_index+ "'></button></td>";
         for (field in fields) {
-            row += '<td>' + data[student_index][field] + '</td>';
+
+
+            row += '<td>' + data[student_index][fields[field]] + '</td>';
+
         }
         rows += row + '<tr>';
 
@@ -52,12 +56,9 @@
     //TODO: BUG with classroom object. 
     classroom = new Classroom();
     classroom.addStudent({name: "Amy", avoid: ["Susan", "Pat"], prefer: []});
-    console.log(classroom.studentList);
     classroom.addStudent({name: "Bob", avoid: [], prefer: []});
-    console.log(classroom.studentList);
     classroom.addStudent({name: "Carol", avoid: [], prefer: []});
-    console.log(classroom.studentList); //why is only carol appearing...
-    console.log(classroom.studentList['name']);
+
     loadTable("prefTable", ["name", "avoid", "prefer"], classroom.studentList);    
 
     $("#preferenceButton").click(function(e) {
