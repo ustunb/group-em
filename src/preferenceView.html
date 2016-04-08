@@ -33,9 +33,12 @@
 
   function loadTable(tableId, fields, data) {
     //$('#' + tableId).empty(); //not really necessary
+    $('prefTable').empty();
     var rows = "<tr><th>Remove?</th><th>Student</th><th>Pair</th><th>Don't Pair</th></tr>";
 
     for (student_index in data) {
+        console.log(student_index);
+        console.log(data[student_index]);
         var row = "<tr><td><button class = 'remove' id='"+student_index+ "'></button></td>";
         for (field in fields) {
 
@@ -67,8 +70,9 @@
   });
 
     $(".remove").click(function(e) {
+      console.log('removal detected');
       var student_id = $(this).attr('id');
-      classroom.remove(student_id);
+      classroom.removeStudent(student_id);
     });
 
     $(classroom).on('changestudents', function() {
