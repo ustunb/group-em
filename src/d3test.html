@@ -13,62 +13,39 @@ html, body, body > svg, body > div {
 </div>
 <script src='d3.js'></script>
 <script>
-var dataset = {
-   nodes: [{
+var datanodes = [{
      name: 'Alice',
-     x: 200,
-     y: 150
    }, {
      name: 'Bob',
-     x: 140,
-     y: 300
    }, {
      name: 'Carol',
-     x: 300,
-     y: 300
    }, {
      name: 'David',
-     x: 300,
-     y: 180
-   }],
-   links: [{
+   }];
+
+var datalinks = [{
      source: 0,
      target: 1
    }, {
      source: 2,
      target: 3
-   }, ]
- }
+   }];
 
 // http://stackoverflow.com/questions/28102089/simple-graph-of-nodes-and-links-without-using-force-layout
 
-var links = d3.select('svg').selectAll('link')
-   .data(dataset.links)
+var svg = d3.select('svg');
+var lines = svg.selectAll('line')
+   .data(datalinks)
    .enter()
    .append('line')
    .attr('class', 'link')
-   .attr('x1', function(l) {
-     var sourceNode = dataset.nodes[l.source];
-     d3.select(this).attr('y1', sourceNode.y);
-     return sourceNode.x
-   })
-   .attr('x2', function(l) {
-     var targetNode = dataset.nodes[l.target];
-     d3.select(this).attr('y2', targetNode.y);
-     return targetNode.x
-   })
    .attr('fill', 'none')
    .attr('stroke', 'dimgray');
 
-var nodegroups = d3.select('svg')
-    .selectAll('circle')
-    .data(dataset.nodes)
+var nodegroups = svg.selectAll('g')
+    .data(datanodes)
     .enter()
     .append('g');
-
-nodegroups.attr('transform', function(d, i) {
-  return 'translate(' + [d.x, d.y] + ')';
-});
 
 nodegroups.append('circle')
     .attr({
@@ -89,6 +66,29 @@ nodegroups.append('text')
    })
    .text(function(d) { return d.name; });
 
+var force = d3.layout.force()
+    .charge(-300)
+    .linkDistance(80)
+    .nodes(datanodes).links(datalinks);
+resize();
+
+d3.select(window).on('resize', resize);
+function resize() {
+  force.size([parseFloat(svg.style('width')), parseFloat(svg.style('height'))]);
+}
+
+function tick() {
+  lines.attr('x1', function(d) { return d.source.x; });
+  lines.attr('y1', function(d) { return d.source.y; });
+  lines.attr('x2', function(d) { return d.target.x; });
+  lines.attr('y2', function(d) { return d.target.y; });
+  nodegroups.attr('transform', function(d) {
+    return 'translate(' + [d.x, d.y] + ')';
+  });
+}
+
+force.on('tick', tick);
+force.start()
 </script>
 
 
