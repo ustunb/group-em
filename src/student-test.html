@@ -1,0 +1,20 @@
+<script src="lodash.js"></script>
+<script src="jquery-1.12.2.js"></script>
+<script src="student.js"></script>
+<script>
+
+assert = function(b, errorMessage) {
+if (errorMessage == null) errorMessage = 'failed assertion';
+if (!b) throw new Error(errorMessage);
+}
+
+//basic student construction
+var testID = 1
+var testName = 'Berk'
+var testStudent = new Student(testName, testID)
+assert(testStudent.name()==testName, 'name does not match testName')
+assert(testStudent.valueOf()==testID, 'ID does not match testID')
+testStudent.toString()
+console.log('passed construction test')
+
+</script>
