@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
+<meta charset='utf-8'>
 <style>
 html, body, body > svg, body > div {
  position: fixed;
@@ -11,63 +11,83 @@ html, body, body > svg, body > div {
 </svg>
 <div>
 </div>
-<script src="d3.js"></script>
+<script src='d3.js'></script>
 <script>
-var dataset = [
-  'Alice',
-  'Bob',
-  'Carol',
-  'David',
-  'Ella',
-  'Frank',
-  'Gina',
-  'Harry',
-  'Irene',
-  'Jack',
-  'Kris',
-  'Leo',
-  'Mary',
-  'Nick',
-  'Olivia',
-  'Paul',
-  'Quinn',
-  'Rob',
-  'Sue',
-  'Tom',
-  'Uma',
-  'Van',
-  'Wanda',
-  'Xavier',
-  'Yolanda',
-  'Zander'
-]
+var dataset = {
+   nodes: [{
+     name: 'Alice',
+     x: 200,
+     y: 150
+   }, {
+     name: 'Bob',
+     x: 140,
+     y: 300
+   }, {
+     name: 'Carol',
+     x: 300,
+     y: 300
+   }, {
+     name: 'David',
+     x: 300,
+     y: 180
+   }],
+   links: [{
+     source: 0,
+     target: 1
+   }, {
+     source: 2,
+     target: 3
+   }, ]
+ }
 
-var groups = d3.select("svg")
-    .selectAll("circle")
-    .data(dataset)
+// http://stackoverflow.com/questions/28102089/simple-graph-of-nodes-and-links-without-using-force-layout
+
+var links = d3.select('svg').selectAll('link')
+   .data(dataset.links)
+   .enter()
+   .append('line')
+   .attr('class', 'link')
+   .attr('x1', function(l) {
+     var sourceNode = dataset.nodes[l.source];
+     d3.select(this).attr('y1', sourceNode.y);
+     return sourceNode.x
+   })
+   .attr('x2', function(l) {
+     var targetNode = dataset.nodes[l.target];
+     d3.select(this).attr('y2', targetNode.y);
+     return targetNode.x
+   })
+   .attr('fill', 'none')
+   .attr('stroke', 'dimgray');
+
+var nodegroups = d3.select('svg')
+    .selectAll('circle')
+    .data(dataset.nodes)
     .enter()
-    .append("g");
+    .append('g');
 
-groups.attr("transform", function(d, i) {
-  var x = 50 * i + 100;
-  var y = 30 * i + 100;
-  return "translate(" + [x, y] + ")";
+nodegroups.attr('transform', function(d, i) {
+  return 'translate(' + [d.x, d.y] + ')';
 });
 
-groups.append("circle")
+nodegroups.append('circle')
     .attr({
-      cx: 0, cy: 0, r: 20,
+      cx: 0, cy: 0, r: 25,
       fill: 'lightyellow',
       stroke: 'gray',
-      'stroke-width': 2
+      'stroke-width': 2.5
     });
 
-groups.append("text")
+nodegroups.append('text')
    .attr({
-      "alignment-baseline": 'middle',
-      "text-anchor": 'middle'
+      'alignment-baseline': 'middle',
+      'text-anchor': 'middle',
+      y: 1
+   }).
+   style({
+      font: '16px Arial'
    })
-   .text(function(d) { return d; });
+   .text(function(d) { return d.name; });
 
 </script>
 
