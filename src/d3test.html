@@ -5,6 +5,9 @@ html, body, body > svg, body > div {
  position: fixed;
  margin:0; padding:0; height:100%; width:100%; overflow:hidden;
 }
+body > div {
+ pointer-events: none;
+}
 </style>
 <body>
 <svg>
@@ -38,9 +41,14 @@ var lines = svg.selectAll('line')
    .data(datalinks)
    .enter()
    .append('line')
-   .attr('class', 'link')
-   .attr('fill', 'none')
-   .attr('stroke', 'dimgray');
+   .attr({
+      class: 'link',
+      fill: 'none',
+      stroke: 'silver',
+      'stroke-width': 75,
+      'stroke-linecap': 'round'
+   });
+
 
 var nodegroups = svg.selectAll('g')
     .data(datanodes)
@@ -68,7 +76,7 @@ nodegroups.append('text')
 
 var force = d3.layout.force()
     .charge(-300)
-    .linkDistance(80)
+    .linkDistance(75)
     .nodes(datanodes).links(datalinks);
 resize();
 
@@ -89,6 +97,23 @@ function tick() {
 
 force.on('tick', tick);
 force.start()
+nodegroups.call(force.drag);
+var linedrag = d3.behavior.drag().on('dragstart', function(d) {
+  d.source.fixed |= 2;
+  d.target.fixed |= 2;
+}).on('drag', function(d) {
+  console.log('dragging', d3.event.dx, d3.event.dy, JSON.stringify(d));
+  d.source.px += d3.event.dx;
+  d.source.py += d3.event.dy;
+  d.target.px += d3.event.dx;
+  d.target.py += d3.event.dy;
+  force.resume();
+}).on('dragend', function(d) {
+  delete d.drag;
+  d.source.fixed &= ~2;
+  d.target.fixed &= ~2;
+});
+lines.call(linedrag);
 </script>
 
 
