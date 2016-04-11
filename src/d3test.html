@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+html, body, body > svg, body > div {
+ position: fixed;
+ margin:0; padding:0; height:100%; width:100%; overflow:hidden;
+}
+</style>
+<body>
+<svg>
+</svg>
+<div>
+</div>
+<script src="d3.js"></script>
+<script>
+var dataset = [
+  'Alice',
+  'Bob',
+  'Carol',
+  'David',
+  'Ella',
+  'Frank',
+  'Gina',
+  'Harry',
+  'Irene',
+  'Jack',
+  'Kris',
+  'Leo',
+  'Mary',
+  'Nick',
+  'Olivia',
+  'Paul',
+  'Quinn',
+  'Rob',
+  'Sue',
+  'Tom',
+  'Uma',
+  'Van',
+  'Wanda',
+  'Xavier',
+  'Yolanda',
+  'Zander'
+]
+
+var groups = d3.select("svg")
+    .selectAll("circle")
+    .data(dataset)
+    .enter()
+    .append("g");
+
+groups.attr("transform", function(d, i) {
+  var x = 50 * i + 100;
+  var y = 30 * i + 100;
+  return "translate(" + [x, y] + ")";
+});
+
+groups.append("circle")
+    .attr({
+      cx: 0, cy: 0, r: 20,
+      fill: 'lightyellow',
+      stroke: 'gray',
+      'stroke-width': 2
+    });
+
+groups.append("text")
+   .attr({
+      "alignment-baseline": 'middle',
+      "text-anchor": 'middle'
+   })
+   .text(function(d) { return d; });
+
+</script>
+
+
