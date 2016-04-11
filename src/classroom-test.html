@@ -1,4 +1,5 @@
-<script src="lodash.core.js"></script>
+<script src="lodash.js"></script>
+<script src="jquery-1.12.2.js"></script>
 <script src="classroom.js"></script>
 <script>
 
@@ -13,6 +14,7 @@ function testClassroom() {
     assert(recording.length === 0);
     console.log(JSON.stringify(recording[0]));
     c.addStudent({name: "Bob", avoid: [], prefer: []});
+    console.log(JSON.stringify(recording[0]));
 }
 testClassroom();
 </script>
