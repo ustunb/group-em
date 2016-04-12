@@ -107,6 +107,7 @@ function samplePreferences(nSamples){
         student_list2 = student_list2.split('1)(*3hf:Z');
         console.log(student_list2);
         if (student_list2.length == 1) {
+            student_list = student_list.replace(/;/g, ',');
             var l2 = student_list2[0].split(",");
             for (var k=0; k<l2.length; k++){
                 l.push({name:l2[k], prefer: [], avoid: []});
