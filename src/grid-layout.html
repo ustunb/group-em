@@ -16,11 +16,11 @@ table {
     width: 60%;
     border-collapse: collapse;
 }
-table td.name {
+table td.student_name {
     width: 20%;
 }
 table td {
-    width: 40%;
+    width: 38%;
     vertical-align: top;
     border: 1px solid gray;
     padding: 2px 2px;
@@ -31,7 +31,7 @@ table th {
 }
 
 table td.remove {
-    width: 5em;
+    width: 4%;
     vertical-align: middle;
     text-align: center;
 }
@@ -43,7 +43,7 @@ table td.remove:before {
 
 table td p {
     display: inline-block;
-    border: 1px solid lightgray;
+    border: 1px solid;
     border-radius: 5px;
     padding: 3px 7px;
     margin: 1px 3px;
@@ -157,6 +157,7 @@ function addLastRow() {
     $('<td class="student_name" colspan="4">').appendTo(row).html('<input id= "newstudentbox" placeholder="Enter new student names">');
     $('table tbody').append(row);
 }
+<<<<<<< HEAD
 
 
 
@@ -205,3 +206,7 @@ $(document).ready(function() {
 
 });
 </script>
+=======
+addLastRow();
+</script>
+>>>>>>> ef4d7f36d61eef79f84b359d46a34dbbeba9914d
