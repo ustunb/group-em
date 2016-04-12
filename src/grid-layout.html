@@ -58,7 +58,7 @@ table td p span:hover {
     color: red;
 }
 
-table td input {
+table td textarea {
     width: 100%;
     font: 18px Cabin;
 }
@@ -97,15 +97,38 @@ function samplePreferences(nSamples){
 
   var parseStudentList = function() {
     var student_list = $("#newstudentbox").val();
+    console.log(student_list);
+    student_list = student_list.replace(/\n/g, '1)(*3hf:Z');
+    student_list = student_list.split('1)(*3hf:Z');
+    console.log(student_list);
+    var l = [];
+    for (var i=0; i<student_list.length; i++) {
+        var student_list2 = student_list[i].replace(/\t/g, '1)(*3hf:Z');
+        student_list2 = student_list2.split('1)(*3hf:Z');
+        console.log(student_list2);
+        if (student_list2.length == 1) {
+            var l2 = student_list2[0].split(",");
+            for (var k=0; k<l2.length; k++){
+                l.push({name:l2[k], prefer: [], avoid: []});
+            }
+        }
+        else if (student_list2.length == 2) {
+            l.push({name: student_list2[0], prefer:student_list2[1].split(",")});
+        }
+        else {
+            l.push({name: student_list2[0], prefer:student_list2[1].split(","), avoid:student_list2[2].split(",")});
+        }
+
+    }
+/**
     student_list = student_list.replace(/\n/g, ',');
+    student_list = student_list.replace(/\t/g, ',');
     student_list = student_list.replace(/;/g, ',');
-    var student_array = student_list.split(",");
-    for (var i = 0; i < student_array.length; i++) {
-      var s = student_array[i].trim();
-      if (classroom.findStudentNamed(student_array[i].trim()) == null) {
-        if (s != "") {
-            console.log('adding');
-          classroom.addStudent({name: student_array[i].trim(), avoid:["tod"], prefer: ["amy","carol"]});
+    var student_array = student_list.split(",");**/
+    for (var i = 0; i < l.length; i++) {
+      if (classroom.findStudentNamed(l[i].name.trim()) == null) {
+        if (l[i].name.trim() != "") {
+          classroom.addStudent({name: l[i].name.trim(), avoid: l[i].avoid, prefer: l[i].prefer});
         }
       }
     }
@@ -156,12 +179,46 @@ function addRow(student) {
 
 function addLastRow() {
     var row = $('<tr>');
-    $('<td class="student_name" colspan="4">').appendTo(row).html('<input id= "newstudentbox" placeholder="Enter new student names">');
+    $('<td class="student_name" colspan="4">').appendTo(row).html('<textarea id= "newstudentbox" placeholder="Enter new student names"></textarea>');
     $('table tbody').append(row);
 }
 
+//HANDLE COPY PASTING  http://stackoverflow.com/questions/3211505/detect-pasted-text-with-ctrlv-or-right-click-paste
+function getTextAreaSelection(textarea) {
+    var start = textarea.selectionStart, end = textarea.selectionEnd;
+    return {
+        start: start,
+        end: end,
+        length: end - start,
+        text: textarea.value.slice(start, end)
+    };
+}
 
-
+function detectPaste(textarea, callback) {
+    textarea.onpaste = function() {
+        var sel = getTextAreaSelection(textarea);
+        var initialLength = textarea.value.length;
+        window.setTimeout(function() {
+            var val = textarea.value;
+            var pastedTextLength = val.length - (initialLength - sel.length);
+            var end = sel.start + pastedTextLength;
+            callback({
+                start: sel.start,
+                end: end,
+                length: pastedTextLength,
+                text: val.slice(sel.start, end)
+            });
+        }, 1);
+    };
+}
+/**
+var textarea = document.getElementById("your_textarea");
+detectPaste(textarea, function(pasteInfo) {
+    alert(pasteInfo.text);
+    // pasteInfo also has properties for the start and end character
+    // index and length of the pasted text
+});
+**/
 $(document).ready(function() {
 
     classroom = new Classroom();
@@ -229,6 +286,11 @@ $(document).ready(function() {
         console.log('loading');
       loadTable(classroom);
   });
+
+    $(document).on('paste', "#newstudentbox", function(e) {
+        var pastedata = $(this).val();
+
+    });
 
 });
 </script>
