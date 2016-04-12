@@ -1,5 +1,9 @@
 // Depends on underscore/lodash.js
 
+//if you have a name and want the full student object, call classroom.getStudentFromName(name)
+//if you have an sid and want the full student object, call classroom.getStudentFromSID(name)
+//once you have a student object you can access student_object.name/prefer/avoid/sid as well
+
 function Classroom() {
     var self = this;
     var studentList = [];
@@ -16,11 +20,34 @@ function Classroom() {
         }
         return studentList[index];
     }
+
+    function getStudentFromName(studentname) {
+        for (var i = 0; i < studentList.length; i++) {
+            if (studentList[i].name == studentname) {
+                return studentList[i];
+            }
+        }
+        return null;
+    }
+
+        function getStudentFromSID(sid) {
+        for (var i = 0; i < studentList.length; i++) {
+            if (studentList[i].sid == sid) {
+                return studentList[i];
+            }
+        }
+        return null;
+    }
     // Call this with an object like this:
     // self.setStudent({name: "Amy", avoid: ["Susan", "Pat"], prefer: []})
     function setStudent(index, obj) {
         studentList[index] = _.clone(obj);
         $(self).trigger({type: 'changestudents', first: index, last: index+1});
+    }
+
+    function getID(studentname) {
+        var s = getStudentFromName(studentname);
+        return s.sid;
     }
     
 
