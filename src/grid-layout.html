@@ -1,0 +1,115 @@
+<script src="https://code.jquery.com/jquery-2.2.3.js" integrity="sha256-laXWtGydpwqJ8JA+X9x2miwmaiKhn8tVmOVEigRNtP4=" crossorigin="anonymous"></script>
+<script src="lodash.js"></script>
+<link href='https://fonts.googleapis.com/css?family=Cabin:400,700' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
+
+<style>
+body, html {
+  font: 28px Cabin;
+  width: 100%;
+  height: 100%;
+}
+table {
+    margin: auto;
+    width: 60%;
+    border-collapse: collapse;
+}
+table td.name {
+    width: 20%;
+}
+table td {
+    width: 40%;
+    vertical-align: top;
+    border: 1px solid gray;
+    padding: 2px 2px;
+}
+table th {
+    font-weight: normal;
+    font-size: 22px;
+}
+
+table td.remove {
+    width: 5em;
+    vertical-align: middle;
+    text-align: center;
+}
+
+table td.remove:before {
+    font-family: FontAwesome;
+    content: '\f014';
+}
+
+table td p {
+    display: inline-block;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    padding: 3px 7px;
+    margin: 1px 3px;
+}
+
+table td p span:after {
+    font-family: FontAwesome;
+    content: ' \f00d';
+}
+
+table td p span:hover {
+    color: red;
+}
+
+table td input {
+    width: 100%;
+    font: 18px Cabin;
+}
+</style>
+<body>
+    <table class="classroom">
+      <thead>
+        <tr>
+            <th>Student</th><th>Pair With</th><th>Don't Pair With</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+
+    </table>
+</body>
+<script>
+var studentNames = ["Berk Ustun", "Nick M.", "David Bau", 
+                    "Frederick", "George W.", "Shruti", 
+                    "Rita", "Wendy", "Jenna", "Alice",
+                    "Xin", "Will", "D'Angelo", "Kobe"]
+                    
+function sampleName(){
+    return _.sample(studentNames)
+}
+
+function samplePreferences(nSamples){
+    if (nSamples == null){
+        var nSamples = Math.min(Math.floor(Math.random()*studentNames.length), 2);
+    }
+    return _.sampleSize(studentNames, nSamples);
+}
+
+
+function addRow() {
+    var row = $('<tr>');
+    $('<td class="student_name">').appendTo(row).html('<p>' + sampleName() +'</p>')
+    $('<td class="pair_with">').appendTo(row).html(
+        samplePreferences().map(function(n) { return '<p>' + n + '<span></span></p>'; }).join()
+    );
+    $('<td class="dont_pair_with">').appendTo(row).html(
+        samplePreferences().map(function(n) { return '<p>' + n + '<span></span</p>'; }).join()
+    );
+    $('<td class="remove">').appendTo(row);
+    $('table tbody').append(row);
+}
+for (var j = 0; j < 10; ++j) {
+    addRow();
+}
+function addLastRow() {
+    var row = $('<tr>');
+    $('<td class="student_name" colspan="4">').appendTo(row).html('<input placeholder="Enter new student names">');
+    $('table tbody').append(row);
+}
+addLastRow();
+</script>

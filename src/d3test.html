@@ -45,7 +45,7 @@ var lines = svg.selectAll('line')
       class: 'link',
       fill: 'none',
       stroke: 'silver',
-      'stroke-width': 75,
+      'stroke-width': 150,
       'stroke-linecap': 'round'
    });
 
@@ -95,25 +95,71 @@ function tick() {
   });
 }
 
-force.on('tick', tick);
-force.start()
-nodegroups.call(force.drag);
-var linedrag = d3.behavior.drag().on('dragstart', function(d) {
-  d.source.fixed |= 2;
-  d.target.fixed |= 2;
-}).on('drag', function(d) {
-  console.log('dragging', d3.event.dx, d3.event.dy, JSON.stringify(d));
+function attachedNodes(node) {
+  var attached = [];
+  for (var j = 0; j < datalinks.length; ++j) {
+    var link = datalinks[j];
+    if (link.source === node) {
+      attached.push(link.target);
+    } else if (link.target === node) {
+      attached.push(link.source);
+    }
+  }
+  return attached;
+}
+
+var fixedAfterDrag = 1;
+var nodedrag = d3.behavior.drag().on('dragstart.force', function(d) {
+  d.fixed |= 2 | fixedAfterDrag;
+  attachedNodes(d).map(function(d2) {
+    d2.fixed |= 2;
+  });
+}).on('drag.force', function(d) {
+  d.px += d3.event.dx;
+  d.py += d3.event.dy;
+  force.resume();
+}).on('dragend.force', function(d) {
+  d.fixed &= ~2;
+  attachedNodes(d).map(function(d2) {
+    d2.fixed &= ~2;
+  });
+});
+nodegroups.call(nodedrag);
+nodegroups.on('mouseover.force', function(d) {
+  d.fixed |= 4;
+  d.px = d.x;
+  d.py = d.y;
+}).on('mouseout.force', function(d) {
+  d.fixed &= ~4;
+});
+var linedrag = d3.behavior.drag().on('dragstart.force', function(d) {
+  d.source.fixed |= 2 | fixedAfterDrag;
+  d.target.fixed |= 2 | fixedAfterDrag;
+}).on('drag.force', function(d) {
   d.source.px += d3.event.dx;
   d.source.py += d3.event.dy;
   d.target.px += d3.event.dx;
   d.target.py += d3.event.dy;
   force.resume();
-}).on('dragend', function(d) {
-  delete d.drag;
+}).on('dragend.force', function(d) {
   d.source.fixed &= ~2;
   d.target.fixed &= ~2;
 });
 lines.call(linedrag);
+lines.on('mouseover.force', function(d) {
+  d.source.fixed |= 4;
+  d.target.fixed |= 4;
+  d.source.px = d.source.x;
+  d.source.py = d.source.y;
+  d.target.px = d.target.x;
+  d.target.py = d.target.y;
+}).on('mouseout.force', function(d) {
+  d.source.fixed &= ~4;
+  d.target.fixed &= ~4;
+});
+
+force.on('tick', tick);
+force.start()
 </script>
 
 
