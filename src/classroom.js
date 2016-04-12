@@ -32,9 +32,14 @@ function Classroom() {
         $(self).trigger({type: 'changestudents', first: index, last: index+1});
     }
     //Remove a given student from the list
-    function removeStudent(index) {
-        studentList.splice(index, 1);
-        $(self).trigger({type: 'changestudents', first: index, last: studentList.length + 1});
+    function removeStudent(sid) {
+        for (var index = 0; index < studentList.length; index++){
+            if ((studentList[index].sid) == sid) {
+                studentList.splice(index, 1);
+                $(self).trigger({type: 'changestudents', first: index, last: studentList.length + 1});
+            }
+        }
+
     }
     
     function clearStudents() {
