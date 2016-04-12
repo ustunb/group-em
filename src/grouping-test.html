@@ -1,0 +1,25 @@
+<script src="lodash.js"></script>
+<script src="jquery-1.12.2.js"></script>
+<script src="student.js"></script>
+<script src="group.js"></script>
+<script>
+
+function assert(b) {
+if (!b) throw new Error('failed assertion');
+}
+
+//basic student construction
+var testID = 1
+var testName = 'Berk'
+var testStudent = new Student(testName, testID)
+assert(testStudent.name()==testName)
+assert(testStudent.valueOf()==testID)
+console.log(testStudent.toString())
+
+
+var testStudentList = [new Student('Berk', 1), new Student('David', 2)]
+var testGroup = new Group(testStudentList);
+// console.log(testGroup.toString())
+
+
+</script>
