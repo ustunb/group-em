@@ -26,8 +26,21 @@
       $('#prefTable').show();
     }
     else {
-      $('#prefTable').hide()
+      $('#prefTable').hide();
       $('#studentTextBox').show();
+    }
+  };
+
+  var parseStudentList = function() {
+    var student_list = $("#studentTextBox").val();
+    var student_array = student_list.split(",");
+    for (var i = 0; i < student_array.length; i++) {
+      var s = student_array[i].trim();
+      if (classroom.findStudentNamed(s) == null) {
+        if (s != "") {
+          classroom.addStudent({name: student_array[i].trim(), avoid:[], prefer: []});
+        }
+      }
     }
   };
 
@@ -37,8 +50,6 @@
     var rows = "<tr><th>Remove?</th><th>Student</th><th>Pair</th><th>Don't Pair</th></tr>";
 
     for (student_index in data) {
-        console.log(student_index);
-        console.log(data[student_index]);
         var row = "<tr><td><button class = 'remove' id='"+student_index+ "'></button></td>";
         for (field in fields) {
 
@@ -49,6 +60,7 @@
         rows += row + '<tr>';
 
     }
+    rows += "<tr><td></td><td><input type='text' class = 'add' placeholder='enter new student'></td><td></td><td></td></tr>";
     $('#' + tableId).html(rows);
 }
 
@@ -56,11 +68,10 @@
   $(document).ready(function() {
     $('#prefTable').hide();
 
-    //TODO: BUG with classroom object. 
     classroom = new Classroom();
-    classroom.addStudent({name: "Amy", avoid: ["Susan", "Pat"], prefer: []});
-    classroom.addStudent({name: "Bob", avoid: [], prefer: []});
-    classroom.addStudent({name: "Carol", avoid: [], prefer: []});
+    //classroom.addStudent({name: "Amy", avoid: ["Susan", "Pat"], prefer: []});
+    //classroom.addStudent({name: "Bob", avoid: [], prefer: []});
+    //classroom.addStudent({name: "Carol", avoid: [], prefer: []});
 
     loadTable("prefTable", ["name", "avoid", "prefer"], classroom.studentList);    
 
@@ -69,19 +80,36 @@
       toggleButtonText();
   });
 
-    $(".remove").click(function(e) {
+    $(document).on('click', ".remove", function(e) {
       console.log('removal detected');
       var student_id = $(this).attr('id');
+      console.log(student_id);
       classroom.removeStudent(student_id);
+    });
+
+    $(document).on('keyup', ".add", function(e) {
+      if (e.which == 13) {
+        var new_student = $(".add").val();
+        classroom.addStudent({name: new_student, avoid:[], prefer:[]});
+      }
+    });
+
+    $(document).on('click', "#groupem", parseStudentList());
+
+    $(document).on('click', "#preferenceButton", function() {
+      if ($('#prefTable').is(":visible")) {
+        parseStudentList();
+      }
     });
 
     $(classroom).on('changestudents', function() {
       loadTable("prefTable", ["name", "avoid", "prefer"], classroom.studentList);
   });
 
-// want any removals or preference adds to fire a classchange
 
-//todo remove handler/event listener for remove button class
+
+//comma separated names --> if in textmode and press groupem it runs the parse
+// if in textmode and press show preferences it runs the parse
 
 
 });
@@ -100,6 +128,6 @@
 
 <table id="prefTable"></table>
 
-
+<button id="groupem">Group'em!</button>
 </body>
 </html>

@@ -2,7 +2,7 @@
 
 function Classroom() {
     var self = this;
-    var studentList = {};
+    var studentList = [];
     
     // This retrieves a student by number
     function getStudentCount() {
@@ -40,7 +40,7 @@ function Classroom() {
 
     //Note this assumes names are distinct. 
     function findStudentNamed(name) {
-        for (var i; i < studentList.length - 1; i++) {
+        for (var i = 0; i < studentList.length; i++) {
             if (studentList[i]["name"] === name) {
                 return i;
             }
