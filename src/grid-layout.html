@@ -105,7 +105,7 @@ function samplePreferences(nSamples){
       if (classroom.findStudentNamed(student_array[i].trim()) == null) {
         if (s != "") {
             console.log('adding');
-          classroom.addStudent({name: student_array[i].trim(), avoid:[], prefer: []});
+          classroom.addStudent({name: student_array[i].trim(), avoid:["tod"], prefer: ["amy","carol"]});
         }
       }
     }
@@ -125,14 +125,16 @@ function addRow(student) {
     $('<td class="student_name">').appendTo(row).html('<p>' + student.name +'</p>')
 
     var preferhtml = ""
-    for (i = 0; i < student.prefer; i++) {
-        preferhtml += '<p>' + student.prefer[i] + '<span></span></p>'
+    for (i = 0; i < student.prefer.length; i++) {
+        preferhtml += '<p>' + student.prefer[i] + '<span class="removeprefer" id="'+student.prefer[i]+"*#95f%:"+student.sid+'"></span></p>'
     }
 
 
     var avoidhtml = ""
-    for (i = 0; i < student.avoid; i++) {
-        avoidhtml += '<p>' + student.avoid[i] + '<span></span></p>'
+    for (i = 0; i < student.avoid.length; i++) {
+        console.log(student.avoid[i]);
+        console.log(student.sid);
+        avoidhtml += '<p>' + student.avoid[i] + '<span class="removeavoid" id="'+student.avoid[i]+"*#95f%:"+student.sid+'"></span></p>'
     }
 
     $('<td class="pair_with">').appendTo(row).html(preferhtml);
@@ -157,7 +159,6 @@ function addLastRow() {
     $('<td class="student_name" colspan="4">').appendTo(row).html('<input id= "newstudentbox" placeholder="Enter new student names">');
     $('table tbody').append(row);
 }
-<<<<<<< HEAD
 
 
 
@@ -171,6 +172,10 @@ $(document).ready(function() {
 
     loadTable(classroom);    
 
+        /**
+    classroom.addStudent({name: "Amy", avoid: ["Susan", "Pat"], prefer: []});
+    classroom.addStudent({name: "Bob", avoid: ["Susan", "Pat"], prefer: ["Amy"]});
+**/
     $("#preferenceButton").click(function(e) {
       toggleView();
       toggleButtonText();
@@ -183,11 +188,36 @@ $(document).ready(function() {
       classroom.removeStudent(student_id);
     });
 
-    $(document).on('keyup', ".add", function(e) {
-      if (e.which == 13) {
-        var new_student = $(".add").val();
-        classroom.addStudent({name: new_student, avoid:[], prefer:[]});
-      }
+    $(document).on('click', ".removeprefer", function(e) {
+        var removedata = $(this).attr('id').split("*#95f%:");
+        var sid = removedata[1];
+        var removal_name = removedata[0];
+        for (var  i = 0; i < classroom.getStudentCount(); i++){
+            if (classroom.getStudent(i).sid == sid) {
+                for (var j = 0; j < classroom.getStudent(i).prefer.length; j++) {
+                    if (classroom.getStudent(i).prefer[j] == removal_name ){
+                        classroom.getStudent(i).prefer.splice(j, 1);
+                        loadTable(classroom);
+                    }
+                }
+            }
+        }
+    });
+
+    $(document).on('click', ".removeavoid", function(e) {
+        var removedata = $(this).attr('id').split("*#95f%:");
+        var sid = removedata[1];
+        var removal_name = removedata[0];
+        for (var  i = 0; i < classroom.getStudentCount(); i++){
+            if (classroom.getStudent(i).sid == sid) {
+                for (var j = 0; j < classroom.getStudent(i).avoid.length; j++) {
+                    if (classroom.getStudent(i).avoid[j] == removal_name ){
+                        classroom.getStudent(i).avoid.splice(j, 1);
+                        loadTable(classroom);
+                    }
+                }
+            }
+        }
     });
 
     //$(document).on('click', "#groupem", parseStudentList());
@@ -206,7 +236,3 @@ $(document).ready(function() {
 
 });
 </script>
-=======
-addLastRow();
-</script>
->>>>>>> ef4d7f36d61eef79f84b359d46a34dbbeba9914d
