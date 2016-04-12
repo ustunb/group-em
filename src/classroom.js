@@ -3,6 +3,7 @@
 function Classroom() {
     var self = this;
     var studentList = [];
+    var lastid = 0;
     
     // This retrieves a student by number
     function getStudentCount() {
@@ -26,6 +27,8 @@ function Classroom() {
     function addStudent(obj) {
         var index = studentList.length;
         studentList[index] = _.clone(obj);
+        studentList[index]['sid'] = lastid;
+        lastid++;
         $(self).trigger({type: 'changestudents', first: index, last: index+1});
     }
     //Remove a given student from the list
@@ -41,11 +44,16 @@ function Classroom() {
     //Note this assumes names are distinct. 
     function findStudentNamed(name) {
         for (var i = 0; i < studentList.length; i++) {
-            if (studentList[i]["name"] === name) {
+            console.log(studentList[i]["name"]);
+            if (studentList[i]["name"] == name) {
                 return i;
             }
-            return null;
         }
+        return null;
+    }
+
+    function getStudentList() {
+        return _.clone(this.studentList);
     }
 
     //public methods
@@ -71,4 +79,8 @@ function testClassroom() {
     assert(recording.length === 0);
     console.log(JSON.stringify(recording[0]));
     c.addStudent({name: "Bob", avoid: [], prefer: []});
+    console.log('Student 0 is currently', c.getStudent(0).name);
+    c.removeStudent(0);
+    console.log('Student 0 is now', c.getStudent(0).name);
+
 }

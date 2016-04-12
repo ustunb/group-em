@@ -21,57 +21,70 @@
   };
 
   var toggleView = function() {
-    if ($('#studentTextBox').is(":visible")) {
-      $('#studentTextBox').hide();
-      $('#prefTable').show();
+    if ($('.prefView').is(":visible")) {
+      $('.prefView').hide();
     }
     else {
-      $('#prefTable').hide();
-      $('#studentTextBox').show();
+      $('.prefView').show();
     }
   };
 
   var parseStudentList = function() {
     var student_list = $("#studentTextBox").val();
+    student_list = student_list.replace(/\n/g, ',');
     var student_array = student_list.split(",");
     for (var i = 0; i < student_array.length; i++) {
       var s = student_array[i].trim();
-      if (classroom.findStudentNamed(s) == null) {
+      if (classroom.findStudentNamed(student_array[i].trim()) == null) {
         if (s != "") {
+          console.log("adding: "+student_array[i].trim());
           classroom.addStudent({name: student_array[i].trim(), avoid:[], prefer: []});
         }
       }
     }
   };
 
+/**
+  var updateTextbox = function() {
+    var newText = ""
+    for (var i = 0; i < classroom.studentList.length; i++) {
+      newText += " " + classroom.studentList[i].name + ",";
+    }
+    newText = newText.trim();
+
+    $("#studentTextBox").val(String(newText.substring(0, newText.length - 1)));
+  }**/
+
   function loadTable(tableId, fields, data) {
     //$('#' + tableId).empty(); //not really necessary
     $('prefTable').empty();
-    var rows = "<tr><th>Remove?</th><th>Student</th><th>Pair</th><th>Don't Pair</th></tr>";
+    var rows = "<tr><th>Student</th><th class='prefView'>Pair</th><th class='prefView'>Don't Pair</th><th>Remove?</th></tr>";
 
     for (student_index in data) {
-        var row = "<tr><td><button class = 'remove' id='"+student_index+ "'></button></td>";
+        var row = "<tr>";
         for (field in fields) {
 
+            if (field == 0) {
+              row += "<td>" + data[student_index][fields[field]] + '</td>';
 
-            row += '<td>' + data[student_index][fields[field]] + '</td>';
+            }
+            else {
+              row += "<td class='prefView'>" + data[student_index][fields[field]] + '</td>';
+            }
+            
+            
 
         }
-        rows += row + '<tr>';
+        rows += row + "<td><button class = 'remove' id='"+student_index+ "'></button></td><tr>";
 
     }
-    rows += "<tr><td></td><td><input type='text' class = 'add' placeholder='enter new student'></td><td></td><td></td></tr>";
     $('#' + tableId).html(rows);
 }
 
 
   $(document).ready(function() {
-    $('#prefTable').hide();
 
     classroom = new Classroom();
-    //classroom.addStudent({name: "Amy", avoid: ["Susan", "Pat"], prefer: []});
-    //classroom.addStudent({name: "Bob", avoid: [], prefer: []});
-    //classroom.addStudent({name: "Carol", avoid: [], prefer: []});
 
     loadTable("prefTable", ["name", "avoid", "prefer"], classroom.studentList);    
 
@@ -96,21 +109,16 @@
 
     $(document).on('click', "#groupem", parseStudentList());
 
-    $(document).on('click', "#preferenceButton", function() {
-      if ($('#prefTable').is(":visible")) {
+    $(document).on('keyup', "#studentTextBox", function(e) {
+      if (e.which == 13) {
         parseStudentList();
+        $("#studentTextBox").val("");
       }
-    });
+    })
 
     $(classroom).on('changestudents', function() {
       loadTable("prefTable", ["name", "avoid", "prefer"], classroom.studentList);
   });
-
-
-
-//comma separated names --> if in textmode and press groupem it runs the parse
-// if in textmode and press show preferences it runs the parse
-
 
 });
 
@@ -122,11 +130,10 @@
 
 <body>
 <h1>Student List</h1>
-<textarea id="studentTextBox" placeholder="Type names of students (separate with Enter) or copy-paste" rows="25" cols="75"></textarea>
-
-<button id="preferenceButton">S h o w    P r e f e r e n c e s</button>
 
 <table id="prefTable"></table>
+<textarea id="studentTextBox" placeholder="Type names of students (separate with Enter) or copy-paste" rows="25" cols="75"></textarea>
+<button id="preferenceButton">S h o w    P r e f e r e n c e s</button>
 
 <button id="groupem">Group'em!</button>
 </body>
