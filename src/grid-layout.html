@@ -142,13 +142,13 @@ function addRow(student) {
 
 /**
     $('<td class="pair_with">').appendTo(row).html(
-        samplePreferences().map(function(student.prefer) { return '<p>' + student.prefer + '<span></span</p>'; }).join()
+        samplePreferences().map(function(student.prefer) { return '<p>' + student.prefer + '<span></span></p>'; }).join(' ')
     );
 
     $('<td class="dont_pair_with">').appendTo(row).html(
-        samplePreferences().map(function(student.avoid) { return '<p>' + student.avoid + '<span></span</p>'; }).join()
-    );**/
-
+        samplePreferences().map(function(student.avoid) { return '<p>' + student.avoid + '<span></span></p>'; }).join(' ')
+    );
+**/
 
     $('<td id="'+student.sid+'" class="remove">').appendTo(row);
     $('table tbody').append(row);
@@ -159,11 +159,14 @@ function addLastRow() {
     $('<td class="student_name" colspan="4">').appendTo(row).html('<input id= "newstudentbox" placeholder="Enter new student names">');
     $('table tbody').append(row);
 }
+<<<<<<< HEAD
 
 
 
 
 
+=======
+>>>>>>> 4308aa6abacfb94d6dc4b269c3b7ec17e6451247
 
 
 $(document).ready(function() {
