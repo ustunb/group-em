@@ -101,23 +101,23 @@ function samplePreferences(nSamples){
     student_list = student_list.replace(/\n/g, '1)(*3hf:Z');
     student_list = student_list.split('1)(*3hf:Z');
     console.log(student_list);
-    var l = [];
+    var final_data = [];
     for (var i=0; i<student_list.length; i++) {
-        var student_list2 = student_list[i].replace(/\t/g, '1)(*3hf:Z');
-        student_list2 = student_list2.split('1)(*3hf:Z');
-        console.log(student_list2);
-        if (student_list2.length == 1) {
-            student_list = student_list.replace(/;/g, ',');
-            var l2 = student_list2[0].split(",");
-            for (var k=0; k<l2.length; k++){
-                l.push({name:l2[k], prefer: [], avoid: []});
+        var row_list = student_list[i].replace(/\t/g, '1)(*3hf:Z');
+        row_list = row_list.split('1)(*3hf:Z');
+        console.log(row_list);
+        if (row_list.length == 1) {
+            row_list[0] = row_list[0].replace(/;/g, ',');
+            var name_list = row_list[0].split(",");
+            for (var k=0; k<name_list.length; k++){
+                final_data.push({name:name_list[k].trim(), prefer: [], avoid: []});
             }
         }
-        else if (student_list2.length == 2) {
-            l.push({name: student_list2[0], prefer:student_list2[1].split(",")});
+        else if (row_list.length == 2) {
+            final_data.push({name: row_list[0], prefer:row_list[1].split(",").map(function (str) {return str.trim();})});
         }
         else {
-            l.push({name: student_list2[0], prefer:student_list2[1].split(","), avoid:student_list2[2].split(",")});
+            final_data.push({name: row_list[0], prefer:row_list[1].split(",").map(function (str) {return str.trim();}), avoid:row_list[2].split(",").map(function (str) {return str.trim();})});
         }
 
     }
@@ -126,10 +126,10 @@ function samplePreferences(nSamples){
     student_list = student_list.replace(/\t/g, ',');
     student_list = student_list.replace(/;/g, ',');
     var student_array = student_list.split(",");**/
-    for (var i = 0; i < l.length; i++) {
-      if (classroom.findStudentNamed(l[i].name.trim()) == null) {
-        if (l[i].name.trim() != "") {
-          classroom.addStudent({name: l[i].name.trim(), avoid: l[i].avoid, prefer: l[i].prefer});
+    for (var i = 0; i < final_data.length; i++) {
+      if (classroom.findStudentNamed(final_data[i].name.trim()) == null) {
+        if (final_data[i].name.trim() != "") {
+          classroom.addStudent({name: final_data[i].name.trim(), avoid: final_data[i].avoid, prefer: final_data[i].prefer});
         }
       }
     }
