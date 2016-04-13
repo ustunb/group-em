@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<meta charset='utf-8'>
+<style>
+html, body, body > svg, body > div {
+ position: fixed;
+ margin:0; padding:0; height:100%; width:100%; overflow:hidden;
+}
+body > div {
+ pointer-events: none;
+}
+</style>
+<body>
+<svg>
+</svg>
+<div>
+</div>
+<script src='d3.js'></script>
+<script src='jquery-1.12.2.js'></script>
+<script>
+
+
+function ClusterLayout(svg) {
+
+var state = {
+  nodes_by_id: {},     // By node id
+  clusters_by_id: {},  // By cluster id
+  links_by_key: {},    // By cluster_id + target_id + source_id
+  next_cluster_id: 1,
+  clusters: [],
+  nodes: [],
+  links: [],
+  rebuilding: false,
+  svg: d3.select(svg),
+  force: d3.layout.force().charge(-300).linkDistance(75),
+  linksel: null,
+  nodesel: null,
+  linkdrag: null,
+  nodedrag: null
+};
+state.linksel = state.svg.selectAll('line');
+state.nodesel = state.svg.selectAll('g');
+
+this.addNode = function addNode(id, obj) {
+  var node = {id: id, ndata: obj, cluster: null};
+  state.nodes.push(node);
+  state.nodes_by_id[id] = node;
+  invalidate();
+}
+
+this.addCluster = function addCluster(node_id_list) {
+  var id = state.next_cluster_id++;
+  var cluster = { id: id, nodes: [] }
+  node_id_list.map(function(sid) {
+    addNodeToCluster(state.nodes_by_id[sid], cluster);
+  });
+  state.clusters.push(cluster);
+  state.clusters_by_id[id] = cluster;
+  invalidate();
+}
+
+function repId(cluster) {
+  if (cluster.nodes.length === 0) {
+    return -1;
+  }
+  return cluster.nodes.reduce(function(a, b) {
+    return (a.id < b.id) ? a : b;
+  }).id;
+}
+
+// Returns all the nodes in the same cluster as the given node, but not
+// including the node itself.
+function nodeSiblings(node) {
+  if (!node.cluster) {
+    return [];
+  }
+  return node.cluster.nodes.filter(function(item) {
+    item !== node;
+  });
+}
+
+function removeNodeFromCluster(node) {
+  if (!node.cluster) {
+    return;
+  }
+  var clusterRep = repId(node.cluster);
+  node.cluster.nodes = nodeSiblings(node);
+  node.cluster = null;
+  $(this).trigger({type: 'remove', node: node.ndata, cluster: clusterRep});
+  invalidate();
+}
+
+function addNodeToCluster(node, cluster) {
+  if (node.cluster === cluster) {
+    // Nothing to do.
+    return;
+  }
+  // Grab cluster rep before modifying cluster.
+  var clusterRep = repId(cluster);
+  // Enforce invariant: node must be in at most one cluster.
+  removeNodeFromCluster(node);
+  cluster.nodes.push(node);
+  node.cluster = cluster;
+  $(this).trigger({type: 'join', node: node.ndata, cluster: clusterRep});
+  invalidate();
+}
+
+function invalidate() {
+  if (!state.rebuilding) {
+    state.rebuilding = true;
+    setTimeout(function() {
+      state.rebuilding = false;
+      rebuild();
+    }, 0);
+  }
+}
+
+function rebuild() {
+  // Rebuild the state.links array, reusing any links that
+  // were already existing.
+  var new_links = [];
+  for (var j = 0; j < state.clusters.length; ++j) {
+    var cluster = state.clusters[j]
+    for (var k = 1; k < cluster.nodes.length; ++k) {
+      var target = cluster.nodes[k];
+      for (var m = 0; m < k; ++m) {
+        var source = cluster.nodes[m];
+        var key = [cluster.id, target.id, source.id].join(':');
+        if (state.links_by_key.hasOwnProperty(key)) {
+          new_links.push(state.links_by_key[key]);
+        } else {
+          new_links.push({
+            key: key,
+            cluster: cluster,
+            source: source,
+            target: target
+          });
+        }
+      }
+    }
+  }
+  // Rebuild index.
+  state.links_by_key = {};
+  for (j = 0; j < new_links.length; ++j) {
+    state.links_by_key[new_links[j].key] = new_links;
+  }
+  state.links = new_links;
+  // TODO: go through clusters finding empty ones, and fire events
+  // for eliminated clusters.
+  // TODO: rebuild D3 stuff.
+  state.force.links(state.links);
+  state.force.nodes(state.nodes);
+  start();
+}
+
+// http://stackoverflow.com/questions/28102089/simple-graph-of-nodes-and-links-without-using-force-layout
+function start() {
+  state.linksel = state.linksel
+    .data(state.force.links(), function(d) { return d.key });
+  state.linksel.enter().insert("line").attr({
+      class: 'link',
+      fill: 'none',
+      stroke: 'silver',
+      'stroke-width': 75,
+      'stroke-linecap': 'round'
+    })
+    .call(linkdrag);
+  state.linksel.exit().remove();
+
+  state.nodesel = state.nodesel
+    .data(state.force.nodes(), function(d) { return d.id; } );
+
+  var ins = state.nodesel.enter().insert("g");
+  ins.append('circle').attr({
+    cx: 0, cy: 0, r: 25,
+    fill: 'lightyellow',
+    stroke: 'gray',
+    'stroke-width': 2.5
+  });
+  ins.append('text').attr({
+    'alignment-baseline': 'middle',
+    'text-anchor': 'middle',
+    y: 1
+  }).style({
+    font: '16px Arial'
+  }).text(function(d) { return '' + d.ndata; });
+  ins.call(nodedrag);
+  state.nodesel.exit().remove();
+  state.force.start();
+}
+
+d3.select(window).on('resize', resize);
+function resize() {
+  state.force.size([
+    parseFloat(state.svg.style('width')),
+    parseFloat(state.svg.style('height'))
+  ]);
+}
+
+// Position objects according to their coordinates.
+function tick() {
+  state.linksel.attr('x1', function(d) { return d.source.x; });
+  state.linksel.attr('y1', function(d) { return d.source.y; });
+  state.linksel.attr('x2', function(d) { return d.target.x; });
+  state.linksel.attr('y2', function(d) { return d.target.y; });
+  state.nodesel.attr('transform', function(d) {
+    return 'translate(' + [d.x, d.y] + ')';
+  });
+}
+
+var fixedAfterDrag = 1;
+var splitDistance = 30;
+
+function nodedrag() {
+  if (!state.nodedrag) {
+    state.nodedrag = d3.behavior.drag().on('dragstart.force', function(d) {
+      d.fixed |= 2 | fixedAfterDrag;
+      nodeSiblings(d).map(function(d2) {
+        d2.fixed |= 2;
+      });
+    }).on('drag.force', function(d) {
+      d.px += d3.event.dx;
+      d.py += d3.event.dy;
+      state.force.resume();
+    }).on('dragend.force', function(d) {
+      d.fixed &= ~2;
+      nodeSiblings(d).map(function(d2) {
+        d2.fixed &= ~2;
+      });
+    });
+  }
+  this.call(state.nodedrag);
+  this.on('mouseover.force', function(d) {
+    d.fixed |= 4;
+    d.px = d.x;
+    d.py = d.y;
+  }).on('mouseout.force', function(d) {
+    d.fixed &= ~4;
+  });
+}
+
+function linkdrag() {
+  if (!state.linkdrag) {
+    state.linkdrag = d3.behavior.drag().on('dragstart.force', function(d) {
+      d.source.fixed |= 2 | fixedAfterDrag;
+      d.target.fixed |= 2 | fixedAfterDrag;
+    }).on('drag.force', function(d) {
+      d.source.px += d3.event.dx;
+      d.source.py += d3.event.dy;
+      d.target.px += d3.event.dx;
+      d.target.py += d3.event.dy;
+      state.force.resume();
+    }).on('dragend.force', function(d) {
+      d.source.fixed &= ~2;
+      d.target.fixed &= ~2;
+    });
+  }
+  this.call(state.linkdrag);
+  this.on('mouseover.force', function(d) {
+    d.source.fixed |= 4;
+    d.target.fixed |= 4;
+    d.source.px = d.source.x;
+    d.source.py = d.source.y;
+    d.target.px = d.target.x;
+    d.target.py = d.target.y;
+  }).on('mouseout.force', function(d) {
+    d.source.fixed &= ~4;
+    d.target.fixed &= ~4;
+  });
+}
+
+resize();
+state.force.on('tick', tick);
+state.force.start()
+
+}
+
+var layout = new ClusterLayout('svg');
+layout.addNode(1, 'Alice');
+layout.addNode(2, 'Bob');
+layout.addNode(3, 'Carol');
+layout.addNode(4, 'David');
+layout.addNode(5, 'Eva');
+layout.addCluster([1,2]);
+layout.addCluster([3,4,5]);
+</script>
+
+
