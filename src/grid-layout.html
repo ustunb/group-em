@@ -42,6 +42,14 @@ table td.remove:before {
     content: '\f014';
 }
 
+table td .fa.fa-grip:before {
+    font-family: FontAwesome;
+    font-size: 12px; 
+    content: "\f142 \202F \f142 \202F \f142";
+    color: gray;
+    padding-right: 10px; 
+}
+
 table td p {
     display: inline-block;
     border: 1px solid;
@@ -154,6 +162,7 @@ function addRow(student) {
     var row = $('<tr>');
     var cell = $('<td class="student_name">').appendTo(row);
     var p = $('<p>').appendTo(cell).text(student.name).data('sid', student.sid).data('name', student.name);
+    $("<i class='fa fa-grip'></i>").prependTo(p);
     console.log('data is', p.data('name'));
 
     var preferhtml = ""
@@ -303,6 +312,7 @@ $(document).ready(function() {
 
     $("table").on('mouseenter',".student_name p",function() {
         var $this = $(this);
+        $(this).css( 'cursor', 'pointer' );
         console.log("student is" + $(this).text()); 
         if(!$this.is(':data(draggable)')) {
         $this.draggable({ helper:'clone', revert: "invalid"
