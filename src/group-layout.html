@@ -1,31 +1,6 @@
 <!DOCTYPE html>
 <meta charset='utf-8'>
-<style>
-html, body, body > svg, body > div {
- position: fixed;
- margin:0; padding:0; height:100%; width:100%; overflow:hidden;
-}
-body > div {
- pointer-events: none;
-}
-svg circle, svg g text {
- cursor: move;
-}
-svg line.link {
- cursor: move;
- stroke: silver;
- stroke-width: 75px;
- stroke-linecap: round;
-}
-svg line.join {
- stroke: silver;
- stroke-width: 75px;
- stroke-linecap: round;
-}
-svg line.breaking {
- visibility: hidden;
-}
-</style>
+<link rel="stylesheet" href="cluster-layout.css">
 <body>
 <svg>
 <g class="links"></g>

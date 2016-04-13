@@ -2,27 +2,50 @@ function ClusterLayout(svg) {
 
 var layout = this;
 
-var state = window.state = {
-  nodes_by_id: {},     // By node id
-  clusters_by_id: {},  // By cluster id
-  links_by_key: {},    // By cluster_id + target_id + source_id
-  next_cluster_id: 1,
-  clusters: [],
-  nodes: [],
-  links: [],
-  joins: [],
-  rebuilding: false,
-  svg: d3.select(svg),
-  force: d3.layout.force().charge(-300).linkDistance(75).gravity(0),
-  linksel: null,
-  joinsel: null,
-  nodesel: null,
-  linkdrag: null,
-  nodedrag: null
-};
-state.linksel = state.svg.select('.links').selectAll('line');
-state.joinsel = state.svg.select('.joins').selectAll('line');
-state.nodesel = state.svg.select('.nodes').selectAll('g');
+var state = {};
+
+function clear() {
+  window.state = state = {
+    nodes_by_id: {},     // By node id
+    clusters_by_id: {},  // By cluster id
+    links_by_key: {},    // By cluster_id + target_id + source_id
+    next_cluster_id: 1,
+    clusters: [],
+    nodes: [],
+    links: [],
+    joins: [],
+    rebuilding: false,
+    svg: d3.select(svg),
+    force: d3.layout.force().charge(-300).linkDistance(75).gravity(0),
+    linksel: null,
+    joinsel: null,
+    nodesel: null,
+    linkdrag: null,
+    nodedrag: null
+  };
+  state.svg.selectAll('*').remove();
+  state.linksel =
+    state.svg.insert('g').classed('links', true).selectAll('line');
+  state.joinsel =
+    state.svg.insert('g').classed('joins', true).selectAll('line');
+  state.nodesel =
+    state.svg.insert('g').classed('nodes', true).selectAll('g');
+  resize();
+  state.force.on('tick', tick);
+}
+clear();
+this.clear = clear;
+
+function startbounce() {
+  // TODO: eliminate links, and animate notes
+}
+this.startbounce = startbounce;
+
+function endbounce() {
+  // TODO: start force layout
+}
+this.endbounce = endbounce;
+
 
 this.addNode = function addNode(id, obj) {
   var node = {id: id, ndata: obj, cluster: null};
@@ -143,12 +166,9 @@ function start() {
   state.nodesel = state.nodesel
     .data(state.force.nodes(), function(d) { return d.id; } );
 
-  var ins = state.nodesel.enter().insert("g");
+  var ins = state.nodesel.enter().insert('g').classed('node', true);
   ins.append('circle').attr({
-    cx: 0, cy: 0, r: 25,
-    fill: 'lightyellow',
-    stroke: 'gray',
-    'stroke-width': 2.5
+    cx: 0, cy: 0, r: 25
   });
   ins.append('text').attr({
     'alignment-baseline': 'middle',
@@ -351,10 +371,4 @@ function linkdrag() {
   this.call(state.linkdrag);
 }
 
-resize();
-state.force.on('tick', tick);
-state.force.start()
-
 }
-
-

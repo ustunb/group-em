@@ -30,6 +30,22 @@ function Classroom() {
         return null;
     }
 
+    function updatePreference(studentToUpdate, studentToAdd, preference) {
+        var studentToUpdate = getStudentFromName(studentToUpdate);
+        already_in = 0;
+        for (var i = 0; i < studentToUpdate[preference].length; i++) {
+            if (studentToUpdate[preference][i] == studentToAdd) {
+                already_in = 1;
+            }
+        }
+        if (already_in == 0 && studentToAdd != studentToUpdate.name) {
+            studentToUpdate[preference].push(studentToAdd);
+            return 0;
+        }
+        return 1;
+    }
+
+
     function getStudentFromSID(sid) {
         for (var i = 0; i < studentList.length; i++) {
             if (studentList[i].sid == sid) {
@@ -49,6 +65,8 @@ function Classroom() {
         var s = getStudentFromName(studentname);
         return s.sid;
     }
+
+
     
 
     function addStudent(obj) {
@@ -97,11 +115,15 @@ function Classroom() {
     self.getStudentCount = getStudentCount
     self.setStudent = setStudent
     self.getStudent = getStudent
+    self.getStudentList = getStudentList
     self.addStudent = addStudent
     self.removeStudent = removeStudent
     self.studentList = studentList
     self.clearStudents = clearStudents
     self.findStudentNamed = findStudentNamed
+    self.updatePreference = updatePreference
+    self.getStudentFromName = getStudentFromName
+    self.getStudentFromSID = getStudentFromSID
     self.setStudentList = setStudentList
     self.getStudentList = getStudentList
 }

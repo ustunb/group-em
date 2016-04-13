@@ -169,8 +169,8 @@ function addRow(student) {
         avoidhtml += '<p>' + student.avoid[i] + '<span class="removeavoid" id="'+student.avoid[i]+"*#95f%:"+student.sid+'"></span></p>'
     }
 
-    $('<td class="pair_with">').appendTo(row).html(preferhtml);
-    $('<td class="dont_pair_with">').appendTo(row).html(avoidhtml);
+    $('<td class="pair_with" id="'+student.name+'">').appendTo(row).html(preferhtml);
+    $('<td class="dont_pair_with" id="'+student.name+'">').appendTo(row).html(avoidhtml);
 
 /**
     $('<td class="pair_with">').appendTo(row).html(
@@ -312,8 +312,13 @@ $(".pair_with").droppable({
         accept: "p",
         drop: function(event,ui){
         console.log("Item was Dropped");
-        $(this).append($(ui.draggable).clone());
-        console.log("name is" + $this.text());
+        var studentToAdd = $this.text();
+        var studentToModify = $(this).attr("id");
+        var i = classroom.updatePreference(studentToModify, studentToAdd, "prefer");
+        if (i == 0) {
+            $(this).append($(ui.draggable).clone());
+            loadTable(classroom);
+        }
 
 
 }
@@ -322,8 +327,13 @@ $(".pair_with").droppable({
         accept: "p",
         drop: function(event,ui){
         console.log("Item was Dropped");
-        $(this).append($(ui.draggable).clone());
-        console.log($this.text());
+        var studentToAdd = $this.text();
+        var studentToModify = $(this).attr("id");
+        var i = classroom.updatePreference(studentToModify, studentToAdd, "avoid");
+        if (i == 0) {
+            $(this).append($(ui.draggable).clone());
+            loadTable(classroom);
+        }
 }
 });
 }
