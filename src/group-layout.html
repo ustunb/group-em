@@ -8,6 +8,9 @@ html, body, body > svg, body > div {
 body > div {
  pointer-events: none;
 }
+svg line.breaking {
+ opacity: 0.1;
+}
 </style>
 <body>
 <svg>
@@ -21,7 +24,7 @@ body > div {
 
 function ClusterLayout(svg) {
 
-var state = {
+var state = window.state = {
   nodes_by_id: {},     // By node id
   clusters_by_id: {},  // By cluster id
   links_by_key: {},    // By cluster_id + target_id + source_id
@@ -140,7 +143,7 @@ function rebuild() {
   // Rebuild index.
   state.links_by_key = {};
   for (j = 0; j < new_links.length; ++j) {
-    state.links_by_key[new_links[j].key] = new_links;
+    state.links_by_key[new_links[j].key] = new_links[j];
   }
   state.links = new_links;
   // TODO: go through clusters finding empty ones, and fire events
@@ -227,38 +230,8 @@ function tick() {
   });
 }
 
-var fixedAfterDrag = 0;
-var splitDistance = 30;
-
-function nodedrag() {
-  if (!state.nodedrag) {
-    state.nodedrag = d3.behavior.drag().on('dragstart.cluster', function(d) {
-      d.fixed |= 2 | fixedAfterDrag;
-      nodeSiblings(d).map(function(d2) {
-        d2.fixed |= 2;
-        d2.px = d2.x;
-        d2.py = d2.y;
-      });
-    }).on('drag.cluster', function(d) {
-      d.px += d3.event.dx;
-      d.py += d3.event.dy;
-      if (d.cluster && d.cluster.nodes.length == 1) {
-        d.cluster.x = d.px;
-        d.cluster.y = d.py;
-      }
-      state.force.resume();
-    }).on('dragend.cluster', function(d) {
-      d.fixed &= ~2;
-      nodeSiblings(d).map(function(d2) {
-        d2.fixed &= ~2;
-      });
-    });
-  }
-  this.call(state.nodedrag);
-}
-
 function initClusterCoords(cluster) {
-  if (!('x' in cluster) && cluster.nodes.length) {
+  if (cluster && !('x' in cluster) && cluster.nodes.length) {
     var ax = 0, ay = 0;
     for (var j = 0; j < cluster.nodes.length; ++j) {
       ax += cluster.nodes[j].x;
@@ -271,6 +244,53 @@ function initClusterCoords(cluster) {
       cluster.y = ay;
     }
   }
+}
+
+var fixedAfterDrag = 0;
+var splitDistance = 100;
+
+function nodedrag() {
+  if (!state.nodedrag) {
+    state.nodedrag = d3.behavior.drag().on('dragstart.cluster', function(d) {
+      initClusterCoords(d.cluster);
+      d.fixed |= 2 | fixedAfterDrag;
+      nodeSiblings(d).map(function(d2) {
+        d2.fixed |= 2;
+        d2.px = d2.x;
+        d2.py = d2.y;
+      });
+    }).on('drag.cluster', function(d) {
+      d.px += d3.event.dx;
+      d.py += d3.event.dy;
+      if (d.cluster) {
+        if (d.cluster.nodes.length == 1) {
+          d.cluster.x = d.px;
+          d.cluster.y = d.py;
+        } else {
+          var dx = d.cluster.x - d.px, dy = d.cluster.y - d.py,
+              split = dx * dx + dy * dy > splitDistance * splitDistance;
+          state.linksel.filter(function(link) {
+            return link.source === d || link.target === d;
+          }).classed('breaking', split);
+        }
+      }
+      state.force.resume();
+    }).on('dragend.cluster', function(d) {
+      d.fixed &= ~2;
+      nodeSiblings(d).map(function(d2) {
+        d2.fixed &= ~2;
+      });
+      if (d.cluster && d.cluster.nodes.length > 1) {
+        var dx = d.cluster.x - d.px, dy = d.cluster.y - d.py,
+            split = dx * dx + dy * dy > splitDistance * splitDistance;
+        if (split) {
+          removeNodeFromCluster(d);
+        }
+      }
+      state.svg.selectAll('.breaking').classed('breaking', false);
+    });
+  }
+  this.call(state.nodedrag);
 }
 
 
