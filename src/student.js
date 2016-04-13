@@ -18,7 +18,7 @@ function Student(name, id) {
     if (!_.isString(name)) throw new Error('name must be String');
     name = name.trim();
     if (name.length < 1) throw new Error('name must contain at least 1 non-whitespace character');
-    if (!(/^[a-zA-Z]+$/.test(name))) throw new Error('name can only contain a-z, A-Z, spaces, dashes and apostrophes');
+    if (!(/[\w]+/.test(name))) throw new Error('name must contain at least 1 letter');
 
     //public methods
     self.name = function() {

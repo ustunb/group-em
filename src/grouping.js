@@ -3,14 +3,21 @@
  * lodash.js
  * student.js
  * group.js
+ * classroom.js
  *
  */
 
-//creating a new Grouping
+/* create a new Grouping
+
 var grouping = new Grouping(classroom, students_per_group);
 
-//getting node / edge information for D3
-var groupArray = grouping.getGroups();
+*/
+
+/* get node/edge information for D3
+
+var grouping = new Grouping(classroom, students_per_group);
+var groupArray = grouping.getGroups(); 
+
 for (var j = 0; j < groupArray.length; j++) {
     var group = groupArray[j];
     var studentArray = group.getStudents();
@@ -19,40 +26,43 @@ for (var j = 0; j < groupArray.length; j++) {
     }
 }
 
-// remove a student from a group, then add them to another group
-// given student_id and group_id (group_id = lowest student id of all students in that group)
-grouping.addStudentToGroup(student_id, group_id);
+*/
 
+/* remove a student from a group, then add them to another group
+ * given student_id and group_id (:= lowest student id of all students in group)
 
-//remove student from a group, then drop them in the middle of nowhere
-//given student_id
-grouping.addStudentToGroup(student_id);
+grouping.assignStudentToGroup(student_id, group_id);
 
+*to drop them in the middle of nowhere (use)
 
-//pinning a group (i.e. making sure it is kept for the shuffle)
-//TODO
+grouping.assignStudentToGroup(student_id);
+grouping.assignStudentToGroup(student_id, null);
 
-//unpinning a group (i.e., freeing it to change in the next shuffle)
-//TODO
+*/
 
-//banning a group (i.e., freeing it to change in the next shuffle)
-//TODO
+/* pin/unpin a group
 
-//unbanning a group (i.e., freeing it to change in the next shuffle)
-//TODO
+TODO
 
+*/
 
+/* ban/unban a group
+
+TODO
+
+*/
 function Grouping(classroom, students_per_group) {
 
     var self = this;
-    random_groups = _.chunk(classroom.getStudentList(), students_per_group); //randomly generated groups
+    //randomly generated groups
     students_per_group = students_per_group; //number of students per pool
+    random_groups = []; 
     pinned_groups = []; //explicitly enforced groups
     //banned_groups = []; //explicitly banned groups
 
     //get number of groups in the current grouping
     function getNumberOfGroups() {
-        return self.random_groups.length + self.pinned_groups.length
+        return random_groups.length + pinned_groups.length
     }
 
     //get the number of students in the current grouping
@@ -108,14 +118,35 @@ function Grouping(classroom, students_per_group) {
 
     //checks representation invariants
     function checkRep() {
-        if (!_.isInteger(students_per_group)) throw new Exception('students per group must be integer')
-        if (students_per_group < 1.0) throw new Exception('at least 1 student per group is needed');
-        if (students_per_group > self.getNumberOfStudents()) throw new Exception('students per group larger than total students');
+        if (!_.isInteger(students_per_group)) throw new Error('students per group must be integer')
+        if (students_per_group < 1.0) throw new Error('at least 1 student per group is needed');
+        if (students_per_group > getNumberOfStudents()) throw new Error('students per group (=' + students_per_group + ') + is larger than total students (=' + getNumberOfStudents() + ')' );
         return true;
     }
 
+    //returns a String representation fo object for debugging
+    function toString() {
+        var groupString = []
+        groupString.push('-'.repeat(60));
+        groupString.push('Randomly Generated Groups');
+        groupString.push('-'.repeat(60));
+        for (var i = 0; i < random_groups.length; i++) {
+            var groupID =  random_groups[i].getGroupID()
+            groupString.push('Group ' + groupID + '\n' + random_groups[i].toString() + '\n');
+
+        }
+        groupString.push('-'.repeat(60));
+        groupString.push('Pinned Groups');
+        groupString.push('-'.repeat(60));
+        for (var i = 0; i < pinned_groups.length; i++) {
+            var groupID = 
+            groupString.push('Group ' + getGroupID() + '\n' + pinned_groups[i].toString());
+        }
+        return groupString.join('\n');
+    }
+
     //switch student from one group to another group
-    function addStudentToGroup(student_id, group_id) {
+    function assignStudentToGroup(student_id, group_id) {
         var old_group_id = getGroupIDOf(student_id);
         var old_idx = getGroupIndex(old_group_id);
         var student = random_groups[old_idx].remove(student_id)
@@ -140,42 +171,51 @@ function Grouping(classroom, students_per_group) {
     function shuffle() {
         //populate student pool
         //_.flatten(random_groups.map(function(group){return group.getStudents()}));
-        var studentArray = []
-        for (var i = 0; i < random_groups.length; i++) {
-            studentArray.push(random_groups[i].getStudents());
-        }
-        random_groups = _.shuffle(studentArray).map(function(students) {
+        var studentArray = random_groups.map(function(group){return group.getStudents()});
+        studentArray = _.flatten(studentArray);
+        studentArray = _.shuffle(studentArray);
+        studentArray = _.chunk(studentArray, students_per_group);
+        console.log(studentArray)
+        random_groups = studentArray.map(function(students) {
             return new Group(students);
         })
+        console.log(toString())
+        checkRep();
         return _.concat(random_groups, pinned_groups);
     }
 
-    //attach functions to object
-    self.shuffle = shuffle;
-    self.addStudentToGroup = addStudentToGroupOf;
+
+    //public methods
+    self.getNumberOfGroups = getNumberOfGroups;
+    self.getNumberOfStudents = getNumberOfStudents;
     self.getGroups = getGroups;
     self.getPinnedGroups = getPinnedGroups;
     self.getRandomGroups = getRandomGroups;
-    self.getGroupIndex = getGroupIndex;
-    self.getNumberOfGroups = getNumberOfGroups;
-    self.getNumberOfStudents = getNumberOfStudents;
+    self.toString = toString;
+    self.getGroupIDOf = getGroupIDOf;
+    self.shuffle = shuffle;
+    self.assignStudentToGroup = assignStudentToGroup;
     //self.pinGroup = pinGroup
     //self.unpinGroup = unpinGroup
     //self.banGroup = banGroup
     //self.unbanGroup = unbanGroup
 
+    //initialize
+    var studentList = classroom.getStudentList()
+    for (var i = 0; i < studentList.length; i++) {
+        random_groups.push(new Group([studentList[i]]));
+    }
     self.shuffle();
+    checkRep();
 }
 
-
-// //adds a student group to the list of pinned groups
+//adds a student group to the list of pinned groups
 // function pinGroup(group) {
 //     var pin_flag = false;
 //     //TODO
 //     checkRep();
 //     return pin_flag;
 // }
-
 // //removes a group from the list of pinned groups
 // function unpinGroup(group) {
 //     var unpin_flag = false;
@@ -200,7 +240,4 @@ function Grouping(classroom, students_per_group) {
 //     return unban_flag;
 // }
 
-// //returns list of groups in current grouping
-// function toString() {
-//     //TODO
-// }
+
