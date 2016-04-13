@@ -205,10 +205,18 @@ function tick() {
   if (k) {
     for (var j = 0; j < state.nodes.length; ++j) {
       var node = state.nodes[j];
-      var x = 'x' in node.cluster ? node.cluster.x : size[0] / 2;
-      var y = 'y' in node.cluster ? node.cluster.y : size[1] / 2;
-      node.x += (x - node.x) * k;
-      node.y += (y - node.y) * k;
+      var x = size[0] / 2;
+      var y = size[1] / 2;
+      var boost = 1;
+      // Custom gravity: each cluster has its own gravitational center.
+      if (node.cluster && !isNaN(node.cluster.x) && !isNaN(node.cluster.y)) {
+        x = node.cluster.x;
+        y = node.cluster.y;
+        boost = 2;
+      }
+      var scale = node.cluster && node.cluster.nodes.length || 1;
+      node.x += (x - node.x) * k * boost;
+      node.y += (y - node.y) * k * boost;
     }
   }
   state.linksel.attr('x1', function(d) { return d.source.x; });
@@ -235,6 +243,10 @@ function nodedrag() {
     }).on('drag.force', function(d) {
       d.px += d3.event.dx;
       d.py += d3.event.dy;
+      if (d.cluster && d.cluster.nodes.length == 1) {
+        d.cluster.x = d.px;
+        d.cluster.y = d.py;
+      }
       state.force.resume();
     }).on('dragend.force', function(d) {
       d.fixed &= ~2;
@@ -299,8 +311,10 @@ layout.addNode(2, 'Bob');
 layout.addNode(3, 'Carol');
 layout.addNode(4, 'David');
 layout.addNode(5, 'Eva');
+layout.addNode(6, 'Frank');
 layout.addCluster([1,2]);
 layout.addCluster([3,4,5]);
+layout.addCluster([6]);
 </script>
 
 
