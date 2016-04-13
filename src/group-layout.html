@@ -31,7 +31,7 @@ var state = {
   links: [],
   rebuilding: false,
   svg: d3.select(svg),
-  force: d3.layout.force().charge(-300).linkDistance(75),
+  force: d3.layout.force().charge(-300).linkDistance(75).gravity(0),
   linksel: null,
   nodesel: null,
   linkdrag: null,
@@ -74,7 +74,7 @@ function nodeSiblings(node) {
     return [];
   }
   return node.cluster.nodes.filter(function(item) {
-    item !== node;
+    return item !== node;
   });
 }
 
@@ -197,7 +197,20 @@ function resize() {
 }
 
 // Position objects according to their coordinates.
+var gravity = 0.1;
 function tick() {
+  var size = state.force.size(),
+      alpha = state.force.alpha(),
+      k = alpha * gravity;
+  if (k) {
+    for (var j = 0; j < state.nodes.length; ++j) {
+      var node = state.nodes[j];
+      var x = 'x' in node.cluster ? node.cluster.x : size[0] / 2;
+      var y = 'y' in node.cluster ? node.cluster.y : size[1] / 2;
+      node.x += (x - node.x) * k;
+      node.y += (y - node.y) * k;
+    }
+  }
   state.linksel.attr('x1', function(d) { return d.source.x; });
   state.linksel.attr('y1', function(d) { return d.source.y; });
   state.linksel.attr('x2', function(d) { return d.target.x; });
@@ -207,7 +220,7 @@ function tick() {
   });
 }
 
-var fixedAfterDrag = 1;
+var fixedAfterDrag = 0;
 var splitDistance = 30;
 
 function nodedrag() {
@@ -216,6 +229,8 @@ function nodedrag() {
       d.fixed |= 2 | fixedAfterDrag;
       nodeSiblings(d).map(function(d2) {
         d2.fixed |= 2;
+        d2.px = d2.x;
+        d2.py = d2.y;
       });
     }).on('drag.force', function(d) {
       d.px += d3.event.dx;
@@ -229,43 +244,47 @@ function nodedrag() {
     });
   }
   this.call(state.nodedrag);
-  this.on('mouseover.force', function(d) {
-    d.fixed |= 4;
-    d.px = d.x;
-    d.py = d.y;
-  }).on('mouseout.force', function(d) {
-    d.fixed &= ~4;
-  });
 }
+
+function initClusterCoords(cluster) {
+  if (!('x' in cluster) && cluster.nodes.length) {
+    var ax = 0, ay = 0;
+    for (var j = 0; j < cluster.nodes.length; ++j) {
+      ax += cluster.nodes[j].x;
+      ay += cluster.nodes[j].y;
+    }
+    ax /= cluster.nodes.length;
+    ay /= cluster.nodes.length;
+    if (!isNaN(ax) && !isNaN(ay)) {
+      cluster.x = ax;
+      cluster.y = ay;
+    }
+  }
+}
+
 
 function linkdrag() {
   if (!state.linkdrag) {
     state.linkdrag = d3.behavior.drag().on('dragstart.force', function(d) {
-      d.source.fixed |= 2 | fixedAfterDrag;
-      d.target.fixed |= 2 | fixedAfterDrag;
+      initClusterCoords(d.source.cluster);
+      d.source.cluster.nodes.map(function(n) {
+        n.fixed |= 2;
+      });
     }).on('drag.force', function(d) {
-      d.source.px += d3.event.dx;
-      d.source.py += d3.event.dy;
-      d.target.px += d3.event.dx;
-      d.target.py += d3.event.dy;
+      d.source.cluster.x += d3.event.dx;
+      d.source.cluster.y += d3.event.dy;
+      d.source.cluster.nodes.map(function(n) {
+        n.px += d3.event.dx;
+        n.py += d3.event.dy;
+      });
       state.force.resume();
     }).on('dragend.force', function(d) {
-      d.source.fixed &= ~2;
-      d.target.fixed &= ~2;
+      d.source.cluster.nodes.map(function(n) {
+        n.fixed &= ~2;
+      });
     });
   }
   this.call(state.linkdrag);
-  this.on('mouseover.force', function(d) {
-    d.source.fixed |= 4;
-    d.target.fixed |= 4;
-    d.source.px = d.source.x;
-    d.source.py = d.source.y;
-    d.target.px = d.target.x;
-    d.target.py = d.target.y;
-  }).on('mouseout.force', function(d) {
-    d.source.fixed &= ~4;
-    d.target.fixed &= ~4;
-  });
 }
 
 resize();
