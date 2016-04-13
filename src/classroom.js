@@ -30,7 +30,7 @@ function Classroom() {
         return null;
     }
 
-        function getStudentFromSID(sid) {
+    function getStudentFromSID(sid) {
         for (var i = 0; i < studentList.length; i++) {
             if (studentList[i].sid == sid) {
                 return studentList[i];
@@ -85,7 +85,12 @@ function Classroom() {
     }
 
     function getStudentList() {
-        return _.clone(this.studentList);
+        return _.clone(self.studentList);
+    }
+
+    //for testing Grouping
+    function setStudentList(studentList) {
+        this.studentList = _.clone(studentList);
     }
 
     //public methods
@@ -97,6 +102,8 @@ function Classroom() {
     self.studentList = studentList
     self.clearStudents = clearStudents
     self.findStudentNamed = findStudentNamed
+    self.setStudentList = setStudentList
+    self.getStudentList = getStudentList
 }
 
 function assert(b) {

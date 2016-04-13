@@ -1,25 +1,75 @@
 <script src="lodash.js"></script>
 <script src="jquery-1.12.2.js"></script>
+<script src="classroom.js"></script>
 <script src="student.js"></script>
 <script src="group.js"></script>
+<script src="grouping.js"></script>
 <script>
 
 function assert(b) {
 if (!b) throw new Error('failed assertion');
 }
 
-//basic student construction
-var testID = 1
-var testName = 'Berk'
-var testStudent = new Student(testName, testID)
-assert(testStudent.name()==testName)
-assert(testStudent.valueOf()==testID)
-console.log(testStudent.toString())
+//create a randomly generated classroom
+var maxTestStudents = 10
+var testStudentList = [];
+var allStudentNames = ['Berk', 'Nancy', 'David M.', 'David H.', 'Masha', 'Rita', 'Shruti', 'Nick']
+for (var n = 1; n < maxTestStudents; n++){
+testStudentList.push(new Student(_.sample(allStudentNames), n));
+}
+var testClassroom = new Classroom();
+testClassroom.setStudentList(testStudentList);
+var testStudentIDs = testStudentList.map(function(s){return s.id();})
 
 
-var testStudentList = [new Student('Berk', 1), new Student('David', 2)]
-var testGroup = new Group(testStudentList);
-// console.log(testGroup.toString())
 
+//create random pairs of students
+var testStudentsPerGroup = 2;
+var testGrouping = new Grouping(testClassroom, testStudentsPerGroup);
+console.log(testGrouping.toString());
+assert(testGrouping.getNumberOfGroups() === Math.ceil(testStudentList.length/testStudentsPerGroup));
+assert(testGrouping.getNumberOfStudents() === testStudentList.length);
+testAssignments = testGrouping.shuffle();
+assert(testAssignments.length === Math.ceil(testStudentList.length/testStudentsPerGroup));
+
+//make sure that students in assignments are included in original class
+for (var i = 0; i < testGrouping.getNumberOfGroups(); i++){
+    var studentIDs = testAssignments[i].getStudentIDs()
+    assert(_.isEqual(studentIDs, _.intersection(studentIDs, testStudentIDs)))
+}
+ 
+ //make sure that all students in assignments are included
+for (var i = 0; i < testStudentIDs.length; i++){
+    var foundStudent = false;
+    for (var j = 0; j < testGrouping.getNumberOfGroups(); j++){
+        if (_.includes(testAssignments[j].getStudentIDs(), testStudentIDs[i])){
+        }
+        foundStudent = true
+        }
+    assert(foundStudent);
+}
+
+//test observer methods
+var testGroups = testGrouping.getGroups();
+var testRandomGroups = testGrouping.getRandomGroups();
+var testPinnedGroups = testGrouping.getPinnedGroups();assert(testGrouping.getNumberOfGroups() == Math.ceil(testStudentList.length/testStudentsPerGroup));
+assert(testGrouping.getNumberOfStudents() === testStudentList.length);
+assert(testRandomGroups.length === testGroups.length)
+assert(testPinnedGroups.length === 0)
+for (var i = 0; i < testGrouping.getNumberOfGroups.length; i++){
+    assert(testGroups[i].equals(testRandomGroups[i]))
+    assert(testRandomGroups[i].equals(testGroups[i]))
+    assert(testAssignments[i].equals(testGroups[i]))
+}
+
+
+console.log("Grouping.js passed all tests")
+
+// var studentList = testClassroom.getStudentList()
+// random_groups = [];
+// for (var i = 0; i < studentList.length; i++) {
+// random_groups.push(new Group([studentList[i]]));
+// }
+// console.log(_.reduce(random_groups, function(s, g) {return s + g.getSize();}, 0));
 
 </script>

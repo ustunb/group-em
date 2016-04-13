@@ -59,11 +59,19 @@ function Group(studentArray) {
         }
     }
 
+    function getGroupID() {
+        return _.min(studentIDs)
+    }
+
+
     //returns list of groups in current grouping
     function toString() {
-        return _.map(students, function(v) {
-            return v.toString();
-        }).join("\n");
+        var groupString = 'gid: ' + getGroupID() + '\n' +
+            _.map(students, function(v) {
+                return v.toString();
+            }).join("\n");
+
+        return groupString;
     }
 
     //returns true iff this self has the same students as thatGroup    
@@ -76,26 +84,28 @@ function Group(studentArray) {
         if (size < 0) throw new Error('size of group must be non-negative');
     }
 
+  
+
     //attach public methods to object
     self.has = has;
     self.add = add;
     self.remove = remove;
     self.equals = equals
+    self.getGroupID = getGroupID
     self.toString = toString
+    
     self.valueOf = function() {
         return value;
     }
 
-    self.getSize = function() {
+    self.getSize = function() {  
         return size;
     }
 
+
+    
     self.getStudents = function() {
         return _.clone(students);
-    }
-
-    self.getGroupID = function() {
-        return Math.min(studentIDs);
     }
 
     self.getStudentIDs = function() {

@@ -16,43 +16,46 @@ assert(testStudent.name()==testName)
 assert(testStudent.valueOf()==testID)
 console.log(testStudent.toString())
 
-
 //add student
 var testStudentList = [new Student('Berk', 1), new Student('David', 2)]
 var testGroup = new Group(testStudentList);
 assert(testGroup.has(testStudentList[0].id()))
 assert(testGroup.has(testStudentList[1].id()))
+var testIDs = testGroup.getStudentIDs();
 
-//cannot remove a student that doesn't exist
-assert(!testGroup.has(testID))
-assert(testGroup.remove(testID) == null)
 
-console.log('adding Mary')
-assert(testGroup.add(testStudent))
-assert(testGroup.has(testStudent.id()))
-var testSize = testGroup.getSize();
-var testValue = testGroup.valueOf();
-assert(testSize === testGroup.getStudents().length)
+// //assert(testGroup.getGroupID() === Math.min(testStudentList[0].id(), testStudentList[1].id()));
+// console.log(testGroup.getStudentIDs());
 
-//cannot add an existing student
-console.log('adding again')
-assert(!testGroup.add(testStudent))
-assert(testGroup.has(testStudent.id()))
-assert(testSize === testGroup.getSize())
-assert(testSize === testGroup.getStudents().length)
-assert(testValue === testGroup.valueOf())
+// //cannot remove a student that doesn't exist
+// assert(!testGroup.has(testID))
+// assert(testGroup.remove(testID) == null)
 
-//create a copy
-console.log('copying group')
-testGroupCopy = new Group(testGroup.getStudents());
-assert(testGroupCopy.getSize() === testGroup.getSize())
-assert(testGroupCopy.equals(testGroup))
-assert(testGroup.equals(testGroupCopy))
-assert(testGroupCopy.valueOf() === testGroup.valueOf())
+// console.log('adding Mary')
+// assert(testGroup.add(testStudent))
+// assert(testGroup.has(testStudent.id()))
+// var testSize = testGroup.getSize();
+// var testValue = testGroup.valueOf();
+// assert(testSize === testGroup.getStudents().length)
 
-console.log(testGroup.toString())
+// //cannot add an existing student
+// console.log('adding again')
+// assert(!testGroup.add(testStudent))
+// assert(testGroup.has(testStudent.id()))
+// assert(testSize === testGroup.getSize())
+// assert(testSize === testGroup.getStudents().length)
+// assert(testValue === testGroup.valueOf())
 
-//assert(~testGroup.has(3))
+// //create a copy
+// console.log('copying group')
+// testGroupCopy = new Group(testGroup.getStudents());
+// assert(testGroupCopy.getSize() === testGroup.getSize())
+// assert(testGroupCopy.equals(testGroup))
+// assert(testGroup.equals(testGroupCopy))
+// assert(testGroupCopy.valueOf() === testGroup.valueOf())
+
+// console.log(testGroup.toString())
+
 
 
 
