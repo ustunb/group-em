@@ -153,10 +153,12 @@ function Grouping(classroom, students_per_group) {
 
         //add student to new group
         if (group_id == null) {
-            var new_idx = getGroupIndex(group_id);
-            random_groups.push(new Group(student));
+            random_groups.push(new Group([student]));
         } else {
             var new_idx = getGroupIndex(group_id);
+            console.log(group_id);
+            console.log(student.toString())
+            console.log(student)
             random_groups[new_idx].add(student);
         }
 
@@ -175,11 +177,11 @@ function Grouping(classroom, students_per_group) {
         studentArray = _.flatten(studentArray);
         studentArray = _.shuffle(studentArray);
         studentArray = _.chunk(studentArray, students_per_group);
-        console.log(studentArray)
+        // console.log(studentArray)
         random_groups = studentArray.map(function(students) {
             return new Group(students);
         })
-        console.log(toString())
+        //console.log(toString())
         checkRep();
         return _.concat(random_groups, pinned_groups);
     }

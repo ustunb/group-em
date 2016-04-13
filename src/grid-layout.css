@@ -1,0 +1,56 @@
+body, html {
+  font: 28px Cabin;
+  width: 100%;
+  height: 100%;
+}
+table {
+    margin: auto;
+    width: 60%;
+    border-collapse: collapse;
+}
+table td.student_name {
+    width: 20%;
+}
+table td {
+    width: 38%;
+    vertical-align: top;
+    border: 1px solid gray;
+    padding: 2px 2px;
+}
+table th {
+    font-weight: normal;
+    font-size: 22px;
+}
+
+table td.remove {
+    width: 4%;
+    vertical-align: middle;
+    text-align: center;
+}
+
+table td.remove:before {
+    font-family: FontAwesome;
+    content: '\f014';
+}
+
+table td p {
+    display: inline-block;
+    border: 1px solid;
+    border-radius: 5px;
+    padding: 3px 7px;
+    margin: 1px 3px;
+}
+
+table td p span:after {
+    font-family: FontAwesome;
+    content: ' \f00d';
+}
+
+table td p span:hover {
+    color: red;
+}
+
+table td textarea {
+    width: 100%;
+    font: 18px Cabin;
+}

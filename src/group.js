@@ -49,8 +49,8 @@ function Group(studentArray) {
     // removes a student from this group 
     function remove(studentID) {
         if (self.has(studentID)) {
-            idx = student_ids.indexOf(studentID);
-            student = students.splice(idx, 1);
+            idx = studentIDs.indexOf(studentID);
+            student = students.splice(idx, 1)[0];
             studentIDs.splice(idx, 1);
             value -= Math.pow(2, studentID);
             size--;
