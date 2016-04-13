@@ -1,6 +1,7 @@
 <script src="https://code.jquery.com/jquery-2.2.3.js" integrity="sha256-laXWtGydpwqJ8JA+X9x2miwmaiKhn8tVmOVEigRNtP4=" crossorigin="anonymous"></script>
 <script src="lodash.js"></script>
 <script type="text/javascript" src="jquery-1.12.2.js"></script>
+ <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <script type="text/javascript" src="classroom.js"></script>
 <link href='https://fonts.googleapis.com/css?family=Cabin:400,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
@@ -145,8 +146,15 @@ var loadTable = function(classroom) {
 }
 
 function addRow(student) {
+    console.log("Hello");
+    //var row = $('<tr>');
+    //$('<td class="student_name">').appendTo(row).html('<p>' + student.name +'</p>')
+
+    console.log("---------ADDD ROW ------");
     var row = $('<tr>');
-    $('<td class="student_name">').appendTo(row).html('<p>' + student.name +'</p>')
+    var cell = $('<td class="student_name">').appendTo(row);
+    var p = $('<p>').appendTo(cell).text(student.name).data('sid', student.sid).data('name', student.name);
+    console.log('data is', p.data('name'));
 
     var preferhtml = ""
     for (i = 0; i < student.prefer.length; i++) {
@@ -292,6 +300,34 @@ $(document).ready(function() {
         var pastedata = $(this).val();
 
     });
+
+    $("table").on('mouseenter',".student_name p",function() {
+        var $this = $(this);
+        console.log("student is" + $(this).text()); 
+        if(!$this.is(':data(draggable)')) {
+        $this.draggable({ helper:'clone', revert: "invalid"
+});
+
+$(".pair_with").droppable({
+        accept: "p",
+        drop: function(event,ui){
+        console.log("Item was Dropped");
+        $(this).append($(ui.draggable).clone());
+        console.log("name is" + $this.text());
+
+
+}
+});
+    $(".dont_pair_with").droppable({
+        accept: "p",
+        drop: function(event,ui){
+        console.log("Item was Dropped");
+        $(this).append($(ui.draggable).clone());
+        console.log($this.text());
+}
+});
+}
+});
 
 });
 </script>
