@@ -35,7 +35,7 @@ function Group(studentArray) {
     function add(student) {
         var update_flag = false;
         var studentID = student.id();
-        if (!self.has(student_id)) {
+        if (!self.has(studentID)) {
             students.push(student);
             studentIDs.push(studentID);
             value += Math.pow(2, studentID);
@@ -48,7 +48,7 @@ function Group(studentArray) {
 
     // removes a student from this group 
     function remove(studentID) {
-        if (self.has(student_id)) {
+        if (self.has(studentID)) {
             idx = student_ids.indexOf(studentID);
             student = students.splice(idx, 1);
             studentIDs.splice(idx, 1);
@@ -79,7 +79,7 @@ function Group(studentArray) {
     //attach public methods to object
     self.has = has;
     self.add = add;
-    self.remove = get;
+    self.remove = remove;
     self.equals = equals
     self.toString = toString
     self.valueOf = function() {
