@@ -5,7 +5,7 @@ var layout = this;
 var state = {};
 
 function clear() {
-  state = {
+  window.state = state = {
     nodes_by_id: {},     // By node id
     clusters_by_id: {},  // By cluster id
     links_by_key: {},    // By cluster_id + target_id + source_id
@@ -34,8 +34,18 @@ function clear() {
   state.force.on('tick', tick);
 }
 clear();
-
 this.clear = clear;
+
+function startbounce() {
+  // TODO: eliminate links, and animate notes
+}
+this.startbounce = startbounce;
+
+function endbounce() {
+  // TODO: start force layout
+}
+this.endbounce = endbounce;
+
 
 this.addNode = function addNode(id, obj) {
   var node = {id: id, ndata: obj, cluster: null};
