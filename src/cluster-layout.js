@@ -2,27 +2,40 @@ function ClusterLayout(svg) {
 
 var layout = this;
 
-var state = window.state = {
-  nodes_by_id: {},     // By node id
-  clusters_by_id: {},  // By cluster id
-  links_by_key: {},    // By cluster_id + target_id + source_id
-  next_cluster_id: 1,
-  clusters: [],
-  nodes: [],
-  links: [],
-  joins: [],
-  rebuilding: false,
-  svg: d3.select(svg),
-  force: d3.layout.force().charge(-300).linkDistance(75).gravity(0),
-  linksel: null,
-  joinsel: null,
-  nodesel: null,
-  linkdrag: null,
-  nodedrag: null
-};
-state.linksel = state.svg.select('.links').selectAll('line');
-state.joinsel = state.svg.select('.joins').selectAll('line');
-state.nodesel = state.svg.select('.nodes').selectAll('g');
+var state = {};
+
+function clear() {
+  state = {
+    nodes_by_id: {},     // By node id
+    clusters_by_id: {},  // By cluster id
+    links_by_key: {},    // By cluster_id + target_id + source_id
+    next_cluster_id: 1,
+    clusters: [],
+    nodes: [],
+    links: [],
+    joins: [],
+    rebuilding: false,
+    svg: d3.select(svg),
+    force: d3.layout.force().charge(-300).linkDistance(75).gravity(0),
+    linksel: null,
+    joinsel: null,
+    nodesel: null,
+    linkdrag: null,
+    nodedrag: null
+  };
+  state.svg.selectAll('*').remove();
+  state.linksel =
+    state.svg.insert('g').classed('links', true).selectAll('line');
+  state.joinsel =
+    state.svg.insert('g').classed('joins', true).selectAll('line');
+  state.nodesel =
+    state.svg.insert('g').classed('nodes', true).selectAll('g');
+  resize();
+  state.force.on('tick', tick);
+}
+clear();
+
+this.clear = clear;
 
 this.addNode = function addNode(id, obj) {
   var node = {id: id, ndata: obj, cluster: null};
@@ -351,10 +364,4 @@ function linkdrag() {
   this.call(state.linkdrag);
 }
 
-resize();
-state.force.on('tick', tick);
-state.force.start()
-
 }
-
-
