@@ -156,12 +156,9 @@ function start() {
   state.nodesel = state.nodesel
     .data(state.force.nodes(), function(d) { return d.id; } );
 
-  var ins = state.nodesel.enter().insert("g");
+  var ins = state.nodesel.enter().insert('g').classed('node', true);
   ins.append('circle').attr({
-    cx: 0, cy: 0, r: 25,
-    fill: 'lightyellow',
-    stroke: 'gray',
-    'stroke-width': 2.5
+    cx: 0, cy: 0, r: 25
   });
   ins.append('text').attr({
     'alignment-baseline': 'middle',

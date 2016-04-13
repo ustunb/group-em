@@ -8,6 +8,11 @@ body > div {
 svg circle, svg g text {
  cursor: move;
 }
+svg g.node circle {
+ fill: lightblue;
+ stroke: orange;
+ stroke-width: 2.5px;
+}
 svg line.link {
  cursor: move;
  stroke: silver;
