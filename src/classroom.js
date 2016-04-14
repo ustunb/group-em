@@ -35,6 +35,7 @@ function Classroom() {
         return null;
     }
 
+    //returns 1 if update is made, returns 0 if student was already in preferences (and so no change)
     function updatePreference(studentToUpdate, studentToAdd, preference) {
         var studentToUpdate = getStudentFromName(studentToUpdate);
         already_in = 0;
@@ -51,6 +52,42 @@ function Classroom() {
         return 1;
     }
 
+    //returns 1 if update is made, returns 0 if student was not in preferences (and so no change)
+    function removePreference(studentToUpdate, studentToRemove, preference) {
+        for (var  i = 0; i < classroom.getStudentCount(); i++) {
+            if (classroom.getStudent(i).name == studentToUpdate) {
+                for (var j = 0; j < classroom.getStudent(i)[preference].length; j++) {
+                    if (classroom.getStudent(i).prefer[j] == removal_name ) {
+                        classroom.getStudent(i).prefer.splice(j, 1);
+                        $(classroom).trigger({type:'changestudents'});
+          }
+        }
+      }
+    }
+
+}
+
+/**
+        var studentToUpdate = getStudentFromName(studentToUpdate);
+        already_in = 0;
+        var newpreferences = [];
+        console.log(studentToUpdate);
+        console.log(studentToRemove);
+        for (var i = 0; i < studentToUpdate[preference].length; i++) {
+            if (studentToUpdate[preference][i] != studentToRemove) {
+                newpreferences.push(studentToUpdate[preference][i]);
+            }
+            else {
+                already_in = 1;
+            }
+
+        }
+        studentToUpdate[preference] = newpreferences;
+        $(self).trigger({type: 'changestudents'});
+        return already_in;
+
+    }
+
     function getStudentFromSID(sid) {
         for (var i = 0; i < studentList.length; i++) {
             if (studentList[i].sid == sid) {
@@ -58,7 +95,8 @@ function Classroom() {
             }
         }
         return null;
-    }
+    }**/
+
     // Call this with an object like this:
     // self.setStudent({name: "Amy", avoid: ["Susan", "Pat"], prefer: []})
     function setStudent(index, obj) {
@@ -132,12 +170,13 @@ function Classroom() {
     self.getStudentFromSID = getStudentFromSID
     self.getStudentList = getStudentList
     self.getStudentListForGrouping = getStudentListForGrouping
+    self.removePreference = removePreference
 }
 
 function assert(b) {
     if (!b) throw new Exception('failed assertion');
 }
-
+/**
 function testClassroom() {
     var c = new Classroom();
     var recording = [];
@@ -150,4 +189,4 @@ function testClassroom() {
     c.removeStudent(0);
     console.log('Student 0 is now', c.getStudent(0).name);
 
-}
+}**/
