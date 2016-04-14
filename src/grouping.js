@@ -56,7 +56,7 @@ function Grouping(classroom, students_per_group) {
     var self = this;
     //randomly generated groups
     students_per_group = students_per_group; //number of students per pool
-    random_groups = []; 
+    random_groups = [];
     pinned_groups = []; //explicitly enforced groups
     //banned_groups = []; //explicitly banned groups
 
@@ -88,14 +88,31 @@ function Grouping(classroom, students_per_group) {
         }
     }
 
-    //get the index  ID of student in 
-    function getGroupIndex(group_id) {
+    //get the index ID of student in 
+    function locateGroup(group_id) {
+
         for (var i = 0; i < random_groups.length; i++) {
             if (random_groups[i].has(group_id)) {
-                return i;
+                return {
+                    state: 'random',
+                    index: i,
+                };
             }
         }
-        return -1;
+
+        for (var i = 0; i < pinned_groups.length; i++) {
+            if (pinned_groups[i].has(group_id)) {
+                return {
+                    state: 'pinned',
+                    index: i,
+                };
+            }
+        }
+
+        return {
+            state: 'none',
+            index: -1,
+        };
     }
 
     //get a copy of the groups
@@ -120,7 +137,7 @@ function Grouping(classroom, students_per_group) {
     function checkRep() {
         if (!_.isInteger(students_per_group)) throw new Error('students per group must be integer')
         if (students_per_group < 1.0) throw new Error('at least 1 student per group is needed');
-        if (students_per_group > getNumberOfStudents()) throw new Error('students per group (=' + students_per_group + ') + is larger than total students (=' + getNumberOfStudents() + ')' );
+        if (students_per_group > getNumberOfStudents()) throw new Error('students per group (=' + students_per_group + ') + is larger than total students (=' + getNumberOfStudents() + ')');
         return true;
     }
 
@@ -131,7 +148,7 @@ function Grouping(classroom, students_per_group) {
         groupString.push('Randomly Generated Groups');
         groupString.push('-'.repeat(60));
         for (var i = 0; i < random_groups.length; i++) {
-            var groupID =  random_groups[i].getGroupID()
+            var groupID = random_groups[i].getGroupID()
             groupString.push('Group ' + groupID + '\n' + random_groups[i].toString() + '\n');
 
         }
@@ -139,53 +156,81 @@ function Grouping(classroom, students_per_group) {
         groupString.push('Pinned Groups');
         groupString.push('-'.repeat(60));
         for (var i = 0; i < pinned_groups.length; i++) {
-            var groupID = 
-            groupString.push('Group ' + getGroupID() + '\n' + pinned_groups[i].toString());
+            var groupID =
+                groupString.push('Group ' + getGroupID() + '\n' + pinned_groups[i].toString());
         }
         return groupString.join('\n');
     }
 
     function getStudents() {
-        var studentArray = getGroups().map(function(group){return group.getStudents()});
+        var studentArray = getGroups().map(function(group) {
+            return group.getStudents()
+        });
         return _.flatten(studentArray)
+    }
+
+    // adds a student group to the list of pinned groups
+    function pinGroup(group_id) {
+        var pin_flag = false;
+        var location = locateGroup(group_id);
+        if (location.state === 'random' && location.index > 0) {
+            pinned_groups.push(random_groups.splice(location.index)[0]);
+            pin_flag = true;
+            checkRep();
+        }
+        return pin_flag;
+    }
+
+    //removes a group from the list of pinned groups
+    function unpinGroup(group_id) {
+        var unpin_flag = false;
+        var idx = locateGroup(group_id);
+        if (location.state === 'pinned' && location.index > 0) {
+            random_groups.push(pinned_groups.splice(location.index)[0]);
+            unpin_flag = true;
+            checkRep();
+        }
+        return unpin_flag;
     }
 
     //switch student from one group to another group
     function assignStudentToGroup(student_id, group_id) {
-        var old_group_id = getGroupIDOf(student_id);
-        var old_idx = getGroupIndex(old_group_id);
-        var student = random_groups[old_idx].remove(student_id)
+        var old_group_location = locateGroup(getGroupIDOf(student_id));
+        if (old_group_location.state === 'random') {
+            old_idx = old_group_location.index;
+            var student = random_groups[old_idx].remove(student_id)
+            if (group_id == null) {
+                //add student to new group
+                random_groups.push(new Group([student]));
+            } else {
+                //add student to existing group;
+                var new_group_location = locateGroup(group_id);
+                console.log(group_id);
+                console.log(student.toString())
+                console.log(student)
+                random_groups[new_group_location.index].add(student);
+            }
 
-        //add student to new group
-        if (group_id == null) {
-            random_groups.push(new Group([student]));
-        } else {
-            var new_idx = getGroupIndex(group_id);
-            console.log(group_id);
-            console.log(student.toString())
-            console.log(student)
-            random_groups[new_idx].add(student);
-        }
-
-        //delete group from random groups;
-        if (random_groups[old_idx].getSize() == 0) {
-            random_groups.splice(old_idx, 1);
+            //delete group from random groups;
+            if (random_groups[old_idx].getSize() == 0) {
+                random_groups.splice(old_idx, 1);
+            }
         }
         checkRep();
     }
 
     //randomly create new groups of students from student_pool
     function shuffle() {
-        //populate student pool
-        //_.flatten(random_groups.map(function(group){return group.getStudents()}));
-        var studentArray = random_groups.map(function(group){return group.getStudents()});
+        var studentArray = random_groups.map(function(group) {
+            return group.getStudents()
+        });
         studentArray = _.flatten(studentArray);
         studentArray = _.shuffle(studentArray);
         studentArray = _.chunk(studentArray, students_per_group);
         random_groups = studentArray.map(function(students) {
             return new Group(students);
         })
-        //console.log(toString())
+        console.log(toString())
         checkRep();
         return _.concat(random_groups, pinned_groups);
     }
@@ -202,34 +247,23 @@ function Grouping(classroom, students_per_group) {
     self.getGroupIDOf = getGroupIDOf;
     self.shuffle = shuffle;
     self.assignStudentToGroup = assignStudentToGroup;
-    //self.pinGroup = pinGroup
-    //self.unpinGroup = unpinGroup
-    //self.banGroup = banGroup
-    //self.unbanGroup = unbanGroup
+    self.pinGroup = pinGroup
+    self.unpinGroup = unpinGroup
+        // self.banGroup = banGroup
+        //self.unbanGroup = unbanGroup
 
     //initialize
     var studentList = classroom.getStudentListForGrouping()
+    var sid = 1
     for (var i = 0; i < studentList.length; i++) {
-        random_groups.push(new Group([studentList[i]]));
+        random_groups.push(new Group([new Student(studentList[i].name(), sid)]));
+        sid++;
     }
+    console.log("HELLO")
     self.shuffle();
     checkRep();
 }
 
-//adds a student group to the list of pinned groups
-// function pinGroup(group) {
-//     var pin_flag = false;
-//     //TODO
-//     checkRep();
-//     return pin_flag;
-// }
-// //removes a group from the list of pinned groups
-// function unpinGroup(group) {
-//     var unpin_flag = false;
-//     //TODO
-//     checkRep();
-//     return unpin_flag;
-// }
 
 // //adds group to the list of banned groups
 // function banGroup(group) {
@@ -246,5 +280,3 @@ function Grouping(classroom, students_per_group) {
 //     checkRep();
 //     return unban_flag;
 // }
-
-
