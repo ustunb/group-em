@@ -60,11 +60,12 @@ var buildClassroom = function(c) {
   }
   return classroom;
 }
+console.log(temp_classroom.studentList)
 var classroom = buildClassroom(temp_classroom.studentList);
 
 // create random pairs of students
-var testStudentsPerGroup = 2;
-var grouping = new Grouping(classroom, testStudentsPerGroup);
+var studentsPerGroup = 2
+var grouping = new Grouping(classroom, studentsPerGroup);
 var assignments = grouping.getGroups();
 var students = grouping.getStudents();
 
@@ -78,6 +79,11 @@ var layout = new ClusterLayout('svg');
 for (var i = 0; i < assignments.length; i++) {
   layout.addCluster(assignments[i].getStudentIDs());
 }
+console.log('assignments')
+console.log(assignments)
+
+console.log('students')
+console.log(students)
 
 // add join listener
 $(layout).on('join', function(e) {

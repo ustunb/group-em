@@ -1,4 +1,4 @@
-  
+
 /* Please Keep this font import at the very top of any CSS file */
 @charset "UTF-8";
 /* Starter CSS for Flyout Menu */
@@ -9,12 +9,14 @@ body{
   background: white; 
   color: #00838F;
   font-family: 'Cabin'; 
+  background-image: url('../images/school.png');
 }
 
 .content {
   width: 70%;
   height: 100%;
   float: left;
+  background-image: url('../images/school.png');
 }
 
 .sidebar{

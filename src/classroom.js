@@ -14,7 +14,6 @@ function Classroom() {
     var studentList = [];
     var lastid = 0;
     
-    
     // This retrieves a student by number
     function getStudentCount() {
         return studentList.length;
@@ -79,6 +78,7 @@ function Classroom() {
         lastid++;
         $(self).trigger({type: 'changestudents'});
     }
+
     //Remove a given student from the list
     function removeStudent(sid) {
         for (var index = 0; index < studentList.length; index++){
@@ -117,18 +117,6 @@ function Classroom() {
         return newStudentList;
     }
 
-    //for testing Grouping
-    function setStudentListForGrouping(studentListFromGrouping) {
-        studentList = []
-        for (var i = 0; i < studentListFromGrouping.length; i++) {
-            studentList.push({
-                name: studentListFromGrouping[i],
-                sid: i + 1,
-            })
-        }
-        lastid = studentList.length;
-    }
-
     //public methods
     self.getStudentCount = getStudentCount
     self.setStudent = setStudent
@@ -143,7 +131,6 @@ function Classroom() {
     self.getStudentFromName = getStudentFromName
     self.getStudentFromSID = getStudentFromSID
     self.getStudentList = getStudentList
-    self.setStudentListForGrouping = setStudentListForGrouping
     self.getStudentListForGrouping = getStudentListForGrouping
 }
 
