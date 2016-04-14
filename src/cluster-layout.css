@@ -12,13 +12,13 @@ svg circle, svg g text {
 }
 
 svg g.node text{
-  fill: white; 
+    fill: white; 
 }
 
 svg g.node circle {
- fill:#0097A7;
- stroke: #004D40;
- stroke-width: 0px;
+   fill:#0097A7;
+   stroke: #004D40;
+   stroke-width: 0px;
 }
 
 svg line.link {
@@ -29,7 +29,7 @@ svg line.link {
 }
 
 svg line.join {
-   stroke: #B2EBF2
+   stroke: #A2DBE2;
    stroke-width: 75px;
    stroke-linecap: round;
 }

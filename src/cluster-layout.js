@@ -16,7 +16,7 @@ function clear() {
     joins: [],
     rebuilding: false,
     svg: d3.select(svg),
-    force: d3.layout.force().charge(-300).linkDistance(75).gravity(0),
+    force: d3.layout.force().charge(-400).linkDistance(60).gravity(0),
     linksel: null,
     joinsel: null,
     nodesel: null,
@@ -24,10 +24,10 @@ function clear() {
     nodedrag: null
   };
   state.svg.selectAll('*').remove();
-  state.linksel =
-    state.svg.insert('g').classed('links', true).selectAll('line');
   state.joinsel =
     state.svg.insert('g').classed('joins', true).selectAll('line');
+  state.linksel =
+    state.svg.insert('g').classed('links', true).selectAll('line');
   state.nodesel =
     state.svg.insert('g').classed('nodes', true).selectAll('g');
   resize();
