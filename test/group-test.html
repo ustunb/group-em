@@ -1,0 +1,63 @@
+<script src="../external_js/lodash.js"></script>
+<script src="../external_js/jquery-1.12.2.js"></script>
+<script src="../src/student.js"></script>
+<script src="../src/group.js"></script>
+<script>
+
+function assert(b) {
+if (!b) throw new Error('failed assertion');
+}
+
+//basic student construction
+var testID = 3
+var testName = 'Mary'
+var testStudent = new Student(testName, testID)
+assert(testStudent.name()==testName)
+assert(testStudent.valueOf()==testID)
+console.log(testStudent.toString())
+
+//add student
+var testStudentList = [new Student('Berk', 1), new Student('David', 2)]
+var testGroup = new Group(testStudentList);
+assert(testGroup.has(testStudentList[0].id()))
+assert(testGroup.has(testStudentList[1].id()))
+var testIDs = testGroup.getStudentIDs();
+
+
+assert(testGroup.getGroupID() === Math.min(testStudentList[0].id(), testStudentList[1].id()));
+console.log(testGroup.getStudentIDs());
+
+//cannot remove a student that doesn't exist
+assert(!testGroup.has(testID))
+assert(testGroup.remove(testID) == null)
+
+console.log('adding Mary')
+assert(testGroup.add(testStudent))
+assert(testGroup.has(testStudent.id()))
+var testSize = testGroup.getSize();
+var testValue = testGroup.valueOf();
+assert(testSize === testGroup.getStudents().length)
+
+//cannot add an existing student
+console.log('adding again')
+assert(!testGroup.add(testStudent))
+assert(testGroup.has(testStudent.id()))
+assert(testSize === testGroup.getSize())
+assert(testSize === testGroup.getStudents().length)
+assert(testValue === testGroup.valueOf())
+
+//create a copy
+console.log('copying group')
+testGroupCopy = new Group(testGroup.getStudents());
+assert(testGroupCopy.getSize() === testGroup.getSize())
+assert(testGroupCopy.equals(testGroup))
+assert(testGroup.equals(testGroupCopy))
+assert(testGroupCopy.valueOf() === testGroup.valueOf())
+
+console.log(testGroup.toString())
+
+
+
+
+
+</script>

@@ -34,7 +34,7 @@ function Group(studentArray) {
     // returns true if student is successfully added to list of students
     function add(student) {
         var update_flag = false;
-        var studentID = student.sid;
+        var studentID = student.id();
         if (!self.has(studentID)) {
             students.push(student);
             studentIDs.push(studentID);
@@ -84,8 +84,6 @@ function Group(studentArray) {
         if (size < 0) throw new Error('size of group must be non-negative');
     }
 
-  
-
     //attach public methods to object
     self.has = has;
     self.add = add;
@@ -101,8 +99,6 @@ function Group(studentArray) {
     self.getSize = function() {  
         return size;
     }
-
-
     
     self.getStudents = function() {
         return _.clone(students);

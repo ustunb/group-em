@@ -30,14 +30,14 @@
 <button id="shuffle_button" type="button">shuffle</button>
 </div>
 
-<script src="lodash.js"></script>
-<script src="d3.js"></script>
-<script src="jquery-1.12.2.js"></script>
-<script src="classroom.js"></script>
-<script src="student.js"></script>
-<script src="group.js"></script>
-<script src="grouping.js"></script>
-<script src="cluster-layout.js"></script>
+<script src="../external_js/lodash.js"></script>
+<script src="../external_js/d3.js"></script>
+<script src="../external_js/jquery-1.12.2.js"></script>
+<script src="../src/classroom.js"></script>
+<script src="../src/student.js"></script>
+<script src="../src/group.js"></script>
+<script src="../src/grouping.js"></script>
+<script src="../src/cluster-layout.js"></script>
 
 <script>
 
@@ -53,28 +53,27 @@ localStorage.stored_classroom contains a JSON string like this:
 }"
 */
 var temp_classroom = JSON.parse(localStorage.getItem('stored_classroom'));
-var buildclassroom = function(c) {
+var buildClassroom = function(c) {
   var classroom = new Classroom();
   for (var s = 0; s < c.length; s++) {
     classroom.setStudent(s, c[s]);
   }
   return classroom;
 }
-var classroom = buildclassroom(temp_classroom.studentList);
-
+var classroom = buildClassroom(temp_classroom.studentList);
 
 // create random pairs of students
 var testStudentsPerGroup = 2;
 var grouping = new Grouping(classroom, testStudentsPerGroup);
-
-var studentList = classroom.getStudentList();
 var assignments = grouping.getGroups();
-  var layout = new ClusterLayout('svg');
+var students = grouping.getStudents();
+
+var layout = new ClusterLayout('svg');
   // add students
-  for (var i = 0; i < studentList.length; i++) {
-    var student = studentList[i];
-    layout.addNode(student.sid, student.name);
+  for (var i = 0; i < students.length; i++) {
+    layout.addNode(students[i].id(), students[i].name());
   }
+
 // add groups
 for (var i = 0; i < assignments.length; i++) {
   layout.addCluster(assignments[i].getStudentIDs());
@@ -91,11 +90,12 @@ $(layout).on('join', function(e) {
 $('#shuffle_button').on('click', function(e) {
   var assignments = grouping.shuffle();
   layout.clear()
+  
   // add students
-  for (var i = 0; i < studentList.length; i++) {
-    var student = studentList[i];
-    layout.addNode(student.sid, student.name);
+  for (var i = 0; i < students.length; i++) {
+    layout.addNode(students[i].id(), students[i].name());
   }
+
   // add groups
   for (var i = 0; i < assignments.length; i++) {
     console.log(assignments[i].getStudentIDs());

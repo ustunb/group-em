@@ -145,6 +145,11 @@ function Grouping(classroom, students_per_group) {
         return groupString.join('\n');
     }
 
+    function getStudents() {
+        var studentArray = getGroups().map(function(group){return group.getStudents()});
+        return _.flatten(studentArray)
+    }
+
     //switch student from one group to another group
     function assignStudentToGroup(student_id, group_id) {
         var old_group_id = getGroupIDOf(student_id);
@@ -190,6 +195,7 @@ function Grouping(classroom, students_per_group) {
     self.getNumberOfGroups = getNumberOfGroups;
     self.getNumberOfStudents = getNumberOfStudents;
     self.getGroups = getGroups;
+    self.getStudents = getStudents;
     self.getPinnedGroups = getPinnedGroups;
     self.getRandomGroups = getRandomGroups;
     self.toString = toString;
@@ -202,7 +208,7 @@ function Grouping(classroom, students_per_group) {
     //self.unbanGroup = unbanGroup
 
     //initialize
-    var studentList = classroom.getStudentList()
+    var studentList = classroom.getStudentListForGrouping()
     for (var i = 0; i < studentList.length; i++) {
         random_groups.push(new Group([studentList[i]]));
     }

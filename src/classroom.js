@@ -1,4 +1,9 @@
-// Depends on underscore/lodash.js
+/* Depends on
+ *
+ * lodash.js
+ * student.js
+ * 
+ */
 
 //if you have a name and want the full student object, call classroom.getStudentFromName(name)
 //if you have an sid and want the full student object, call classroom.getStudentFromSID(name)
@@ -46,7 +51,6 @@ function Classroom() {
         }
         return 1;
     }
-
 
     function getStudentFromSID(sid) {
         for (var i = 0; i < studentList.length; i++) {
@@ -105,9 +109,24 @@ function Classroom() {
         return _.clone(studentList);
     }
 
+    function getStudentListForGrouping() {
+        newStudentList = []
+        for (var i = 0; i < studentList.length; i++) {
+            newStudentList.push(new Student(studentList[i].name, studentList[i].sid))
+        }
+        return newStudentList;
+    }
+
     //for testing Grouping
-    function setStudentList(newStudentList) {
-        studentList = _.clone(newStudentList);
+    function setStudentListForGrouping(studentListFromGrouping) {
+        studentList = []
+        for (var i = 0; i < studentListFromGrouping.length; i++) {
+            studentList.push({
+                name: studentListFromGrouping[i],
+                sid: i + 1,
+            })
+        }
+        lastid = studentList.length;
     }
 
     //public methods
@@ -123,8 +142,9 @@ function Classroom() {
     self.updatePreference = updatePreference
     self.getStudentFromName = getStudentFromName
     self.getStudentFromSID = getStudentFromSID
-    self.setStudentList = setStudentList
     self.getStudentList = getStudentList
+    self.setStudentListForGrouping = setStudentListForGrouping
+    self.getStudentListForGrouping = getStudentListForGrouping
 }
 
 function assert(b) {
