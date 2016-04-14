@@ -1,7 +1,7 @@
 <script src="https://code.jquery.com/jquery-2.2.3.js" integrity="sha256-laXWtGydpwqJ8JA+X9x2miwmaiKhn8tVmOVEigRNtP4=" crossorigin="anonymous"></script>
 <script src="lodash.js"></script>
 <script type="text/javascript" src="jquery-1.12.2.js"></script>
- <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <script type="text/javascript" src="classroom.js"></script>
 <link href='https://fonts.googleapis.com/css?family=Cabin:400,700' rel='stylesheet' type='text/css'>
 <link rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
@@ -84,6 +84,9 @@ table td textarea {
     font: 18px Cabin;
 }
 </style>
+
+<link rel='stylesheet' href="grid-layout.css">
+
 <body>
     <table class="classroom">
       <thead>
@@ -176,6 +179,7 @@ function addRow(student) {
     var row = $('<tr>');
     var cell = $('<td class="student_name">').appendTo(row);
     var p = $('<p>').appendTo(cell).text(student.name).data('sid', student.sid).data('name', student.name);
+    $("<i class='fa fa-grip'></i>").prependTo(p);
     console.log('data is', p.data('name'));
 
     var preferhtml = ""
@@ -321,6 +325,7 @@ $(document).ready(function() {
 
     $("table").on('mouseenter',".student_name p",function() {
         var $this = $(this);
+        $(this).css( 'cursor', 'pointer' );
         console.log("student is" + $(this).text()); 
         if(!$this.is(':data(draggable)')) {
         $this.draggable({ helper:'clone', revert: "invalid"

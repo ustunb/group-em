@@ -33,6 +33,14 @@ table td.remove:before {
     content: '\f014';
 }
 
+table td .fa.fa-grip:before {
+    font-family: FontAwesome;
+    font-size: 12px;
+    content: "\f142 \202F \f142 \202F \f142";
+    color: gray;
+    padding-right: 10px;
+}
+
 table td p {
     display: inline-block;
     border: 1px solid;
