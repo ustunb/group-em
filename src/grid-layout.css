@@ -14,7 +14,7 @@ table td.student_name {
 table td {
     width: 38%;
     vertical-align: top;
-    border: 1px solid #FBE9E7;
+    border: 1px solid #FBE9E7 ;
     padding: 2px 2px;
     background: #444444; 
     color: white; 
@@ -49,7 +49,7 @@ table td p {
     border-radius: 5px;
     padding: 3px 7px;
     margin: 1px 3px;
-    background: #0288D1; 
+    background: #00838F; 
     color: white;
 }
 

@@ -1,4 +1,4 @@
-
+  
 /* Please Keep this font import at the very top of any CSS file */
 @charset "UTF-8";
 /* Starter CSS for Flyout Menu */
@@ -7,7 +7,7 @@
 body{
   margin: 0;
   background: white; 
-  color: #01579B;
+  color: #00838F;
   font-family: 'Cabin'; 
 }
 
@@ -28,6 +28,7 @@ body{
 
 h1{
   text-align: center; 
+  
 }
 #cssmenu {
   padding: 0;
@@ -123,7 +124,7 @@ h1{
   width: 200px;
 }
 #cssmenu > ul > li > a {
-  border-right: 4px solid #0288D1;
+  border-right: 4px solid #00838F;
   color: #ffffff;
 }
 #cssmenu > ul > li > a:hover {
@@ -132,7 +133,8 @@ h1{
 #cssmenu > ul > li.active a {
   background: #1b9bff;
   background: #00BCD4; 
-  background: #0288D1; 
+  background: #0288D1;
+  background: #00838F;  
 }
 #cssmenu > ul > li a:hover,
 #cssmenu > ul > li:hover a {
