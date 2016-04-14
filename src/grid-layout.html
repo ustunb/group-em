@@ -1,3 +1,8 @@
+<meta charset='utf-8'>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="styles.css">
+
 <script src="https://code.jquery.com/jquery-2.2.3.js" integrity="sha256-laXWtGydpwqJ8JA+X9x2miwmaiKhn8tVmOVEigRNtP4=" crossorigin="anonymous"></script>
 <script src="lodash.js"></script>
 <script type="text/javascript" src="jquery-1.12.2.js"></script>
@@ -88,10 +93,30 @@ table td textarea {
 <link rel='stylesheet' href="grid-layout.css">
 
 <body>
+
+<div class="sidebar">
+<div style="position: relative; text-align: center; margin: 20px 0 " >
+<img src="our_logo.png" width=150 >
+<div style="position: absolute; bottom: 15px; left:0 ; right: 0; text-align: center; color: white; font-size: 20px ">Group'em</div>
+</div>
+<div id='cssmenu'>
+<ul>
+   <li class='active' ><a href='#'><span>Creation</span></a></li>
+   <li class='last'><a href='#'><span>Groups</span></a></li>
+</ul>
+</div>
+</div>
+
+
+<div class="content">
+<h1> Class 2A Math </h1>
     <table class="classroom">
       <thead>
         <tr>
-            <th>Student</th><th>Pair With</th><th>Don't Pair With</th><th></th>
+            <th>Student</th>
+            <th>Pair With</th>
+            <th>Don't Pair With</th>
+            <th></th>
         </tr>
       </thead>
       <tbody>
@@ -99,7 +124,11 @@ table td textarea {
 
     </table>
 
+
     <div id="groupem_div"><button id="groupem_button" type="button">Group'em</button></div>
+
+    </div>
+
 </body>
 <script>
 
