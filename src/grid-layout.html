@@ -3,17 +3,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="main-layout.css">
-
-<script src="https://code.jquery.com/jquery-2.2.3.js" integrity="sha256-laXWtGydpwqJ8JA+X9x2miwmaiKhn8tVmOVEigRNtP4=" crossorigin="anonymous"></script>
 <script src="lodash.js"></script>
-<script type="text/javascript" src="jquery-1.12.2.js"></script>
-<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<script type="text/javascript" src="classroom.js"></script>
-<link href='https://fonts.googleapis.com/css?family=Cabin:400,700' rel='stylesheet' type='text/css'>
+<script src="jquery-1.12.2.js"></script>
+<script src="jquery-ui.js"></script>
+<script src="classroom.js"></script>
+<link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Cabin:400,700'>
 <link rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
-
-
-
 <link rel='stylesheet' href="grid-layout.css">
 
 <body>
@@ -34,20 +29,18 @@
 
 <div class="content">
 <h1> Class 2A Math </h1>
-    <table class="classroom">
-      <thead>
-        <tr>
-            <th>student</th>
-            <th>prefer</th>
-            <th>avoid</th>
-            <th></th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-
-    </table>
-
+<table class="classroom">
+<thead>
+<tr>
+  <th>student</th>
+  <th>prefer</th>
+  <th>avoid</th>
+  <th></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
 
 <div id="control_div">
 <button id="groupem_button" class="control_button" type="button">
@@ -57,265 +50,258 @@ group'em
 
 </body>
 <script>
-
-/**
-var studentNames = ["Berk Ustun", "Nick M.", "David Bau", 
-                    "Frederick", "George W.", "Shruti", 
-                    "Rita", "Wendy", "Jenna", "Alice",
-                    "Xin", "Will", "D'Angelo", "Kobe"]
-                    
-function sampleName(){
-    return _.sample(studentNames)
-}
-
-function samplePreferences(nSamples){
-    if (nSamples == null){
-        var nSamples = Math.min(Math.floor(Math.random()*studentNames.length), 2);
+var parseStudentList = function() {
+  var student_list = $("#newstudentbox").val();
+  console.log(student_list);
+  student_list = student_list.replace(/\n/g, '1)(*3hf:Z');
+  student_list = student_list.split('1)(*3hf:Z');
+  console.log(student_list);
+  var final_data = [];
+  for (var i=0; i<student_list.length; i++) {
+    var row_list = student_list[i].replace(/\t/g, '1)(*3hf:Z');
+    row_list = row_list.split('1)(*3hf:Z');
+    console.log(row_list);
+    if (row_list.length == 1) {
+      row_list[0] = row_list[0].replace(/;/g, ',');
+      var name_list = row_list[0].split(",");
+      for (var k=0; k<name_list.length; k++){
+        final_data.push({name:name_list[k].trim(), prefer: [], avoid: []});
+      }
     }
-    return _.sampleSize(studentNames, nSamples);
-}
-**/
-
-  var parseStudentList = function() {
-    var student_list = $("#newstudentbox").val();
-    console.log(student_list);
-    student_list = student_list.replace(/\n/g, '1)(*3hf:Z');
-    student_list = student_list.split('1)(*3hf:Z');
-    console.log(student_list);
-    var final_data = [];
-    for (var i=0; i<student_list.length; i++) {
-        var row_list = student_list[i].replace(/\t/g, '1)(*3hf:Z');
-        row_list = row_list.split('1)(*3hf:Z');
-        console.log(row_list);
-        if (row_list.length == 1) {
-            row_list[0] = row_list[0].replace(/;/g, ',');
-            var name_list = row_list[0].split(",");
-            for (var k=0; k<name_list.length; k++){
-                final_data.push({name:name_list[k].trim(), prefer: [], avoid: []});
-            }
-        }
-        else if (row_list.length == 2) {
-            final_data.push({name: row_list[0], prefer:row_list[1].split(",").map(function (str) {return str.trim();})});
-        }
-        else {
-            final_data.push({name: row_list[0], prefer:row_list[1].split(",").map(function (str) {return str.trim();}), avoid:row_list[2].split(",").map(function (str) {return str.trim();})});
-        }
-
+    else if (row_list.length == 2) {
+      final_data.push({
+        name: row_list[0],
+         prefer:row_list[1].split(",").map(function (str) {return str.trim();})
+      });
     }
-/**
+    else {
+      final_data.push({
+        name: row_list[0],
+         prefer:row_list[1].split(",").map(function (str) {return str.trim();}),
+         avoid:row_list[2].split(",").map(function (str) {return str.trim();})
+      });
+    }
+
+  }
+  /**
     student_list = student_list.replace(/\n/g, ',');
     student_list = student_list.replace(/\t/g, ',');
     student_list = student_list.replace(/;/g, ',');
     var student_array = student_list.split(",");**/
-    for (var i = 0; i < final_data.length; i++) {
-      if (classroom.findStudentNamed(final_data[i].name.trim()) == null) {
-        if (final_data[i].name.trim() != "") {
-          classroom.addStudent({name: final_data[i].name.trim(), avoid: final_data[i].avoid, prefer: final_data[i].prefer});
-        }
+  for (var i = 0; i < final_data.length; i++) {
+    if (classroom.findStudentNamed(final_data[i].name.trim()) == null) {
+      if (final_data[i].name.trim() != "") {
+        classroom.addStudent({
+          name: final_data[i].name.trim(),
+           avoid: final_data[i].avoid,
+           prefer: final_data[i].prefer
+        });
       }
     }
-  };
+  }
+};
 
 var loadTable = function(classroom) {
-    $('table tbody').empty()
-    for (var i = 0; i < classroom.getStudentCount(); i++) {
-        addRow(classroom.getStudent(i));
-    }
-    addLastRow();
-    $("#newstudentbox").focus();
+  $('table tbody').empty();
+  for (var i = 0; i < classroom.getStudentCount(); i++) {
+    addRow(classroom.getStudent(i));
+  }
+  addLastRow();
+  $("#newstudentbox").focus();
 }
 
 function addRow(student) {
-    console.log("Hello");
-    //var row = $('<tr>');
-    //$('<td class="student_name">').appendTo(row).html('<p>' + student.name +'</p>')
+  console.log("Hello");
+  console.log("---------ADDD ROW ------");
+  var row = $('<tr>');
+  var cell = $('<td class="student_name">').appendTo(row);
+  var p = $('<p>').appendTo(cell)
+          .text(student.name)
+          .data('sid', student.sid)
+          .data('name', student.name);
+  $("<i class='fa fa-grip'></i>").prependTo(p);
+  console.log('data is', p.data('name'));
 
-    console.log("---------ADDD ROW ------");
-    var row = $('<tr>');
-    var cell = $('<td class="student_name">').appendTo(row);
-    var p = $('<p>').appendTo(cell).text(student.name).data('sid', student.sid).data('name', student.name);
-    $("<i class='fa fa-grip'></i>").prependTo(p);
-    console.log('data is', p.data('name'));
+  var preferhtml = "";
+  for (i = 0; i < student.prefer.length; i++) {
+    preferhtml += '<p>' + student.prefer[i] +
+      '<span class="removeprefer" id="'+
+      student.prefer[i] + "*#95f%:" + student.sid+'"></span></p>'
+  }
 
-    var preferhtml = ""
-    for (i = 0; i < student.prefer.length; i++) {
-        preferhtml += '<p>' + student.prefer[i] + '<span class="removeprefer" id="'+student.prefer[i]+"*#95f%:"+student.sid+'"></span></p>'
+
+  var avoidhtml = "";
+  for (i = 0; i < student.avoid.length; i++) {
+    console.log(student.avoid[i]);
+    console.log(student.sid);
+    avoidhtml += '<p>' + student.avoid[i] +
+           '<span class="removeavoid" id="' +student.avoid[i]+"*#95f%:"+student.sid+'"></span></p>'
     }
 
+  $('<td class="pair_with" id="'+student.name+'">').appendTo(row).html(preferhtml);
+  $('<td class="dont_pair_with" id="'+student.name+'">').appendTo(row).html(avoidhtml);
 
-    var avoidhtml = ""
-    for (i = 0; i < student.avoid.length; i++) {
-        console.log(student.avoid[i]);
-        console.log(student.sid);
-        avoidhtml += '<p>' + student.avoid[i] + '<span class="removeavoid" id="'+student.avoid[i]+"*#95f%:"+student.sid+'"></span></p>'
-    }
-
-    $('<td class="pair_with" id="'+student.name+'">').appendTo(row).html(preferhtml);
-    $('<td class="dont_pair_with" id="'+student.name+'">').appendTo(row).html(avoidhtml);
-
-/**
+  /**
     $('<td class="pair_with">').appendTo(row).html(
-        samplePreferences().map(function(student.prefer) { return '<p>' + student.prefer + '<span></span></p>'; }).join(' ')
+    samplePreferences().map(function(student.prefer) { return '<p>' + student.prefer + '<span></span></p>'; }).join(' ')
     );
 
     $('<td class="dont_pair_with">').appendTo(row).html(
-        samplePreferences().map(function(student.avoid) { return '<p>' + student.avoid + '<span></span></p>'; }).join(' ')
+    samplePreferences().map(function(student.avoid) { return '<p>' + student.avoid + '<span></span></p>'; }).join(' ')
     );
-**/
+   **/
 
-    $('<td id="'+student.sid+'" class="remove">').appendTo(row);
-    $('table tbody').append(row);
+  $('<td id="'+student.sid+'" class="remove">').appendTo(row);
+  $('table tbody').append(row);
 }
 
 function addLastRow() {
-    var row = $('<tr>');
-    $('<td class="student_name" colspan="4">').appendTo(row).html('<textarea id= "newstudentbox" placeholder="Enter new student names"></textarea>');
-    $('table tbody').append(row);
+  var row = $('<tr>');
+  $('<td class="student_name" colspan="4">')
+    .appendTo(row)
+    .html('<textarea id="newstudentbox" ' +
+          'placeholder="Enter new student names"></textarea>');
+  $('table tbody').append(row);
 }
 
 //HANDLE COPY PASTING  http://stackoverflow.com/questions/3211505/detect-pasted-text-with-ctrlv-or-right-click-paste
 function getTextAreaSelection(textarea) {
-    var start = textarea.selectionStart, end = textarea.selectionEnd;
-    return {
-        start: start,
-        end: end,
-        length: end - start,
-        text: textarea.value.slice(start, end)
-    };
+  var start = textarea.selectionStart, end = textarea.selectionEnd;
+  return {
+    start: start,
+    end: end,
+    length: end - start,
+    text: textarea.value.slice(start, end)
+  };
 }
 
 function detectPaste(textarea, callback) {
-    textarea.onpaste = function() {
-        var sel = getTextAreaSelection(textarea);
-        var initialLength = textarea.value.length;
-        window.setTimeout(function() {
-            var val = textarea.value;
-            var pastedTextLength = val.length - (initialLength - sel.length);
-            var end = sel.start + pastedTextLength;
-            callback({
-                start: sel.start,
-                end: end,
-                length: pastedTextLength,
-                text: val.slice(sel.start, end)
-            });
-        }, 1);
-    };
+  textarea.onpaste = function() {
+    var sel = getTextAreaSelection(textarea);
+    var initialLength = textarea.value.length;
+    window.setTimeout(function() {
+      var val = textarea.value;
+      var pastedTextLength = val.length - (initialLength - sel.length);
+      var end = sel.start + pastedTextLength;
+      callback({
+        start: sel.start,
+        end: end,
+        length: pastedTextLength,
+        text: val.slice(sel.start, end)
+      });
+    }, 1);
+  };
 }
 /**
-var textarea = document.getElementById("your_textarea");
-detectPaste(textarea, function(pasteInfo) {
-    alert(pasteInfo.text);
-    // pasteInfo also has properties for the start and end character
-    // index and length of the pasted text
+  var textarea = document.getElementById("your_textarea");
+  detectPaste(textarea, function(pasteInfo) {
+  alert(pasteInfo.text);
+// pasteInfo also has properties for the start and end character
+// index and length of the pasted text
 });
-**/
+ **/
 $(document).ready(function() {
+  classroom = new Classroom();
+  loadTable(classroom);
 
-    classroom = new Classroom();
-
-    loadTable(classroom);    
-
-
-    $(document).on('click', ".remove", function(e) {
-      console.log('removal detected');
-      var student_id = $(this).attr('id');
-      console.log(student_id);
-      classroom.removeStudent(student_id);
-    });
-
-    $(document).on('click', ".removeprefer", function(e) {
-        var removedata = $(this).attr('id').split("*#95f%:");
-        var sid = removedata[1];
-        var removal_name = removedata[0];
-        for (var  i = 0; i < classroom.getStudentCount(); i++){
-            if (classroom.getStudent(i).sid == sid) {
-                for (var j = 0; j < classroom.getStudent(i).prefer.length; j++) {
-                    if (classroom.getStudent(i).prefer[j] == removal_name ){
-                        classroom.getStudent(i).prefer.splice(j, 1);
-                        loadTable(classroom);
-                    }
-                }
-            }
-        }
-    });
-
-    $(document).on('click', ".removeavoid", function(e) {
-        var removedata = $(this).attr('id').split("*#95f%:");
-        var sid = removedata[1];
-        var removal_name = removedata[0];
-        for (var  i = 0; i < classroom.getStudentCount(); i++){
-            if (classroom.getStudent(i).sid == sid) {
-                for (var j = 0; j < classroom.getStudent(i).avoid.length; j++) {
-                    if (classroom.getStudent(i).avoid[j] == removal_name ){
-                        classroom.getStudent(i).avoid.splice(j, 1);
-                        loadTable(classroom);
-                    }
-                }
-            }
-        }
-    });
-
-    //$(document).on('click', "#groupem", parseStudentList());
-
-    $(document).on('keyup', "#newstudentbox", function(e) {
-      if (e.which == 13) {
-        parseStudentList();
-        $("#newstudentbox").val("");
-      }
-    });
-
-    document.getElementById("groupem_button").onclick = function () {
-        location.href = "group-view.html";
-    };
-
-    $(classroom).on('changestudents', function() {
-        localStorage.setItem('stored_classroom', JSON.stringify(classroom));
-      loadTable(classroom);
+  $(document).on('click', ".remove", function(e) {
+    console.log('removal detected');
+    var student_id = $(this).attr('id');
+    console.log(student_id);
+    classroom.removeStudent(student_id);
   });
 
-    $(document).on('paste', "#newstudentbox", function(e) {
-        var pastedata = $(this).val();
+  $(document).on('click', ".removeprefer", function(e) {
+    var removedata = $(this).attr('id').split("*#95f%:");
+    var sid = removedata[1];
+    var removal_name = removedata[0];
+    for (var  i = 0; i < classroom.getStudentCount(); i++) {
+      if (classroom.getStudent(i).sid == sid) {
+        for (var j = 0; j < classroom.getStudent(i).prefer.length; j++) {
+          if (classroom.getStudent(i).prefer[j] == removal_name ) {
+            classroom.getStudent(i).prefer.splice(j, 1);
+            loadTable(classroom);
+          }
+        }
+      }
+    }
+  });
 
-    });
+  $(document).on('click', ".removeavoid", function(e) {
+    var removedata = $(this).attr('id').split("*#95f%:");
+    var sid = removedata[1];
+    var removal_name = removedata[0];
+    for (var  i = 0; i < classroom.getStudentCount(); i++) {
+      if (classroom.getStudent(i).sid == sid) {
+        for (var j = 0; j < classroom.getStudent(i).avoid.length; j++) {
+          if (classroom.getStudent(i).avoid[j] == removal_name ) {
+            classroom.getStudent(i).avoid.splice(j, 1);
+            loadTable(classroom);
+          }
+        }
+      }
+    }
+  });
 
-    $("table").on('mouseenter',".student_name p",function() {
-        var $this = $(this);
-        $(this).css( 'cursor', 'pointer' );
-        console.log("student is" + $(this).text()); 
-        if(!$this.is(':data(draggable)')) {
-        $this.draggable({ helper:'clone', revert: "invalid"
-});
+  // $(document).on('click', "#groupem", parseStudentList());
 
-$(".pair_with").droppable({
+  $(document).on('keyup', "#newstudentbox", function(e) {
+    if (e.which == 13) {
+      parseStudentList();
+      $("#newstudentbox").val("");
+    }
+  });
+
+  document.getElementById("groupem_button").onclick = function () {
+    location.href = "group-view.html";
+  };
+
+  $(classroom).on('changestudents', function() {
+    localStorage.setItem('stored_classroom', JSON.stringify(classroom));
+    loadTable(classroom);
+  });
+
+  $(document).on('paste', "#newstudentbox", function(e) {
+    var pastedata = $(this).val();
+  });
+
+  $("table").on('mouseenter',".student_name p",function() {
+    var $this = $(this);
+    $(this).css( 'cursor', 'pointer' );
+    console.log("student is" + $(this).text());
+    if (!$this.is('.ui-draggable')) {
+      $this.draggable({ helper:'clone', revert: "invalid"});
+
+      $(".pair_with").filter(':not(.ui-droppable)').droppable({
         accept: "p",
-        drop: function(event,ui){
-        console.log("Item was Dropped");
-        var studentToAdd = $this.text();
-        var studentToModify = $(this).attr("id");
-        var i = classroom.updatePreference(studentToModify, studentToAdd, "prefer");
-        if (i == 0) {
+        drop: function(event,ui) {
+          console.log("Item was Dropped in pair_with");
+          var studentToAdd = $this.text();
+          var studentToModify = $(this).attr("id");
+          var i = classroom.updatePreference(
+                     studentToModify, studentToAdd, "prefer");
+          if (i == 0) {
             $(this).append($(ui.draggable).clone());
             loadTable(classroom);
+          }
         }
-
-
-}
-});
-    $(".dont_pair_with").droppable({
+      });
+      $(".dont_pair_with").filter(':not(.ui-droppable)').droppable({
         accept: "p",
-        drop: function(event,ui){
-        console.log("Item was Dropped");
-        var studentToAdd = $this.text();
-        var studentToModify = $(this).attr("id");
-        var i = classroom.updatePreference(studentToModify, studentToAdd, "avoid");
-        if (i == 0) {
+        drop: function(event,ui) {
+          console.log("Item was Dropped in dont_pair_with");
+          var studentToAdd = $this.text();
+          var studentToModify = $(this).attr("id");
+          var i = classroom.updatePreference(
+                      studentToModify, studentToAdd, "avoid");
+          if (i == 0) {
             $(this).append($(ui.draggable).clone());
             loadTable(classroom);
+          }
         }
-}
-});
-}
-});
+      });
+    }
+  });
 
 });
 </script>
