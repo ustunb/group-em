@@ -215,11 +215,13 @@ $(document).ready(function() {
     var removedata = $(this).attr('id').split("*#95f%:");
     var sid = removedata[1];
     var removal_name = removedata[0];
+    // TODO: this should be a method on the classroom object
     for (var  i = 0; i < classroom.getStudentCount(); i++) {
       if (classroom.getStudent(i).sid == sid) {
         for (var j = 0; j < classroom.getStudent(i).prefer.length; j++) {
           if (classroom.getStudent(i).prefer[j] == removal_name ) {
             classroom.getStudent(i).prefer.splice(j, 1);
+            $(classroom).trigger({type:'changestudents'});
             loadTable(classroom);
           }
         }
@@ -231,11 +233,13 @@ $(document).ready(function() {
     var removedata = $(this).attr('id').split("*#95f%:");
     var sid = removedata[1];
     var removal_name = removedata[0];
+    // TODO: this should be a method on the classroom object
     for (var  i = 0; i < classroom.getStudentCount(); i++) {
       if (classroom.getStudent(i).sid == sid) {
         for (var j = 0; j < classroom.getStudent(i).avoid.length; j++) {
           if (classroom.getStudent(i).avoid[j] == removal_name ) {
             classroom.getStudent(i).avoid.splice(j, 1);
+            $(classroom).trigger({type:'changestudents'});
             loadTable(classroom);
           }
         }

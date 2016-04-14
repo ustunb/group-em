@@ -41,6 +41,7 @@ function Classroom() {
         }
         if (already_in == 0 && studentToAdd != studentToUpdate.name) {
             studentToUpdate[preference].push(studentToAdd);
+            $(self).trigger({type: 'changestudents'});
             return 0;
         }
         return 1;
@@ -59,7 +60,7 @@ function Classroom() {
     // self.setStudent({name: "Amy", avoid: ["Susan", "Pat"], prefer: []})
     function setStudent(index, obj) {
         studentList[index] = _.clone(obj);
-        $(self).trigger({type: 'changestudents', first: index, last: index+1});
+        $(self).trigger({type: 'changestudents'});
     }
 
     function getID(studentname) {
@@ -72,14 +73,14 @@ function Classroom() {
         studentList[index] = _.clone(obj);
         studentList[index]['sid'] = lastid;
         lastid++;
-        $(self).trigger({type: 'changestudents', first: index, last: index+1});
+        $(self).trigger({type: 'changestudents'});
     }
     //Remove a given student from the list
     function removeStudent(sid) {
         for (var index = 0; index < studentList.length; index++){
             if ((studentList[index].sid) == sid) {
                 studentList.splice(index, 1);
-                $(self).trigger({type: 'changestudents', first: index, last: studentList.length + 1});
+                $(self).trigger({type: 'changestudents'});
             }
         }
 
