@@ -34,7 +34,7 @@ function Group(studentArray) {
     // returns true if student is successfully added to list of students
     function add(student) {
         var update_flag = false;
-        var studentID = student.id();
+        var studentID = student.sid;
         if (!self.has(studentID)) {
             students.push(student);
             studentIDs.push(studentID);
