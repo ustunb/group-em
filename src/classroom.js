@@ -105,8 +105,8 @@ function Classroom() {
     }
 
     //for testing Grouping
-    function setStudentList(studentList) {
-        this.studentList = _.clone(studentList);
+    function setStudentList(newStudentList) {
+        studentList = _.clone(newStudentList);
     }
 
     //public methods

@@ -15,12 +15,18 @@ var maxTestStudents = 10
 var testStudentList = [];
 var allStudentNames = ['Berk', 'Nancy', 'David M.', 'David H.', 'Masha', 'Rita', 'Shruti', 'Nick']
 for (var n = 1; n < maxTestStudents; n++){
-testStudentList.push(new Student(_.sample(allStudentNames), n));
+    testStudentList.push(new Student(_.sample(allStudentNames), n));
 }
-var testClassroom = new Classroom();
-testClassroom.setStudentList(testStudentList);
-var testStudentIDs = testStudentList.map(function(s){return s.id();})
+console.log(testStudentList)
 
+testClassroom = new Classroom();
+testClassroom.setStudentList(testStudentList);
+console.log(testClassroom.getStudentList())
+testStudentList = testClassroom.getStudentList();
+var testStudentIDs = testStudentList.map(function(s){return s.id();})
+console.log(testStudentIDs)
+console.log(testStudentList)
+console.log(testClassroom.getStudentList());
 
 
 //create random pairs of students
@@ -63,20 +69,5 @@ for (var i = 0; i < testGrouping.getNumberOfGroups.length; i++){
 }
 
 testGroupsAfterShuffle = testGrouping.shuffle();
-
-
-//test observer methods
-//
-//
-
-
 console.log("Grouping.js passed all tests")
-
-// var studentList = testClassroom.getStudentList()
-// random_groups = [];
-// for (var i = 0; i < studentList.length; i++) {
-// random_groups.push(new Group([studentList[i]]));
-// }
-// console.log(_.reduce(random_groups, function(s, g) {return s + g.getSize();}, 0));
-
 </script>

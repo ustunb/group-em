@@ -177,7 +177,6 @@ function Grouping(classroom, students_per_group) {
         studentArray = _.flatten(studentArray);
         studentArray = _.shuffle(studentArray);
         studentArray = _.chunk(studentArray, students_per_group);
-        // console.log(studentArray)
         random_groups = studentArray.map(function(students) {
             return new Group(students);
         })
