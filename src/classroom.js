@@ -67,9 +67,6 @@ function Classroom() {
         return s.sid;
     }
 
-
-    
-
     function addStudent(obj) {
         var index = studentList.length;
         studentList[index] = _.clone(obj);
@@ -104,7 +101,7 @@ function Classroom() {
     }
 
     function getStudentList() {
-        return _.clone(self.studentList);
+        return _.clone(studentList);
     }
 
     //for testing Grouping
