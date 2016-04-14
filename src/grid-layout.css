@@ -67,6 +67,11 @@ table td textarea {
     font: 18px Cabin;
 }
 
+#control_div {
+text-align:center;
+margin:auto;
+}
+
 #groupem_button {
     position: fixed;
     text-align: center;
@@ -81,10 +86,7 @@ table td textarea {
     pointer-events: all;
 }
 
-#groupem_div {
-text-align:center;
-margin:auto;
-}
+
 
 #groupem_button:hover{
 
