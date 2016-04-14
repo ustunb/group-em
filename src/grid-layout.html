@@ -266,41 +266,38 @@ $(document).ready(function() {
   });
 
   $("table").on('mouseenter',".student_name p",function() {
-    var $this = $(this);
+    var todrag = $(this);
     $(this).css( 'cursor', 'pointer' );
-    console.log("student is" + $(this).text());
-    if (!$this.is('.ui-draggable')) {
-      $this.draggable({ helper:'clone', revert: "invalid"});
+    todrag.draggable({ helper:'clone', revert: "invalid"});
 
-      $(".pair_with").filter(':not(.ui-droppable)').droppable({
-        accept: "p",
-        drop: function(event,ui) {
-          console.log("Item was Dropped in pair_with");
-          var studentToAdd = $this.text();
-          var studentToModify = $(this).attr("id");
-          var i = classroom.updatePreference(
-                     studentToModify, studentToAdd, "prefer");
-          if (i == 0) {
-            $(this).append($(ui.draggable).clone());
-            loadTable(classroom);
-          }
+    $(".pair_with").droppable({
+      accept: "p",
+      drop: function(event,ui) {
+        console.log("Item was Dropped in pair_with");
+        var studentToAdd = todrag.text();
+        var studentToModify = $(this).attr("id");
+        var i = classroom.updatePreference(
+                   studentToModify, studentToAdd, "prefer");
+        if (i == 0) {
+          $(this).append($(ui.draggable).clone());
+          loadTable(classroom);
         }
-      });
-      $(".dont_pair_with").filter(':not(.ui-droppable)').droppable({
-        accept: "p",
-        drop: function(event,ui) {
-          console.log("Item was Dropped in dont_pair_with");
-          var studentToAdd = $this.text();
-          var studentToModify = $(this).attr("id");
-          var i = classroom.updatePreference(
-                      studentToModify, studentToAdd, "avoid");
-          if (i == 0) {
-            $(this).append($(ui.draggable).clone());
-            loadTable(classroom);
-          }
+      }
+    });
+    $(".dont_pair_with").droppable({
+      accept: "p",
+      drop: function(event,ui) {
+        console.log("Item was Dropped in dont_pair_with");
+        var studentToAdd = todrag.text();
+        var studentToModify = $(this).attr("id");
+        var i = classroom.updatePreference(
+                    studentToModify, studentToAdd, "avoid");
+        if (i == 0) {
+          $(this).append($(ui.draggable).clone());
+          loadTable(classroom);
         }
-      });
-    }
+      }
+    });
   });
 
 });
