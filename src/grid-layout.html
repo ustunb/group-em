@@ -31,6 +31,26 @@ table th {
     font-size: 22px;
 }
 
+#groupem_button {
+    position: fixed;
+    text-align: center;
+    bottom: 5%;
+    height: 80px;
+    width: 200px;
+    font: 28px Cabin;
+    background-color: lightblue;
+    color: darkblue;
+    border-radius: 4px;
+    border-width: 0px;
+    pointer-events: all;
+}
+
+#groupem_div {
+text-align:center;
+margin:auto;
+}
+
+
 table td.remove {
     width: 4%;
     vertical-align: middle;
@@ -75,6 +95,8 @@ table td textarea {
       </tbody>
 
     </table>
+
+    <div id="groupem_div"><button id="groupem_button" type="button">Group'em</button></div>
 </body>
 <script>
 
@@ -234,14 +256,6 @@ $(document).ready(function() {
 
     loadTable(classroom);    
 
-        /**
-    classroom.addStudent({name: "Amy", avoid: ["Susan", "Pat"], prefer: []});
-    classroom.addStudent({name: "Bob", avoid: ["Susan", "Pat"], prefer: ["Amy"]});
-**/
-    $("#preferenceButton").click(function(e) {
-      toggleView();
-      toggleButtonText();
-  });
 
     $(document).on('click', ".remove", function(e) {
       console.log('removal detected');
@@ -289,10 +303,14 @@ $(document).ready(function() {
         parseStudentList();
         $("#newstudentbox").val("");
       }
-    })
+    });
+
+    document.getElementById("groupem_button").onclick = function () {
+        location.href = "group-view.html";
+    };
 
     $(classroom).on('changestudents', function() {
-        console.log('loading');
+        localStorage.setItem('stored_classroom', JSON.stringify(classroom));
       loadTable(classroom);
   });
 
