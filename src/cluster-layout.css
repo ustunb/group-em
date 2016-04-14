@@ -2,6 +2,7 @@ html, body, body > svg, body > div {
    position: fixed;
    margin:0; padding:0; height:100%; width:100%; overflow:hidden;
 }
+
 body > div {
    pointer-events: none;
 }
@@ -9,25 +10,30 @@ body > div {
 svg circle, svg g text {
    cursor: move;
 }
+
 svg g.node text{
   fill: white; 
 }
+
 svg g.node circle {
- fill: #0288D1;
- stroke: white;
+ fill:#0097A7;
+ stroke: #004D40;
  stroke-width: 0px;
 }
+
 svg line.link {
    cursor: move;
-   stroke: #666666;
+   stroke: #B2EBF2;
    stroke-width: 75px;
    stroke-linecap: round;
 }
+
 svg line.join {
-   stroke: #666666;
+   stroke: #B2EBF2
    stroke-width: 75px;
    stroke-linecap: round;
 }
+
 svg line.breaking {
    visibility: hidden;
 }
@@ -45,7 +51,7 @@ svg line.breaking {
     height: 80px;
     width: 200px;
     font: 28px Cabin;
-    background-color: #0288D1;
+    background-color: #00838F;
     color: white;    
     border-radius: 4px;
     border-width: 0px;
@@ -53,7 +59,7 @@ svg line.breaking {
 }
 
 #shuffle_button:hover{
-
-    background-color: #01579B;
+    background-color: #84FFFF;
+    text: black;
 }
 

@@ -4,7 +4,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="styles.css">
-    <meta charset='utf-8'>
     <link href='https://fonts.googleapis.com/css?family=Cabin:400,700' rel='stylesheet' type='text/css'>
     <link rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
     <link rel='stylesheet' href='cluster-layout.css'>
@@ -105,7 +104,7 @@ $('#shuffle_button').on('click', function(e){
     console.log('clicked!')
 
     var assignments = grouping.shuffle();
-    layout.clear
+    layout.clear()
 
     //add students
 for (var i = 0; i < testStudentList.length; i++){
@@ -120,11 +119,10 @@ layout.addCluster(assignments[i].getStudentIDs())
 }
 
 console.log('clicked!')
+});
 
 
 
-
-})
 
 </script>
 
