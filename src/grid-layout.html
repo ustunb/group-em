@@ -308,10 +308,14 @@ $(document).ready(function() {
 });
 
 function loadClassroomFromLocalStorage(classroom) {
-  var json_classroom = JSON.parse(localStorage.getItem('stored_classroom'));
-  var student_list = json_classroom.studentList;
-  for (var s = 0; s < student_list.length; s++) {
-    classroom.setStudent(s, student_list[s]);
+  try {
+    var json_classroom = JSON.parse(localStorage.getItem('stored_classroom'));
+    var student_list = json_classroom.studentList;
+    for (var s = 0; s < student_list.length; s++) {
+      classroom.setStudent(s, student_list[s]);
+    }
+  } catch (e) {
+    console.log('Could not load the classroom ' + e);
   }
 }
 
