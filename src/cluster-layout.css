@@ -9,19 +9,22 @@ body > div {
 svg circle, svg g text {
    cursor: move;
 }
+svg g.node text{
+  fill: white; 
+}
 svg g.node circle {
- fill: lightblue;
- stroke: orange;
- stroke-width: 2.5px;
+ fill: #0288D1;
+ stroke: white;
+ stroke-width: 0px;
 }
 svg line.link {
    cursor: move;
-   stroke: silver;
+   stroke: #666666;
    stroke-width: 75px;
    stroke-linecap: round;
 }
 svg line.join {
-   stroke: silver;
+   stroke: #666666;
    stroke-width: 75px;
    stroke-linecap: round;
 }
@@ -42,10 +45,15 @@ svg line.breaking {
     height: 80px;
     width: 200px;
     font: 28px Cabin;
-    background-color: lightblue;
-    color: darkblue;
+    background-color: #0288D1;
+    color: white;    
     border-radius: 4px;
     border-width: 0px;
     pointer-events: all;
+}
+
+#shuffle_button:hover{
+
+    background-color: #01579B;
 }
 
