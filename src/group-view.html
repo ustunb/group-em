@@ -1,23 +1,17 @@
 <!DOCTYPE html>
 <html>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="main-layout.css">
-    <link rel="stylesheet" href="styles.css">
-    <link href='https://fonts.googleapis.com/css?family=Cabin:400,700' rel='stylesheet' type='text/css'>
-    <link rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
-    <link rel='stylesheet' href='cluster-layout.css'>
-    <body>
 
+<meta charset='utf-8'>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="styles.css">
+<link href='https://fonts.googleapis.com/css?family=Cabin:400,700' rel='stylesheet' type='text/css'>
+<link rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
+<link rel='stylesheet' href='cluster-layout.css'>
 
+<body>
 
-
-<svg>
-<g class="links"></g>
-<g class="joins"></g>
-<g class="nodes"></g>
-</svg>
+<svg></svg>
 
 <div class="sidebar">
 <div style="position: relative; text-align: center; margin: 20px 0 " >
@@ -46,64 +40,68 @@
 <script src="cluster-layout.js"></script>
 
 <script>
-function assert(b) {
-if (!b) throw new Error('failed assertion');
-}
+
+/*
+localStorage.stored_classroom contains a JSON string like this:
+{
+   "studentList": [
+     {"name":"Alice","avoid":[],"prefer":[],"sid":0},
+     {"name":"Bob","avoid":[],"prefer":[],"sid":1},
+     {"name":"Cory","avoid":[],"prefer":[],"sid":2},
+     {"name":"Dana","avoid":[],"prefer":[],"sid":3}
+   ]
+}"
+*/
 var temp_classroom = JSON.parse(localStorage.getItem('stored_classroom'));
 var buildclassroom = function(c) {
-    console.log(c);
-    var classroom = new Classroom();
-    for (var s = 0; s < c.length; s++) {
-        console.log(c[s]);
-        classroom.setStudent(s, c[s]);
-    }
-    return classroom;
+  var classroom = new Classroom();
+  for (var s = 0; s < c.length; s++) {
+    classroom.setStudent(s, c[s]);
+  }
+  return classroom;
 }
 var classroom = buildclassroom(temp_classroom.studentList);
-//create random pairs of students
-var testStudentsPerGroup = 2;
-console.log(classroom.getStudentList());
-var grouping = new Grouping(classroom, testStudentsPerGroup);
-</script>
 
-<script>
+
+// create random pairs of students
+var testStudentsPerGroup = 2;
+var grouping = new Grouping(classroom, testStudentsPerGroup);
+
 var studentList = classroom.getStudentList();
-var assignments = grouping.getGroups()
-var layout = new ClusterLayout('svg');
-//add students
-for (var i = 0; i < studentList.length; i++){
-var student = studentList[i]
-console.log(studentList[i]);
-layout.addNode(student.sid, student.name);
+var assignments = grouping.getGroups();
+  var layout = new ClusterLayout('svg');
+  // add students
+  for (var i = 0; i < studentList.length; i++) {
+    var student = studentList[i];
+    layout.addNode(student.sid, student.name);
+  }
+// add groups
+for (var i = 0; i < assignments.length; i++) {
+  layout.addCluster(assignments[i].getStudentIDs());
 }
-//add groups
-for (var i = 0; i < assignments.length; i++){
-console.log(assignments[i].getStudentIDs())
-layout.addCluster(assignments[i].getStudentIDs())
-}
-//add join listener
-$(layout).on('join', function(e){
-console.log('join', e.node, 'to', e.cluster);
-console.log(grouping.toString());
-grouping.assignStudentToGroup(e.node, e.cluster)
-console.log(grouping.toString());
+
+// add join listener
+$(layout).on('join', function(e) {
+  console.log('join', e.node, 'to', e.cluster);
+  console.log(grouping.toString());
+  grouping.assignStudentToGroup(e.node, e.cluster);
+  console.log(grouping.toString());
 });
-$('#shuffle_button').on('click', function(e){
-    console.log('clicked!')
-    var assignments = grouping.shuffle();
-    layout.clear()
-    //add students
-for (var i = 0; i < studentList.length; i++){
-var student = studentList[i]
-layout.addNode(student.sid, student.name);
-}
-//add groups
-for (var i = 0; i < assignments.length; i++){
-console.log(assignments[i].getStudentIDs())
-layout.addCluster(assignments[i].getStudentIDs())
-}
-console.log('clicked!')
-})
+
+$('#shuffle_button').on('click', function(e) {
+  var assignments = grouping.shuffle();
+  layout.clear()
+  // add students
+  for (var i = 0; i < studentList.length; i++) {
+    var student = studentList[i];
+    layout.addNode(student.sid, student.name);
+  }
+  // add groups
+  for (var i = 0; i < assignments.length; i++) {
+    console.log(assignments[i].getStudentIDs());
+    layout.addCluster(assignments[i].getStudentIDs());
+  }
+});
 </script>
 
 </body>
