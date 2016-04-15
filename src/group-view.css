@@ -13,6 +13,7 @@ svg circle, svg g text {
 
 svg g.node text{
     fill: white;
+    font-family: Cabin;
 }
 
 svg g.node circle {
