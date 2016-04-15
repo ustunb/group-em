@@ -87,7 +87,7 @@ function Classroom() {
         $(self).trigger({type: 'changestudents'});
         return already_in;
 
-    }
+    }**/
 
     function getStudentFromSID(sid) {
         for (var i = 0; i < studentList.length; i++) {
@@ -96,7 +96,7 @@ function Classroom() {
             }
         }
         return null;
-    }**/
+    }
 
     // Call this with an object like this:
     // self.setStudent({name: "Amy", avoid: ["Susan", "Pat"], prefer: []})
@@ -171,6 +171,7 @@ function Classroom() {
     self.getStudentList = getStudentList
     self.getStudentListForGrouping = getStudentListForGrouping
     self.removePreference = removePreference
+    self.getStudentFromSID = getStudentFromSID
 }
 
 function assert(b) {

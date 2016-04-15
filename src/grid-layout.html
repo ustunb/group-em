@@ -70,14 +70,14 @@ var parseStudentList = function() {
     else if (row_list.length == 2) {
       final_data.push({
         name: row_list[0],
-         prefer:row_list[1].split(",").map(function (str) {return str.trim();})
+         prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})
       });
     }
     else {
       final_data.push({
         name: row_list[0],
-         prefer:row_list[1].split(",").map(function (str) {return str.trim();}),
-         avoid:row_list[2].split(",").map(function (str) {return str.trim();})
+         prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""}),
+         avoid:row_list[2].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})
       });
     }
 
@@ -192,8 +192,13 @@ $(document).ready(function() {
   $(document).on('click', ".remove", function(e) {
     console.log('removal detected');
     var student_id = $(this).data('remove_sid');
-    console.log(student_id);
+    var student_name = String(classroom.getStudentFromSID(student_id).name);
     classroom.removeStudent(student_id);
+    for (var i = 0; i < classroom.getStudentCount(); i++) {
+      var student = classroom.getStudent(i);
+      classroom.removePreference(student.name, student_name, "avoid");
+      classroom.removePreference(student.name, student_name, "prefer");
+    }
   });
 
   $(document).on('click', ".removeprefer", function(e) {
