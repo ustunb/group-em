@@ -167,17 +167,25 @@ function start() {
     .data(state.force.nodes(), function(d) { return d.id; } );
 
   var ins = state.nodesel.enter().insert('g').classed('node', true);
+  var radius = 25;
   ins.append('circle').attr({
-    cx: 0, cy: 0, r: 25
+    cx: 0, cy: 0, r: radius
   });
   ins.append('text').attr({
     'alignment-baseline': 'middle',
     'text-anchor': 'middle',
     y: 1
+  }).text(function(d) {
+    return '' + d.ndata;
   }).style({
-    font: '16px Arial'
-  }).text(function(d) { return '' + d.ndata; });
+    font: 'Arial',
+    'font-size': function(d) {
+      var t = '' + d.ndata;
+      return Math.min(20, (2 * radius - 8) /
+                      this.getComputedTextLength() * 16) + "px"; }
+  });
   ins.call(nodedrag);
+
   state.nodesel.exit().remove();
   state.force.start();
 }
