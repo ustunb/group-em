@@ -51,6 +51,7 @@ table td p {
     margin: 1px 3px;
     background: #00838F; 
     color: white;
+    white-space: nowrap;
 }
 
 table td p span:after {

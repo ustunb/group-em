@@ -111,46 +111,31 @@ var loadTable = function(classroom) {
 
 function addRow(student) {
   console.log("Hello");
-  console.log("---------ADDD ROW ------");
+  console.log("---------ADD ROW ------");
   var row = $('<tr>');
   var cell = $('<td class="student_name">').appendTo(row);
   var p = $('<p>').appendTo(cell)
           .text(student.name)
-          .data('sid', student.sid)
           .data('name', student.name);
   $("<i class='fa fa-grip'></i>").prependTo(p);
   console.log('data is', p.data('name'));
 
-  var preferhtml = "";
+  var prefercell = $('<td class="pair_with">').data('name', student.name);
   for (i = 0; i < student.prefer.length; i++) {
-    preferhtml += '<p>' + student.prefer[i] +
-      '<span class="removeprefer" id="'+
-      student.prefer[i] + "*#95f%:" + student.sid+'"></span></p>'
+    $('<p>').text(student.prefer[i]).data('name', student.prefer[i])
+            .append('<span class="removeprefer"></span>').appendTo(prefercell);
   }
+  prefercell.appendTo(row);
 
 
-  var avoidhtml = "";
+  var avoidcell = $('<td class="dont_pair_with">').data('name', student.name);
   for (i = 0; i < student.avoid.length; i++) {
-    console.log(student.avoid[i]);
-    console.log(student.sid);
-    avoidhtml += '<p>' + student.avoid[i] +
-           '<span class="removeavoid" id="' +student.avoid[i]+"*#95f%:"+student.sid+'"></span></p>'
-    }
+    $('<p>').text(student.avoid[i]).data('name', student.avoid[i])
+            .append('<span class="removeavoid"></span>').appendTo(avoidcell);
+  }
+  avoidcell.appendTo(row);
 
-  $('<td class="pair_with" id="'+student.name+'">').appendTo(row).html(preferhtml);
-  $('<td class="dont_pair_with" id="'+student.name+'">').appendTo(row).html(avoidhtml);
-
-  /**
-    $('<td class="pair_with">').appendTo(row).html(
-    samplePreferences().map(function(student.prefer) { return '<p>' + student.prefer + '<span></span></p>'; }).join(' ')
-    );
-
-    $('<td class="dont_pair_with">').appendTo(row).html(
-    samplePreferences().map(function(student.avoid) { return '<p>' + student.avoid + '<span></span></p>'; }).join(' ')
-    );
-   **/
-
-  $('<td id="'+student.sid+'" class="remove">').appendTo(row);
+  $('<td class="remove">').data('remove_sid', student.sid).appendTo(row);
   $('table tbody').append(row);
 }
 
@@ -206,25 +191,21 @@ $(document).ready(function() {
 
   $(document).on('click', ".remove", function(e) {
     console.log('removal detected');
-    var student_id = $(this).attr('id');
+    var student_id = $(this).data('remove_sid');
     console.log(student_id);
     classroom.removeStudent(student_id);
   });
 
   $(document).on('click', ".removeprefer", function(e) {
-    var removedata = $(this).attr('id').split("*#95f%:");
-    var sid = removedata[1];
-    var removal_name = removedata[0];
-    var target_student = classroom.getStudentFromSID(sid);
-    classroom.removePreference(target_student.name, removal_name, "prefer");
+    var removal_name = $(this).closest('p').data('name');
+    var target_name = $(this).closest('td').data('name');
+    classroom.removePreference(target_name, removal_name, "prefer");
   });
 
   $(document).on('click', ".removeavoid", function(e) {
-    var removedata = $(this).attr('id').split("*#95f%:");
-    var sid = removedata[1];
-    var removal_name = removedata[0];
-    var target_student = classroom.getStudentFromSID(sid);
-    classroom.removePreference(target_student.name, removal_name, "prefer");
+    var removal_name = $(this).closest('p').data('name');
+    var target_name = $(this).closest('td').data('name');
+    classroom.removePreference(target_name, removal_name, "avoid");
   });
 
 
@@ -258,7 +239,7 @@ $(document).ready(function() {
       drop: function(event,ui) {
         console.log("Item was Dropped in pair_with");
         var studentToAdd = todrag.text();
-        var studentToModify = $(this).attr("id");
+        var studentToModify = $(this).data("name");
         var i = classroom.updatePreference(
                    studentToModify, studentToAdd, "prefer");
         if (i == 0) {
@@ -272,7 +253,7 @@ $(document).ready(function() {
       drop: function(event,ui) {
         console.log("Item was Dropped in dont_pair_with");
         var studentToAdd = todrag.text();
-        var studentToModify = $(this).attr("id");
+        var studentToModify = $(this).data("name");
         var i = classroom.updatePreference(
                     studentToModify, studentToAdd, "avoid");
         if (i == 0) {

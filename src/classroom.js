@@ -57,15 +57,16 @@ function Classroom() {
         for (var  i = 0; i < classroom.getStudentCount(); i++) {
             if (classroom.getStudent(i).name == studentToUpdate) {
                 for (var j = 0; j < classroom.getStudent(i)[preference].length; j++) {
-                    if (classroom.getStudent(i).prefer[j] == removal_name ) {
-                        classroom.getStudent(i).prefer.splice(j, 1);
+                    if (classroom.getStudent(i)[preference][j] == studentToRemove) {
+                        classroom.getStudent(i)[preference].splice(j, 1);
                         $(classroom).trigger({type:'changestudents'});
-          }
+                        return 1;
+                    }
+                }
+            }
         }
-      }
+        return 0;
     }
-
-}
 
 /**
         var studentToUpdate = getStudentFromName(studentToUpdate);
@@ -167,7 +168,6 @@ function Classroom() {
     self.findStudentNamed = findStudentNamed
     self.updatePreference = updatePreference
     self.getStudentFromName = getStudentFromName
-    self.getStudentFromSID = getStudentFromSID
     self.getStudentList = getStudentList
     self.getStudentListForGrouping = getStudentListForGrouping
     self.removePreference = removePreference
