@@ -14,14 +14,22 @@ table td.student_name {
 table td {
     width: 38%;
     vertical-align: top;
-    border: 1px solid #444444 ;
+    border: 1px solid #00838F;
     padding: 2px 2px;
     background: #B2EBF2;
-    color: black;
+    color: #00838F;
 }
 table th {
+    width: 38%;
     font-weight: normal;
     font-size: 22px;
+    white-space: nowrap;
+}
+table th:nth-of-type(1) {
+    width: 20%;
+}
+table th:nth-of-type(4) {
+    width: 4%;
 }
 
 table td.remove {
@@ -30,17 +38,25 @@ table td.remove {
     text-align: center;
 }
 
+table td.remove:hover {
+    color: red;
+}
+
 table td.remove:before {
     font-family: FontAwesome;
     content: '\f014';
 }
 
-table td .fa.fa-grip:before {
+table td p .fa-grip:before {
     font-family: FontAwesome;
-    font-size: 12px;
+    font-size: 13px;
     content: "\f142 \202F \f142 \202F \f142";
     color: white;
-    padding-right: 10px;
+    padding-right: 8px;
+}
+
+table td p:hover .fa-grip:before {
+    color: yellow;
 }
 
 table td p {
@@ -66,6 +82,21 @@ table td p span:hover {
 table td textarea {
     width: 100%;
     font: 18px Cabin;
+}
+
+/* Make the textarea larger when it's the only thing. */
+table tr:nth-of-type(1) td textarea {
+    height: 20ex;
+}
+/* Then only slightly shrink it for the first four students. */
+table tr:nth-of-type(2) td textarea {
+    height: 16ex;
+}
+table tr:nth-of-type(3) td textarea {
+    height: 12ex;
+}
+table tr:nth-of-type(4) td textarea {
+    height: 8ex;
 }
 
 #control_div {
