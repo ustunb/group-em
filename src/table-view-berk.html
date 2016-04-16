@@ -62,7 +62,6 @@ group'em
 <script>
 var ADD_CLASSNAME_PLACEHOLDER = "enter class name"
 var ADD_STUDENT_BOX_PLACEHOLDER = "enter students or copy/paste student list"
-var lastStudentID = 0;
 
 var parseStudentList = function() {
   var student_list = $("#add_student_box").val();
@@ -111,13 +110,14 @@ var parseStudentList = function() {
 var updateTable = function(classroom) {
   $('table tbody').empty();
   if (classroom.getSize() > 0){
+    console.log(classroom.toString())
     var studentArray = classroom.getStudents();
     for (var i = 0; i < studentArray.length; i++) {
       addRow(studentArray[i]);
     }
-    $("groupem_button").prop('disabled', false)
+    $("#groupem_button").prop('disabled', false);
   } else {
-    $("groupem_button").prop('disabled', true)
+    $("#groupem_button").prop('disabled', true);
   }
 }
 
@@ -176,7 +176,7 @@ function addRow(student) {
   $(row).append("<td class='remove' id=" + removeID + "></td>")  
   $(nameCell).append(getTileHTML(studentName))
 
-  var prefIDs = student.getPreferences('prefer')
+  var prefIDs = student.getPreferences('prefer');
   for (i = 0; i < prefIDs.length; i++) {
     var targetStudent = classroom.getStudentFromID(prefIDs[i]);
     var tileID = "tile_prefer_" + studentID + "_" + prefIDs[i];
@@ -188,7 +188,7 @@ function addRow(student) {
     $("#" + tileID).data('targetID', prefIDs[i]);
   }
 
-  var avoidIDs =  student.getPreferences('avoid')
+  var avoidIDs =  student.getPreferences('avoid');
   for (i = 0; i < avoidIDs.length; i++) {
     var targetStudent = classroom.getStudentFromID(avoidIDs[i]);
     var tileID = "tile_avoid_" + studentID + "_" + avoidIDs[i];
@@ -266,10 +266,11 @@ $(document).ready(function() {
     console.log('user tried to delete student : ' + removedStudentID);
     var update_flag = classroom.remove(removedStudentID); //remove student from model + preferences
     if (update_flag){
-      var rowID = "#row_" + removedStudentID;
-      $(rowID).remove();
-      var tileClass = ".tile_" + removedStudentID;
-      $(tileClass).remove();
+      // var rowID = "#row_" + removedStudentID;
+      // $(rowID).remove();
+      // var tileClass = ".tile_" + removedStudentID;
+      // $(tileClass).remove();
+      updateTable(classroom)
       //alternatively, you could also do updateTable(classroom) to redraw the table
     }
   });

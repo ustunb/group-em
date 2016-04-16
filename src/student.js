@@ -86,6 +86,7 @@ function Student(name, id) {
 
     self.removeFromPreferences = function(prefType, targetStudentID) {
         var update_flag = false;
+        console.log('pref type is ' + prefType);
         if (prefType in self.preferences) {
             if (targetStudentID != self.id()) {
                 var idx = self.preferences[prefType].indexOf(targetStudentID);
@@ -95,6 +96,7 @@ function Student(name, id) {
                 }
             }
         } else if (prefType == 'all'){
+            console.log('prefType' == 'all')
             var idx = self.preferences['pinned'].indexOf(targetStudentID);
             if (idx > -1) {
                 self.preferences['pinned'].splice(idx, 1);
@@ -115,6 +117,7 @@ function Student(name, id) {
                 self.preferences['avoid'].splice(idx, 1);
                 update_flag = true;
             }
+            console.log(self.toString())
         }
         self.checkRep()
         return update_flag;
