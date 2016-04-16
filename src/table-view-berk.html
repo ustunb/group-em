@@ -37,25 +37,29 @@
 </th>
 </tr>
 <tr>
-  <th unselectable="on">Student</th>
-  <th unselectable="on">Pair With</th>
-  <th unselectable="on">Don't Pair With</th>
-  <th unselectable="on"></th>
+  <th unselectable="on" class="student_name">Student</th>
+  <th unselectable="on" class="pair_with">Pair With</th>
+  <th unselectable="on" class="dont_pair_with">Don't Pair With</th>
+  <th unselectable="on" class="remove"></th>
 </tr>
 </thead>
-<tbody>
-</tbody>
+<tbody></tbody>
 <tfoot>
-<td class='add_student_row' colspan="4">
+<tr>
+<th id='add_student_row' colspan="4">
   <textarea id="add_student_box"></textarea>
-</td>
-</tfoot>
-</table>
-<div id="control_div">
+</th>
+</tr>
+<tr>
+<th id="button_row" colspan="4">
 <button id="groupem_button" class="control_button" disabled>
 group'em
 </button>
-</div>
+</th>
+</tr>
+</tfoot>
+</table>
+
 
 </body>
 
@@ -121,13 +125,17 @@ var updateTable = function(classroom) {
   }
 }
 
-function getTileHTML(name, type, tileID, tileClass){
+function getTileHTML(name, type, tileID, tileClasses){
   var tileHTML = "<p"
   if (tileID != null){
     tileHTML += " id= '" + tileID + "'";
   }
-  if (tileClass != null){
-    tileHTML += " class= 'tile " + tileClass + "'";
+  if (tileClasses != null){
+    tileHTML += " class= 'tile ";
+    for (var i = 0; i < tileClasses.length; i++){
+      tileHTML += tileClasses[i] + " ";
+    }
+    tileHTML += "'";
   }
   tileHTML += ">"
   tileHTML += "<i class='fa fa-grip'></i>" + name 
@@ -174,14 +182,14 @@ function addRow(student) {
   $(row).append("<td class='pair_with' id=" + preferID + "></td>")
   $(row).append("<td class='dont_pair_with' id=" + avoidID + "></td>")
   $(row).append("<td class='remove' id=" + removeID + "></td>")  
-  $(nameCell).append(getTileHTML(studentName))
+  $(nameCell).append(getTileHTML(studentName, "name", "name_" + studentID, ["tile_name"]))
 
   var prefIDs = student.getPreferences('prefer');
   for (i = 0; i < prefIDs.length; i++) {
     var targetStudent = classroom.getStudentFromID(prefIDs[i]);
     var tileID = "tile_prefer_" + studentID + "_" + prefIDs[i];
-    var tileClass = "tile_" + prefIDs[i];
-    var tileHTML = getTileHTML(targetStudent.name(), "prefer", tileID, tileClass)
+    var tileClasses = ["tile_prefer", "tile_" + prefIDs[i]];
+    var tileHTML = getTileHTML(targetStudent.name(), "prefer", tileID, tileClasses)
     $(preferCell).append(tileHTML);
     console.log('adding '  + tileHTML + 'to ' + preferCell)
     $("#" + tileID).data('studentID', studentID);
@@ -192,8 +200,8 @@ function addRow(student) {
   for (i = 0; i < avoidIDs.length; i++) {
     var targetStudent = classroom.getStudentFromID(avoidIDs[i]);
     var tileID = "tile_avoid_" + studentID + "_" + avoidIDs[i];
-    var tileClass = "tile_" + avoidIDs[i];
-    var tileHTML = getTileHTML(targetStudent.name(), "avoid", tileID, tileClass);
+    var tileClasses = ["tile_avoid", "tile_" + avoidIDs[i]];
+    var tileHTML = getTileHTML(targetStudent.name(), "avoid", tileID, tileClasses);
     $(avoidCell).append(tileHTML);
     $("#" + tileID).data('studentID', studentID);
     $("#" + tileID).data('targetID', avoidIDs[i]);
@@ -315,7 +323,7 @@ $(document).ready(function() {
   });
 
   $(document).on('keyup', "#add_student_box", function(e) {
-      var charCode = event.which || event.keyCode;
+    var charCode = e.which || e.keyCode;
     if (charCode == '13'){
       console.log('user pressed enter on student box')
       var studentArray = parseStudentList();
@@ -332,11 +340,13 @@ $(document).ready(function() {
     var pastedata = $(this).val();
   });
 
-  //drag and drop behavior for tiles
-  $("table").on('mouseenter',".student_name p",function() {
+  //drag and drop behavior for name tiles
+  $("table").on('mouseenter',".tile", function() {
     var todrag = $(this);
     $(this).css( 'cursor', 'grabbing' );
     todrag.draggable({ helper:'clone', revert: true});
+    $(this).css( 'cursor', 'grabbing' );
+
 
     $(".pair_with").droppable({
       accept: "p",
@@ -359,6 +369,7 @@ $(document).ready(function() {
         }
       }
     });
+
     $(".dont_pair_with").droppable({
       accept: "p",
       drop: function(event,ui) {

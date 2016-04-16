@@ -7,15 +7,260 @@ body, html {
 
 table {
     margin: auto;
-    width: 60%;
+    width: 80%;
     border-collapse: collapse;
+    border-left: 1px solid #BCB8AD;
+    border-right: 1px solid #BCB8AD;
+    border-bottom: 1px solid #BCB8AD;
 }
 
+/*TABLE HEADERS*/
+table th {
+    text-align: center;
+    content-align: center;
+    font-weight: bold;
+    font-size: 22px;
+    text-transform: lowercase;
+    white-space: nowrap;
+    -webkit-user-select: none; /* Chrome/Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+ */
+}
+
+table th:hover {
+    cursor: default;
+}
+
+table th.student_name {
+    width: 30%;
+    color: #60BADF;
+    border-top-style: hidden;
+    border-left-style: hidden;
+    border-right-style: hidden;
+    border-bottom: 1px solid #BCB8AD;
+}
+
+table th.pair_with {
+    width: 25%;
+    color: #6AD5A2;
+    border-top-style: hidden;
+    border-left-style: hidden;
+    border-right-style: hidden;
+    border-bottom: 1px solid #BCB8AD;
+}
+
+table th.dont_pair_with  {
+    width: 25%;
+    color: #F39354;
+    font-weight: bold;
+    border-top-style: hidden;
+    border-left-style: hidden;
+    border-right-style: hidden;
+    border-bottom: 1px solid #BCB8AD;
+}
+
+table th.remove {
+    width: 10%;
+    border-top-style: hidden;
+    border-left-style: hidden;
+    border-right-style: hidden;
+    border-bottom: 1px solid #BCB8AD;
+}
+
+/*TABLE ROWS */
+table tr {
+    height: 8ex;
+}
+
+/*TABLE CELLS*/
+table td {
+    width: 38%;
+    vertical-align: top;
+    border: 1px solid #BCB8AD;
+    padding: 2px 2px;
+    background: #F9F7F1;
+    color: #00838F;
+}
+
+table td.student_name {
+    width: 30%;
+    text-align: center;
+    vertical-align: middle;
+}
+
+table td.remove {
+    width: 10%;
+    vertical-align: middle;
+    text-align: center;
+/*    background: #F39354;
+    background: #DBD8D3;
+    background: #f4efe1;
+    background: #F47D31;
+    background: #DDDDDA;
+    background: #F39354;
+    background: #D0CEC8;
+    background: #DBD9D3;
+    background: #f2eee3;*/
+    background: #EAE6DB;
+    color: #FED587;
+    color: white;
+    color: #4C5365;
+    color: #3F3C36;
+    /*background: #4C5365;
+    color: #FED587;*/
+}
+
+table td.remove:hover {
+    color: #F39354;
+    background: #FED587;
+    cursor: pointer;
+}
+
+table td.remove:before {
+    font-family: FontAwesome;
+    font-size: 22px;
+    content: '\f014';
+}
+
+/*TILES */
+table td p .fa-grip:before {
+    font-family: FontAwesome;
+    font-size: 13px;
+    /*content: "\f142 \202F \f142 \202F \f142";*/
+    color: white;
+    padding-right: 8px;
+    cursor: -webkit-grab;
+}
+
+table td p {
+    display: inline-block;
+    border: 2px solid;
+    border-radius: 5px;
+    padding: 3px 7px;
+    margin: 1px 3px;
+    color: white;
+    white-space: nowrap;
+    cursor: -webkit-grab;
+}
+
+/* delete element in tiles */
+table td p span:hover {
+    color: red;
+    cursor: pointer;
+}
+
+.tile {
+    box-shadow: 0 0 3px gray;
+}
+
+.tile_name {
+    height: 90%;
+    width: 90%;
+    max-height: 40px;
+    max-width: 300px;
+    line-height:40px;
+    background: #60BADF;
+    min-height: 40px;
+    font-size: 20px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.tile_prefer {
+    background: #6AD5A2;
+}
+
+.tile_avoid {
+    background: #FDD487;
+    background: #F39354;
+}
+
+.tile_prefer_pinned {
+    /*todo*/
+}
+
+.tile_prefer_banned {
+    /*todo*/
+}
+
+.tile_avoid_pinned {
+    /*todo*/
+}
+
+.tile_avoid_banned {
+    /*todo*/
+}
+
+table td p span:after {
+    font-family: FontAwesome;
+    content: '\00a0\00a0\f00d';
+}
+
+/*actual input box */
+#add_student_row {
+    text-align: center;
+    content-align: center;
+    width: 90%;
+    border-right-style: hidden;
+    border-left-style: hidden;
+    border-bottom-style: hidden;
+    border-radius: 10px;
+}
+
+table th textarea {
+    display:inline-block;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 10px;
+    width: 100%;
+    font: 18px Raleway;
+    height: 5em;
+}
+
+/* Make the textarea larger when it's the only thing. */
+table th:nth-of-type(1) th textarea {
+    height: 40ex;
+}
+/* Then only slightly shrink it for the first four students. */
+table th:nth-of-type(2) th textarea {
+    height: 16ex;
+}
+table th:nth-of-type(3) th textarea {
+    height: 12ex;
+}
+table th:nth-of-type(4) th textarea {
+    height: 8ex;
+}
+
+/*HIGHLIGHTING FOR CLASSNAME/NAME INPUT*/
+input[type=text], textarea {
+  -webkit-transition: all 0.10s ease-in-out;
+  -moz-transition: all 0.10s ease-in-out;
+  -ms-transition: all 0.10s ease-in-out;
+  -o-transition: all 0.10s ease-in-out;
+  outline: none;
+  padding: 3px 0px 3px 3px;
+  margin: 5px 1px 3px 0px;
+  border: 3px dashed #BCBAB4;
+}
+
+input[type=text]:focus, textarea:focus {
+  border: 3px solid #BCBAB4; 
+  box-shadow: 0 0 4px #BCBAB4;
+  padding: 3px 0px 3px 3px;
+  margin: 5px 1px 3px 0px;
+}
+
+/*CLASS NAME INPUT BOX*/ 
 #classname_row {
     text-align: center;
     align-content: center;
     padding-bottom: 5%;
     padding-top: 5%;
+    border-top-style:hidden;
+    border-left-style:hidden;
+    border-right-style:hidden;
+    border-bottom: 1px solid #BCB8AD;
 }
 
 #classname_input {
@@ -44,152 +289,16 @@ table {
 
 }
 
-#add_student_box {
+/* group'em button row */
+#button_row {
     text-align: center;
-    border-radius: 10px;
-    padding-top: 10px;
+    align-content: center;
+    padding-top: 10%;
+    border-style: hidden;
 }
 
-/*TABLE*/
-
-
-table td {
-    width: 38%;
-    vertical-align: top;
-    border: 1px solid #444B5D; 
-    padding: 2px 2px;
-    background: #EFEDE7;
-    color: #00838F;
-}
-
-table td.student_name {
-    width: 30%;
-    text-align: center;
-    vertical-align: middle;
-}
-
-table td.remove {
-    width: 8%;
-    color: #4C5365;
-    vertical-align: middle;
-    text-align: center;
-    background: #F39354;
-}
-
-table td.remove:hover {
-    color: #F39354;
-    background: #FED587;
-}
-
-table td.remove:before {
-    font-family: FontAwesome;
-    content: '\f014';
-}
-
-/*table headers*/
-table th {
-    width: 38%;
-    font-weight: normal;
-    font-size: 22px;
-    text-transform: lowercase;
-    white-space: nowrap;
-    -webkit-user-select: none; /* Chrome/Safari */        
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE10+ */
-}
-
-table th:hover {
-    cursor: default;
-}
-
-table th:nth-of-type(1) {
-    width: 20%;
-}
-table th:nth-of-type(4) {
-    width: 4%;
-}
-
-table td p .fa-grip:before {
-    font-family: FontAwesome;
-    font-size: 13px;
-    /*content: "\f142 \202F \f142 \202F \f142";*/
-    color: white;
-    padding-right: 8px;
-    cursor: -webkit-grab;
-}
-
-table td p:hover .fa-grip:before {
-    cursor: -webkit-grab;
-}
-
-table td p {
-    display: inline-block;
-    border: 2px solid;
-    border-radius: 5px;
-    padding: 3px 7px;
-    margin: 1px 3px;
-    background: #F47D31;
-    color: white;
-    white-space: nowrap;
-    cursor: -webkit-grab;
-}
-
-table td p span:after {
-    font-family: FontAwesome;
-    content: '\00a0\00a0\f00d';
-}
-
-table td p span:hover {
-    color: red;
-}
-
-table td textarea {
-    font: 18px Raleway;
-    width: 100%;
-    
-}
-
-/* Make the textarea larger when it's the only thing. */
-table tr:nth-of-type(1) td textarea {
-    height: 20ex;
-}
-/* Then only slightly shrink it for the first four students. */
-table tr:nth-of-type(2) td textarea {
-    height: 16ex;
-}
-table tr:nth-of-type(3) td textarea {
-    height: 12ex;
-}
-table tr:nth-of-type(4) td textarea {
-    height: 8ex;
-}
-
-#control_div {
-    text-align:center;
-    margin:auto;
-}
-
-input[type=text], textarea {
-  -webkit-transition: all 0.10s ease-in-out;
-  -moz-transition: all 0.10s ease-in-out;
-  -ms-transition: all 0.10s ease-in-out;
-  -o-transition: all 0.10s ease-in-out;
-  outline: none;
-  padding: 3px 0px 3px 3px;
-  margin: 5px 1px 3px 0px;
-  border: 1px #EFEDE7;
-  /*/border: 1px solid #FED587*/*/
-}
-
-input[type=text]:focus, textarea:focus {
-  box-shadow: 0 0 5px rgba(81, 203, 238, 1);
-  padding: 3px 0px 3px 3px;
-  margin: 5px 1px 3px 0px;
-  border: 1px solid #4C5365; 
-}
-
+/*group'em button*/
 #groupem_button {
-    position: fixed;
     text-align: center;
     bottom: 5%;
     height: 80px;
@@ -197,7 +306,7 @@ input[type=text]:focus, textarea:focus {
     font: 28px Raleway;
     background-color: #4C5365;
     color: white;
-    border-radius: 4px;
+    border-radius: 5px;
     border-width: 0px;
     pointer-events: all;
 }
