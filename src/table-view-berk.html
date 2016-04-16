@@ -114,7 +114,7 @@ var parseStudentList = function() {
 var updateTable = function(classroom) {
   $('table tbody').empty();
   if (classroom.getSize() > 0){
-    console.log(classroom.toString())
+    // console.log(classroom.toString())
     var studentArray = classroom.getStudents();
     for (var i = 0; i < studentArray.length; i++) {
       addRow(studentArray[i]);
@@ -154,13 +154,13 @@ function getTileHTML(name, type, tileID, tileClasses){
 //class: tile_[SID] : class name for any tile student SID name on it 
 function addRow(student) {
   
-  console.log("------ adding new row ------");
+  // console.log("------ adding new row ------");
 
   //get new student ID
   
   var studentID = student.id();
   var studentName = student.name();
-  console.log(student.toString())
+  // console.log(student.toString())
   
   //define IDs for table row and cell
   var rowID = "row_" + studentID;
@@ -182,8 +182,13 @@ function addRow(student) {
   $(row).append("<td class='pair_with' id=" + preferID + "></td>")
   $(row).append("<td class='dont_pair_with' id=" + avoidID + "></td>")
   $(row).append("<td class='remove' id=" + removeID + "></td>")  
-  $(nameCell).append(getTileHTML(studentName, "name", "name_" + studentID, ["tile_name"]))
 
+  //add name tile
+  var tileID  = "tile_name_" + studentID;
+  var tileHTML = getTileHTML(studentName, "name", tileID, ["tile_name"])
+  $(nameCell).append(tileHTML)
+
+  //add pair with tiles
   var prefIDs = student.getPreferences('prefer');
   for (i = 0; i < prefIDs.length; i++) {
     var targetStudent = classroom.getStudentFromID(prefIDs[i]);
@@ -192,10 +197,11 @@ function addRow(student) {
     var tileHTML = getTileHTML(targetStudent.name(), "prefer", tileID, tileClasses)
     $(preferCell).append(tileHTML);
     console.log('adding '  + tileHTML + 'to ' + preferCell)
-    $("#" + tileID).data('studentID', studentID);
-    $("#" + tileID).data('targetID', prefIDs[i]);
+    $("#" + tileID).data('studentID', prefIDs[i]);
+    // $("#" + tileID).data('targetID', );
   }
 
+  //add don't pair with tiles
   var avoidIDs =  student.getPreferences('avoid');
   for (i = 0; i < avoidIDs.length; i++) {
     var targetStudent = classroom.getStudentFromID(avoidIDs[i]);
@@ -203,9 +209,9 @@ function addRow(student) {
     var tileClasses = ["tile_avoid", "tile_" + avoidIDs[i]];
     var tileHTML = getTileHTML(targetStudent.name(), "avoid", tileID, tileClasses);
     $(avoidCell).append(tileHTML);
-    $("#" + tileID).data('studentID', studentID);
-    $("#" + tileID).data('targetID', avoidIDs[i]);
-    console.log("#" + tileID)
+    $("#" + tileID).data('studentID', avoidIDs[i]);
+    // $("#" + tileID).data('targetID', );
+    // console.log("#" + tileID)
   }
 
   //add data to all other elements
@@ -341,28 +347,28 @@ $(document).ready(function() {
   });
 
   //drag and drop behavior for name tiles
-  $("table").on('mouseenter',".tile", function() {
+  $("table").on('mouseenter',".tile_name", function() {
+    $(this).css( 'cursor', 'grabbing' );
     var todrag = $(this);
-    $(this).css( 'cursor', 'grabbing' );
-    todrag.draggable({ helper:'clone', revert: true});
-    $(this).css( 'cursor', 'grabbing' );
+    var tileStudentID = todrag.parent().data("studentID")
+    console.log('PICKUP ID' + tileStudentID)
+    todrag.draggable({'helper': 'clone', revert: true});
 
-
-    $(".pair_with").droppable({
+  $(".pair_with").droppable({
       accept: "p",
       drop: function(event, ui) {
-        var rowStudentID = $(this).data("studentID");
-        var tileStudentID = todrag.parent().data("studentID");
+        var rowStudentID = $(event.target).data("studentID");
+        console.log("DROP STUDENT ID: " + rowStudentID)
         console.log("tile for " + tileStudentID + " was dropped in pair_with column for student " + rowStudentID);
         if (rowStudentID != tileStudentID){
           var update_flag = classroom.getStudentFromID(rowStudentID).addToPreferences('prefer', tileStudentID);
               if (update_flag){
                 // console.log('updated preferences for student ' + rowStudentID)
                 // console.log(classroom.getStudentFromSID(rowStudentID).toString())
-                $(this).append($(ui.draggable).clone());
+                // $(this).append($(ui.draggable).clone());
                 updateTable(classroom);
               } else {
-                console.log('preference must already exist')
+                console.log('drop denied. preference must already exist.')
               }
         } else {
           console.log('user tried to drop student in own preferences')
@@ -374,7 +380,6 @@ $(document).ready(function() {
       accept: "p",
       drop: function(event,ui) {
         var rowStudentID = $(this).data("studentID");
-        var tileStudentID = todrag.parent().data("studentID");
         // console.log("tile for " + tileStudentID + " was dropped in pair_with column for student " + rowStudentID);
         if (rowStudentID != tileStudentID){
           var update_flag = classroom.getStudentFromID(rowStudentID).addToPreferences('avoid', tileStudentID);
@@ -385,7 +390,7 @@ $(document).ready(function() {
                 updateTable(classroom);
                 // console.log(rowStudent.toString())
               } else {
-                console.log('preference must already exist')
+                console.log('drop denied. preference must already exist.')
               }
         } else {
           console.log('user tried to drop student in own preferences')
@@ -393,6 +398,116 @@ $(document).ready(function() {
       }
     });
   });
+
+    //drag and drop behavior for pair_with tiles
+  $("table").on('mouseenter',".tile_prefer", function() {
+    $(this).css( 'cursor', 'grabbing' );
+    var todrag = $(this);
+    var tileStudentID = todrag.data("studentID");
+    var sourceStudentID = todrag.parent().data("studentID");
+
+    console.log('PICKUP ID' + tileStudentID)
+    todrag.draggable({revert: true});
+
+  $(".pair_with").droppable({
+      accept: "p",
+      drop: function(event, ui) {
+        var targetStudentID = $(this).data("studentID");
+        console.log("tile for " + tileStudentID + " was picked up from " + sourceStudentID + " and dropped in pair_with column for student " + targetStudentID);
+        if ((targetStudentID != tileStudentID) && (targetStudentID != sourceStudentID)){
+          var successfulRemoval = classroom.getStudentFromID(sourceStudentID).removeFromPreferences('prefer', tileStudentID);
+          var successfulAddition = classroom.getStudentFromID(targetStudentID).addToPreferences('prefer', tileStudentID);
+              if (successfulRemoval && successfulAddition){
+                updateTable(classroom);
+              } else {
+                console.log('drop could not be completed at the model level')
+              }
+        } else {
+          console.log('user tried to drop tile in invalid cell')
+        }
+      }
+    });
+
+    $(".dont_pair_with").droppable({
+      accept: "p",
+      drop: function(event,ui) {
+        var targetStudentID = $(this).data("studentID");
+        console.log("tile for " + tileStudentID + " was picked up from " + sourceStudentID + " and dropped in pair_with column for student " + targetStudentID);
+        if (targetStudentID != tileStudentID) {
+          var successfulAddition = classroom.getStudentFromID(sourceStudentID).removeFromPreferences('prefer', tileStudentID);
+          var successfulRemoval = classroom.getStudentFromID(targetStudentID).addToPreferences('prefer', tileStudentID);
+              if (successfulAddition && successfulRemoval){
+                updateTable(classroom);
+              } else {
+                console.log('drop could not be completed at the model level')
+              }
+        } else {
+          console.log('user tried to drop tile in invalid cell')
+        }
+      }
+    });
+  });
+
+  //drag and drop behavior for dont_pair_with tiles
+  $("table").on('mouseenter',".tile_avoid", function() {
+    $(this).css( 'cursor', 'grabbing' );
+    var todrag = $(this);
+    var tileStudentID = todrag.data("studentID");
+    var sourceStudentID = todrag.parent().data("studentID");
+
+    console.log('PICKUP ID' + tileStudentID)
+    todrag.draggable({revert: true});
+
+  $(".pair_with").droppable({
+      accept: "p",
+      drop: function(event, ui) {
+        var targetStudentID = $(this).data("studentID");
+        console.log("tile for " + tileStudentID + " was picked up from " + sourceStudentID + " and dropped in pair_with column for student " + targetStudentID);
+        if (targetStudentID != tileStudentID){
+          var successfulRemoval = classroom.getStudentFromID(sourceStudentID).removeFromPreferences('avoid', tileStudentID);
+          var successfulAddition = classroom.getStudentFromID(targetStudentID).addToPreferences('prefer', tileStudentID);
+              if (successfulAddition && successfulRemoval){
+                updateTable(classroom);
+              } else {
+                console.log('drop could not be completed at the model level')
+              }
+        } else {
+          console.log('user tried to drop tile in invalid cell')
+        }
+      }
+    });
+
+    $(".dont_pair_with").droppable({
+      accept: "p",
+      drop: function(event,ui) {
+        var targetStudentID = $(this).data("studentID");
+        console.log("tile for " + tileStudentID + " was picked up from " + sourceStudentID + " and dropped in pair_with column for student " + targetStudentID);
+        if ((targetStudentID != tileStudentID) && (targetStudentID != sourceStudentID)){
+          var successfulRemoval = classroom.getStudentFromID(sourceStudentID).removeFromPreferences('avoid', tileStudentID);
+          var successfulAddition = classroom.getStudentFromID(targetStudentID).addToPreferences('avoid', tileStudentID);
+              if (successfulAddition && successfulRemoval){
+                updateTable(classroom);
+              } else {
+                console.log('drop could not be completed at the model level')
+              }
+        } else {
+          console.log('user tried to drop tile in invalid cell')
+        }
+      }
+    });
+  });
+
+
+
+
+
+
+
+
+
+
+  
+
 
   //input classname textbox placeholder listeners
   $("#classname_input").data('holder', ADD_CLASSNAME_PLACEHOLDER);
