@@ -4,7 +4,7 @@
 <script src="../external_js/lodash.js"></script>
 <script src="../external_js/jquery-1.12.2.js"></script>
 <script src="../external_js/jquery-ui.js"></script>
-<script src="../src/classroom.js"></script>
+<script src="../src/classlist.js"></script>
 <link rel="stylesheet" href="../src/sidebar.css">
 <!-- <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Cabin:400,700'> -->
 <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
@@ -51,7 +51,7 @@
 </tfoot>
 </table>
 <div id="control_div">
-<button id="groupem_button" class="control_button" type="button">
+<button id="groupem_button" class="control_button" disabled>
 group'em
 </button>
 </div>
@@ -240,17 +240,17 @@ function loadClassroomFromLocalStorage(classroom) {
 });
  **/
 $(document).ready(function() {
-  classroom = new Classroom();
+  classroom = new Classlist();
   
   $(document).on('click', ".remove", function(e) {
     console.log('user clicked remove');
     var student_id = $(this).data('studentID');
     var student_name = String(classroom.getStudentFromSID(student_id).name);
-    classroom.removeStudent(student_id);
+    // classroom.removeStudent(student_id);
     for (var i = 0; i < classroom.getStudentCount(); i++) {
       var student = classroom.getStudent(i);
-      classroom.removePreference(student.name, student_name, "avoid");
-      classroom.removePreference(student.name, student_name, "prefer");
+      // classroom.removePreference(student.name, student_name, "avoid");
+      // classroom.removePreference(student.name, student_name, "prefer");
     }
   });
 
@@ -258,31 +258,45 @@ $(document).ready(function() {
     console.log('user clicked remove tile in prefer column');
     var removal_name = $(this).closest('p').data('name');
     var target_name = $(this).closest('td').data('name');
-    classroom.removePreference(target_name, removal_name, "prefer");
+    // classroom.removePreference(target_name, removal_name, "prefer");
   });
 
   $(document).on('click', ".removeAvoidTile", function(e) {
     console.log('user clicked remove tile in avoid column');
     var removal_name = $(this).closest('p').data('name');
     var target_name = $(this).closest('td').data('name');
-    classroom.removePreference(target_name, removal_name, "avoid");
+    // classroom.removePreference(target_name, removal_name, "avoid");
   });
 
-
   document.getElementById("groupem_button").onclick = function () {
-    location.href = "group-view.html";
+    if (classroom.getSize() > 0){
+      location.href = "group-view.html";
+    } else {
+      alert("please add students")
+    }
   };
+
+// $("#groupem_button").hover(function () {
+//     if (classroom.getSize() > 0){
+//       console.log("valid hover")
+//     } else {
+//       $("#groupem_button").attr('background', 'black')
+//       $("#groupem_button").attr('color', 'black')
+//       console.log("invalid hover")
+//     }
+//   });
+
 
   $(classroom).on('changestudents', function() {
     localStorage.setItem('stored_classroom', JSON.stringify(classroom));
-    loadTable(classroom);
+    // loadTable(classroom);
   });
 
 
   $(document).on('keyup', "#add_student_box", function(e) {
       var charCode = event.which || event.keyCode;
     if (charCode == '13'){
-      parseStudentList();
+      // parseStudentList();
       $("#add_student_box").val("");
     }
   });
@@ -342,7 +356,6 @@ $(document).ready(function() {
     $(this).attr('placeholder', $(this).data('holder'))
   });
   $("#classname_input").attr('placeholder', ADD_CLASSNAME_PLACEHOLDER);
-  
   $(document).on('keyup', "#classname_input", function(e) {
     var charCode = event.which || event.keyCode;
     if (charCode == '13'){
@@ -362,8 +375,8 @@ $(document).ready(function() {
   });
   $("#add_student_box").attr('placeholder', ADD_STUDENT_BOX_PLACEHOLDER);
 
-  loadClassroomFromLocalStorage(classroom);
-  loadTable(classroom);
+  // loadClassroomFromLocalStorage(classroom);
+  // loadTable(classroom);
   
 });
 

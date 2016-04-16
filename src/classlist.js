@@ -2,199 +2,119 @@
  *
  * lodash.js
  * student.js
- * 
+ *
  */
 
-//if you have a name and want the full student object, call classroom.getStudentFromName(name)
-//if you have an sid and want the full student object, call classroom.getStudentFromSID(name)
-//once you have a student object you can access student_object.name/prefer/avoid/sid as well
+function Classlist(studentArray) {
 
-function Classlist() {
+    // Rep Invariants
+    // size >= 0
+    // students must be distinct
     var self = this;
+
+    //private fields
     var students = [];
-    var lastid = 0;
-    
-    // This retrieves a student by number
-    function getStudentCount() {
-        return studentList.length;
+    var studentIDs = [];
+    var maxStudentID = 0;
+    var size = 0;
+    var value = "0"; //store value in cache
+
+    // checks to see if student is in list of students
+    function has(studentID) {
+        return studentIDs.indexOf(studentID) > -1
     }
 
-    // Retrieves a student or null if the index is not valid
-    function getStudent(index) {
-        if (index < 0 || index > studentList.length - 1) {
-            return null;
+    //returns unique identifier for this group (group = [1,2,5] <=> group_ID = "10011")
+    function valueOf() {
+        return _.reduce(students, function(bin, s) {
+            return bin + Math.pow(2, s.id() - 1);
+        }, 0).toString(2);
+    }
+
+    // adds a new student to this group
+    // returns true if student is successfully added to list of students
+    function add(student) {
+        var update_flag = false;
+        var studentID = student.id();
+        if (!self.has(studentID)) {
+            students.push(student);
+            studentIDs.push(studentID);
+            value += Math.pow(2, studentID);
+            size++;
+            update_flag = true;
+            checkRep();
         }
-        return studentList[index];
+        return update_flag;
     }
 
-    function getStudentFromName(studentname) {
-        for (var i = 0; i < studentList.length; i++) {
-            if (studentList[i].name == studentname) {
-                return studentList[i];
-            }
+    // removes a student from this group 
+    function remove(studentID) {
+        if (self.has(studentID)) {
+            idx = studentIDs.indexOf(studentID);
+            student = students.splice(idx, 1)[0];
+            studentIDs.splice(idx, 1);
+            value -= Math.pow(2, studentID);
+            size--;
+            checkRep();
+            return student;
         }
-        return null;
     }
 
-    //returns 1 if update is made, returns 0 if student was already in preferences (and so no change)
-    function updatePreference(studentToUpdate, studentToAdd, preference) {
-        var studentToUpdate = getStudentFromName(studentToUpdate);
-        already_in = 0;
-        for (var i = 0; i < studentToUpdate[preference].length; i++) {
-            if (studentToUpdate[preference][i] == studentToAdd) {
-                already_in = 1;
-            }
+    function getMaxStudentID() {
+        return _.min(studentIDs)
+    }
+
+    //returns list of groups in current grouping
+    function toString() {
+        var classString = _.map(students, function(v) {
+            return v.toString();
+        }).join("\n");
+
+        return classString;
+    }
+
+    //returns true iff this self has the same students as thatGroup    
+    function equals(that) {
+        return value === that.valueOf()
+    }
+
+    //check representation invariants
+    function checkRep() {
+        if (size < 0) throw new Error('size of group must be non-negative');
+    }
+
+    //attach public methods to object
+    self.has = has;
+    self.add = add;
+    self.remove = remove;
+    self.equals = equals
+    self.getMaxStudentID = getMaxStudentID
+    self.toString = toString
+
+    self.valueOf = function() {
+        return value;
+    }
+
+    self.getSize = function() {
+        return size;
+    }
+
+    self.getStudents = function() {
+        return _.clone(students);
+    }
+
+    self.getStudentIDs = function() {
+        return _.clone(studentIDs);
+    }
+
+    //initialization
+    if (studentArray !=null) {
+        for (var i = 0; i < studentArray.length; i++) {
+        if (!self.add(studentArray[i])) {
+            throw new Error('student array should contain distinct students');
         }
-        if (already_in == 0 && studentToAdd != studentToUpdate.name) {
-            studentToUpdate[preference].push(studentToAdd);
-            $(self).trigger({type: 'changestudents'});
-            return 0;
         }
-        return 1;
+        checkRep();        
     }
 
-    //returns 1 if update is made, returns 0 if student was not in preferences (and so no change)
-    function removePreference(studentToUpdate, studentToRemove, preference) {
-        for (var  i = 0; i < classroom.getStudentCount(); i++) {
-            if (classroom.getStudent(i).name == studentToUpdate) {
-                for (var j = 0; j < classroom.getStudent(i)[preference].length; j++) {
-                    if (classroom.getStudent(i)[preference][j] == studentToRemove) {
-                        classroom.getStudent(i)[preference].splice(j, 1);
-                        $(classroom).trigger({type:'changestudents'});
-                        return 1;
-                    }
-                }
-            }
-        }
-        return 0;
-    }
-
-    function updatePreferencesBySID(studentID, preferenceID, preferenceName){
-        var studentToUpdate = getStudentFromSID(studentID)
-        for (var = 0; i < studentID)
-
-    }
-
-/**
-        var studentToUpdate = getStudentFromName(studentToUpdate);
-        already_in = 0;
-        var newpreferences = [];
-        console.log(studentToUpdate);
-        console.log(studentToRemove);
-        for (var i = 0; i < studentToUpdate[preference].length; i++) {
-            if (studentToUpdate[preference][i] != studentToRemove) {
-                newpreferences.push(studentToUpdate[preference][i]);
-            }
-            else {
-                already_in = 1;
-            }
-
-        }
-        studentToUpdate[preference] = newpreferences;
-        $(self).trigger({type: 'changestudents'});
-        return already_in;
-
-    }**/
-
-    function getStudentFromSID(sid) {
-        for (var i = 0; i < studentList.length; i++) {
-            if (studentList[i].sid == sid) {
-                return studentList[i];
-            }
-        }
-        return null;
-    }
-
-    // Call this with an object like this:
-    // self.setStudent({name: "Amy", avoid: ["Susan", "Pat"], prefer: []})
-    function setStudent(index, obj) {
-        studentList[index] = _.clone(obj);
-        $(self).trigger({type: 'changestudents'});
-    }
-
-    function getID(studentname) {
-        var s = getStudentFromName(studentname);
-        return s.sid;
-    }
-
-    function addStudent(obj) {
-        var index = studentList.length;
-        studentList[index] = _.clone(obj);
-        studentList[index]['sid'] = lastid;
-        lastid++;
-        $(self).trigger({type: 'changestudents'});
-    }
-
-    //Remove a given student from the list
-    function removeStudent(sid) {
-        for (var index = 0; index < studentList.length; index++){
-            if ((studentList[index].sid) == sid) {
-                studentList.splice(index, 1);
-                $(self).trigger({type: 'changestudents'});
-            }
-        }
-
-    }
-    
-    function clearStudents() {
-        studentList = [];
-    }
-
-    //Note this assumes names are distinct. 
-    function findStudentNamed(name) {
-        for (var i = 0; i < studentList.length; i++) {
-            console.log(studentList[i]["name"]);
-            if (studentList[i]["name"] == name) {
-                return i;
-            }
-        }
-        return null;
-    }
-
-    function getStudentList() {
-        return _.clone(studentList);
-    }
-
-    function getStudentListForGrouping() {
-        newStudentList = []
-        for (var i = 0; i < studentList.length; i++) {
-            newStudentList.push(new Student(studentList[i].name, studentList[i].sid))
-        }
-        return newStudentList;
-    }
-
-    //public methods
-    self.getStudentCount = getStudentCount
-    self.setStudent = setStudent
-    self.getStudent = getStudent
-    self.getStudentList = getStudentList
-    self.addStudent = addStudent
-    self.removeStudent = removeStudent
-    self.studentList = studentList
-    self.clearStudents = clearStudents
-    self.findStudentNamed = findStudentNamed
-    self.updatePreference = updatePreference
-    self.getStudentFromName = getStudentFromName
-    self.getStudentList = getStudentList
-    self.getStudentListForGrouping = getStudentListForGrouping
-    self.removePreference = removePreference
-    self.getStudentFromSID = getStudentFromSID
 }
-
-function assert(b) {
-    if (!b) throw new Exception('failed assertion');
-}
-/**
-function testClassroom() {
-    var c = new Classroom();
-    var recording = [];
-    $(c).on('changestudent', function(event) { recording.push(event); });
-    c.addStudent({name: "Alice", avoid: ["Bob"], prefer: []});
-    assert(recording.length === 0);
-    console.log(JSON.stringify(recording[0]));
-    c.addStudent({name: "Bob", avoid: [], prefer: []});
-    console.log('Student 0 is currently', c.getStudent(0).name);
-    c.removeStudent(0);
-    console.log('Student 0 is now', c.getStudent(0).name);
-
-}**/
