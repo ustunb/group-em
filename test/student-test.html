@@ -12,9 +12,17 @@ if (!b) throw new Error(errorMessage);
 var testID = 1
 var testName = 'Berk'
 var testStudent = new Student(testName, testID)
+
 assert(testStudent.name()==testName, 'name does not match testName')
 assert(testStudent.valueOf()==testID, 'ID does not match testID')
 testStudent.toString()
+
+var testName2 = 'Jon'
+var testID2 = 2
+var testStudent2 = new Student(testName2, testID2)
+testStudent.addToPreferences('prefer', testStudent2)
+//assert(!testStudent.addToPreferences('prefer', testStudent2))
+
 console.log('passed construction test')
 
 </script>

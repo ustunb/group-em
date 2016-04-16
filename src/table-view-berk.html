@@ -34,16 +34,20 @@
 </th>
 </tr>
 <tr>
-  <th>Student</th>
-  <th>Wants to join</th>
-  <th>Wants to avoid</th>
-  <th></th>
+  <th unselectable="on">Student</th>
+  <th unselectable="on">Pair With</th>
+  <th unselectable="on">Don't Pair With</th>
+  <th unselectable="on"></th>
 </tr>
 </thead>
 <tbody>
 </tbody>
+<tfoot>
+<td class='add_student_row' colspan="4">
+  <textarea id="add_student_box"></textarea>
+</td>
+</tfoot>
 </table>
-
 <div id="control_div">
 <button id="groupem_button" class="control_button" type="button">
 group'em
@@ -53,9 +57,11 @@ group'em
 </body>
 
 <script>
+var ADD_STUDENT_BOX_PLACEHOLDER = "enter students"
+var lastStudentID = 0;
 
 var parseStudentList = function() {
-  var student_list = $("#newstudentbox").val();
+  var student_list = $("#add_student_box").val();
   console.log(student_list);
   student_list = student_list.replace(/\n/g, '1)(*3hf:Z');
   student_list = student_list.split('1)(*3hf:Z');
@@ -110,47 +116,75 @@ var loadTable = function(classroom) {
   for (var i = 0; i < classroom.getStudentCount(); i++) {
     addRow(classroom.getStudent(i));
   }
-  addLastRow();
-  $("#newstudentbox").focus();
+}
+
+function getTileHTML(name, type, tileID, tileClass){
+  var tileHTML = "<p "
+  if (tileID != null){
+    tileHTML += "id=" + tileID;
+  }
+  if (tileClass != null){
+    tileHTML += "class=" + tileClass;
+  }
+  tileHTML += ">"
+  tileHTML += "<i class='fa fa-grip'></i>" + name 
+  if (type == "prefer") {
+      tileHTML += '<span class="removePreferTile"></span>'
+  } else if (type == "avoid") {
+      tileHTML += '<span class="removeAvoidTile"></span>'
+  }
+  tileHTML += "</p>"
+  return tileHTML
 }
 
 function addRow(student) {
   
   console.log("------ ADD ROW ------");
-  var row = $('<tr>');
-  var cell = $('<td class="student_name">').appendTo(row);
-  var p = $('<p>').appendTo(cell)
-          .text(student.name)
-          .data('name', student.name);
-  $("<i class='fa fa-grip'></i>").prependTo(p);
-  console.log('data is', p.data('name'));
+  
+  lastStudentID++;
 
-  var prefercell = $('<td class="pair_with">').data('name', student.name);
+  //get new student ID
+  var studentID = lastStudentID;
+  
+  //define IDs for table row and cell
+  var rowID = "row_" + studentID;
+  var nameID = "name_cell_" + studentID;
+  var preferID = "prefer_cell_" + studentID;
+  var avoidID = "avoid_cell_" + studentID;
+  var removeID = 'delete_cell_' + studentID;
+
+  //define jQuery selectors for table row and each cell
+  var row = "#" + rowID;
+  var nameCell = "#" + nameID
+  var preferCell = "#" + preferID
+  var avoidCell = "#" + avoidID
+  var removeCell = "#" + removeID
+  
+  //add new row + cells
+  $('table tbody').append('<tr id = ' + rowID +'></tr>');
+  $(row).append("<td class='student_name' id=" + nameID + "></td>")
+  $(row).append("<td class='pair_with' id=" + preferID + "></td>")
+  $(row).append("<td class='dont_pair_with' id=" + avoidID + "></td>")
+  $(row).append("<td class='remove' id=" + removeID + "></td>")
+  
+  $(nameCell).append(getTileHTML(student.name))
   for (i = 0; i < student.prefer.length; i++) {
-    $('<p>').text(student.prefer[i]).data('name', student.prefer[i])
-            .append('<span class="removeprefer"></span>').appendTo(prefercell);
+    var tileID = "tile_" + studentID + "_prefer_" + student.prefer[i].id
+    $(preferCell).append(getTileHTML(student.prefer[i], "prefer", tileID))
   }
-  prefercell.appendTo(row);
 
-
-  var avoidcell = $('<td class="dont_pair_with">').data('name', student.name);
   for (i = 0; i < student.avoid.length; i++) {
-    $('<p>').text(student.avoid[i]).data('name', student.avoid[i])
-            .append('<span class="removeavoid"></span>').appendTo(avoidcell);
+    var tileID = "tile_" + studentID + "_avoid_" + student.avoid[i].id
+    $(avoidCell).append(getTileHTML(student.avoid[i], "avoid", tileID))
   }
-  avoidcell.appendTo(row);
 
-  $('<td class="remove">').data('remove_sid', student.sid).appendTo(row);
-  $('table tbody').append(row);
-}
+  //add data to all other elements
+  $(row).data("id", studentID)
+  $(preferCell).data('id', studentID)
+  $(nameCell).data("id", studentID)
+  $(avoidCell).data("id", studentID)
+  $(removeCell).data("id", studentID)
 
-function addLastRow() {
-  var row = $('<tr>');
-  $('<td class="student_name" colspan="4">')
-    .appendTo(row)
-    .html('<textarea id="newstudentbox" ' +
-          'placeholder="Enter new student names"></textarea>');
-  $('table tbody').append(row);
 }
 
 //HANDLE COPY PASTING  http://stackoverflow.com/questions/3211505/detect-pasted-text-with-ctrlv-or-right-click-paste
@@ -181,100 +215,6 @@ function detectPaste(textarea, callback) {
     }, 1);
   };
 }
-/**
-  var textarea = document.getElementById("your_textarea");
-  detectPaste(textarea, function(pasteInfo) {
-  alert(pasteInfo.text);
-// pasteInfo also has properties for the start and end character
-// index and length of the pasted text
-});
- **/
-$(document).ready(function() {
-  classroom = new Classroom();
-  loadClassroomFromLocalStorage(classroom);
-  loadTable(classroom);
-
-  $(document).on('click', ".remove", function(e) {
-    console.log('removal detected');
-    var student_id = $(this).data('remove_sid');
-    var student_name = String(classroom.getStudentFromSID(student_id).name);
-    classroom.removeStudent(student_id);
-    for (var i = 0; i < classroom.getStudentCount(); i++) {
-      var student = classroom.getStudent(i);
-      classroom.removePreference(student.name, student_name, "avoid");
-      classroom.removePreference(student.name, student_name, "prefer");
-    }
-  });
-
-  $(document).on('click', ".removeprefer", function(e) {
-    var removal_name = $(this).closest('p').data('name');
-    var target_name = $(this).closest('td').data('name');
-    classroom.removePreference(target_name, removal_name, "prefer");
-  });
-
-  $(document).on('click', ".removeavoid", function(e) {
-    var removal_name = $(this).closest('p').data('name');
-    var target_name = $(this).closest('td').data('name');
-    classroom.removePreference(target_name, removal_name, "avoid");
-  });
-
-
-  $(document).on('keyup', "#newstudentbox", function(e) {
-    if (e.which == 13) {
-      parseStudentList();
-      $("#newstudentbox").val("");
-    }
-  });
-
-  document.getElementById("groupem_button").onclick = function () {
-    location.href = "group-view.html";
-  };
-
-  $(classroom).on('changestudents', function() {
-    localStorage.setItem('stored_classroom', JSON.stringify(classroom));
-    loadTable(classroom);
-  });
-
-  $(document).on('paste', "#newstudentbox", function(e) {
-    var pastedata = $(this).val();
-  });
-
-  $("table").on('mouseenter',".student_name p",function() {
-    var todrag = $(this);
-    $(this).css('cursor', 'grabbing');
-    todrag.draggable({ helper:'clone', revert: "invalid"});
-
-    $(".pair_with").droppable({
-      accept: "p",
-      drop: function(event,ui) {
-        console.log("Item was Dropped in pair_with");
-        var studentToAdd = todrag.text();
-        var studentToModify = $(this).data("name");
-        var i = classroom.updatePreference(
-                   studentToModify, studentToAdd, "prefer");
-        if (i == 0) {
-          $(this).append($(ui.draggable).clone());
-          loadTable(classroom);
-        }
-      }
-    });
-    $(".dont_pair_with").droppable({
-      accept: "p",
-      drop: function(event,ui) {
-        console.log("Item was Dropped in dont_pair_with");
-        var studentToAdd = todrag.text();
-        var studentToModify = $(this).data("name");
-        var i = classroom.updatePreference(
-                    studentToModify, studentToAdd, "avoid");
-        if (i == 0) {
-          $(this).append($(ui.draggable).clone());
-          loadTable(classroom);
-        }
-      }
-    });
-  });
-
-});
 
 function loadClassroomFromLocalStorage(classroom) {
   try {
@@ -287,5 +227,122 @@ function loadClassroomFromLocalStorage(classroom) {
     console.log('Could not load the classroom ' + e);
   }
 }
+
+/**
+  var textarea = document.getElementById("your_textarea");
+  detectPaste(textarea, function(pasteInfo) {
+  alert(pasteInfo.text);
+// pasteInfo also has properties for the start and end character
+// index and length of the pasted text
+});
+ **/
+$(document).ready(function() {
+  classroom = new Classroom();
+  
+  $(document).on('click', ".remove", function(e) {
+    console.log('user clicked remove');
+    var student_id = $(this).data('studentID');
+    var student_name = String(classroom.getStudentFromSID(student_id).name);
+    classroom.removeStudent(student_id);
+    for (var i = 0; i < classroom.getStudentCount(); i++) {
+      var student = classroom.getStudent(i);
+      classroom.removePreference(student.name, student_name, "avoid");
+      classroom.removePreference(student.name, student_name, "prefer");
+    }
+  });
+
+  $(document).on('click', ".removePreferTile", function(e) {
+    console.log('user clicked remove tile in prefer column');
+    var removal_name = $(this).closest('p').data('name');
+    var target_name = $(this).closest('td').data('name');
+    classroom.removePreference(target_name, removal_name, "prefer");
+  });
+
+  $(document).on('click', ".removeAvoidTile", function(e) {
+    console.log('user clicked remove tile in avoid column');
+    var removal_name = $(this).closest('p').data('name');
+    var target_name = $(this).closest('td').data('name');
+    classroom.removePreference(target_name, removal_name, "avoid");
+  });
+
+
+  document.getElementById("groupem_button").onclick = function () {
+    location.href = "group-view.html";
+  };
+
+  $(classroom).on('changestudents', function() {
+    localStorage.setItem('stored_classroom', JSON.stringify(classroom));
+    loadTable(classroom);
+  });
+
+  $(document).on('keyup', "#add_student_box", function(e) {
+    if (e.which == 13) {
+      parseStudentList();
+      $("#add_student_box").val("");
+    }
+  });
+
+  $(document).on('paste', "#add_student_box", function(e) {
+    var pastedata = $(this).val();
+  });
+
+  $("table").on('mouseenter',".student_name p",function() {
+    var todrag = $(this);
+    $(this).css( 'cursor', 'grabbing' );
+    todrag.draggable({ helper:'clone', revert: "invalid"});
+
+    $(".pair_with").droppable({
+      accept: "p",
+      drop: function(event, ui) {
+        console.log("item was dropped in pair_with column");
+        var studentToAdd = todrag.text();
+        console.log(this)
+        console.log($(this).data("id"))
+        var studentToModify = classroom.getStudentFromSID($(this).data("id"));
+        console.log(studentToModify)
+        var i = classroom.updatePreference(studentToModify, studentToAdd, "prefer");
+        if (i == 0) {
+          $(this).append($(ui.draggable).clone());
+          loadTable(classroom);
+        } else {
+          console.log('cannot update preferences')
+          //add feedback here
+        }
+      }
+    });
+    $(".dont_pair_with").droppable({
+      accept: "p",
+      drop: function(event,ui) {
+        console.log("item was dropped in dont_pair_with column");
+        var studentToAdd = todrag.text();
+        var studentToModify = $(this).data("name");
+        var i = classroom.updatePreference(studentToModify, studentToAdd, "avoid");
+        if (i == 0) {
+          $(this).append($(ui.draggable).clone());
+          loadTable(classroom);
+        } else {
+          console.log('cannot update preferences')
+          //add feedback here
+        }
+      }
+    });
+  });
+
+  //input student textbox
+  $("#add_student_box").data('holder', ADD_STUDENT_BOX_PLACEHOLDER)
+  $("#add_student_box").on('focus', function(){
+    $(this).attr('placeholder', '')
+  })
+  $("#add_student_box").on('focusout', function(){
+    $(this).attr('placeholder',  $(this).data('holder'));
+  })
+
+  loadClassroomFromLocalStorage(classroom);
+  loadTable(classroom);
+  $("#add_student_box").focus();
+
+});
+
+
 
 </script>

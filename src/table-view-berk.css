@@ -4,21 +4,6 @@ body, html {
   height: 100%;
 }
 
-/**
- * colors:
-   menu-background:;
-   suggested-text; #AAB1C3; 
-   empty-cell: #EFEDE7;
-   selected-background:
-*
-* FOR MENUS
-* background: #4C5365
-* text: white;
-* 
-* FOR HOVERS
-* color: #F39354;
-* background: #FED587;
- */
 table {
     margin: auto;
     width: 60%;
@@ -53,6 +38,10 @@ table td.student_name {
     width: 20%;
 }
 
+table td.delete_student {
+
+}
+
 table td {
     width: 38%;
     vertical-align: top;
@@ -69,7 +58,6 @@ table th {
     font-size: 22px;
     text-transform: lowercase;
     white-space: nowrap;
-    color: #AAB1C3; 
     -webkit-user-select: none; /* Chrome/Safari */        
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* IE10+ */
@@ -83,16 +71,14 @@ table th:nth-of-type(4) {
 }
 
 table td.remove {
-    width: 8%;
-    color: #4C5365;
+    width: 4%;
     vertical-align: middle;
     text-align: center;
-    background: #F39354;
+    background: "black";
 }
 
 table td.remove:hover {
-    color: #F39354;
-    background: #FED587;
+    color: red;
 }
 
 table td.remove:before {
@@ -123,6 +109,7 @@ table td p {
     background: #F47D31;
     color: white;
     white-space: nowrap;
+    cursor: -webkit-grab;
 }
 
 table td p span:after {
@@ -167,7 +154,7 @@ table tr:nth-of-type(4) td textarea {
     height: 80px;
     width: 200px;
     font: 28px Cabin;
-    background-color: #4C5365;
+    background-color: #00838F;
     color: white;
     border-radius: 4px;
     border-width: 0px;
@@ -175,25 +162,7 @@ table tr:nth-of-type(4) td textarea {
 }
 
 #groupem_button:hover{
-    background-color: #F39354;
-    color: #F39354;
-    background: #FED587;
+    background-color: #84FFFF;
+    text-color:black;
 }
 
-input[type=text], textarea {
-  -webkit-transition: all 0.10s ease-in-out;
-  -moz-transition: all 0.10s ease-in-out;
-  -ms-transition: all 0.10s ease-in-out;
-  -o-transition: all 0.10s ease-in-out;
-  outline: none;
-  padding: 3px 0px 3px 3px;
-  margin: 5px 1px 3px 0px;
-  /border: 1px solid #FED587*/
-}
- 
-input[type=text]:focus, textarea:focus {
-  box-shadow: 0 0 5px rgba(81, 203, 238, 1);
-  padding: 3px 0px 3px 3px;
-  margin: 5px 1px 3px 0px;
-  border: 1px solid #FED587; 
-}

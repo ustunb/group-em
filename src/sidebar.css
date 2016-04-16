@@ -7,7 +7,7 @@
 body{
   margin: 0;
   background: white; 
-  color: #00838F;
+  color: #4C5365;
   font-family: 'Cabin'; 
   /*background-image: url('../images/school.png');*/
 }
@@ -24,7 +24,7 @@ body{
   height: 100%;
   float: left;
   min-width: 200px;
-  background: #444444; 
+  background: #4C5365; 
   
 }
 
@@ -129,14 +129,17 @@ body{
   color: #ffffff;
 }
 #cssmenu > ul > li.active a {
-  background: #1b9bff;
-  background: #00BCD4; 
-  background: #0288D1;
-  background: #00838F;  
+  /*background: #1b9bff;*/
+  /*background: #00BCD4; */
+  /*background: #0288D1;*/
+  /*background: #00838F;*/
+  background: #4C5365;  
+  color: white;
 }
 #cssmenu > ul > li a:hover,
 #cssmenu > ul > li:hover a {
-  background:#0288D1;
+  background: #FED587;  
+  color: red;
 }
 #cssmenu li {
   position: relative;

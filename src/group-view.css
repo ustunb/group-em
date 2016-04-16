@@ -17,20 +17,20 @@ svg g.node text{
 }
 
 svg g.node circle {
-   fill:#0097A7;
+   fill:#444B5D;
    stroke: #004D40;
    stroke-width: 0px;
 }
 
 svg line.link {
    cursor: move;
-   stroke: #B2EBF2;
+   stroke: #EFEDE7;
    stroke-width: 75px;
    stroke-linecap: round;
 }
 
 svg line.join {
-   stroke: #A2DBE2;
+   stroke: #DBD8D3;
    stroke-width: 75px;
    stroke-linecap: round;
 }
@@ -52,7 +52,7 @@ svg line.breaking {
     height: 80px;
     width: 200px;
     font: 28px Cabin;
-    background-color: #00838F;
+    background-color: #4C5365;
     color: white;
     border-radius: 4px;
     border-width: 0px;
@@ -60,7 +60,8 @@ svg line.breaking {
 }
 
 #shuffle_button:hover{
-    background-color: #84FFFF;
-    text: black;
+    background-color: #F39354;
+    color: #F39354;
+    background: #FED587;
 }
 
