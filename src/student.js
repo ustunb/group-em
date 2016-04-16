@@ -20,7 +20,7 @@ function Student(name, id) {
     if (name.length < 1) throw new Error('name must contain at least 1 non-whitespace character');
     if (!(/[\w]+/.test(name))) throw new Error('name must contain at least 1 letter');
 
-    preferences = {
+    self.preferences = {
         'banned': [],
         'avoid': [],
         'prefer': [],
@@ -42,29 +42,41 @@ function Student(name, id) {
     }
 
     self.toString = function() {
-        return name + ' (sid: ' + id + ')';
+        var stringRep = 'name:' + name + '\n' +
+            'sid: ' + id + '\n' +
+            'prefers: ' + self.preferences['prefer'] + '\n' +
+            'avoid: ' + self.preferences['avoid'] + '\n' +
+            'pinned: ' + self.preferences['pinned'] + '\n' +
+            'banned: ' + self.preferences['banned']
+        return stringRep
+    }
+
+    //returns a copy of preference vector
+    self.getPreferences = function(prefType) {
+        if (prefType in self.preferences) {
+            return _.clone(self.preferences[prefType])
+        }
     }
 
     self.checkRep = function() {
         console.log('checkRep name: ' + self.name())
         console.log('checkRep id: ' + self.id())
-        if (_.includes(preferences['banned'], self.id())) throw new Error('ban list for student ' + id + 'includes own id')
-        if (_.includes(preferences['pinned'], self.id())) throw new Error('pin list for student ' + id + 'includes own id')
-        if (_.includes(preferences['prefer'], self.id())) throw new Error('prefer list for student ' + id + 'includes own id')
-        if (_.includes(preferences['avoid'], self.id())) throw new Error('avoid list for student ' + id + 'includes own id')
+        if (_.includes(self.getPreferences('banned'), self.id())) throw new Error('ban list for student ' + id + 'includes own id')
+        if (_.includes(self.getPreferences('pinned'), self.id())) throw new Error('pin list for student ' + id + 'includes own id')
+        if (_.includes(self.getPreferences('prefer'), self.id())) throw new Error('prefer list for student ' + id + 'includes own id')
+        if (_.includes(self.getPreferences('avoid'), self.id())) throw new Error('avoid list for student ' + id + 'includes own id')
     }
 
     self.addToPreferences = function(prefType, targetStudentID) {
         var update_flag = false;
-        if (prefType in preferences) {
-            // var targetID = targetStudent.id();
+        if (prefType in self.preferences) {
             if (targetStudentID != self.id()) {
-                if (!_.includes(preferences[prefType], targetStudentID)) {
-                    preferences[prefType].push(targetStudentID);
-                    preferences[prefType].sort();
+                if (!_.includes(self.preferences[prefType], targetStudentID)) {
+                    self.preferences[prefType].push(targetStudentID);
+                    self.preferences[prefType].sort();
                     update_flag = true;
-                    console.log(preferences)
-                    console.log(targetStudentID)
+                    console.log(targetStudentID);
+                    console.log(self.preferences);
                 }
             }
         }
@@ -74,14 +86,34 @@ function Student(name, id) {
 
     self.removeFromPreferences = function(prefType, targetStudentID) {
         var update_flag = false;
-        if (prefType in preferences) {
-            // var targetID = targetStudent.id()
+        if (prefType in self.preferences) {
             if (targetStudentID != self.id()) {
-                var idx = preferences[prefType].indexOf(targetStudentID);
+                var idx = self.preferences[prefType].indexOf(targetStudentID);
                 if (idx > -1) {
-                    preferences[prefType].splice(idx, 1);
+                    self.preferences[prefType].splice(idx, 1);
                     update_flag = true;
                 }
+            }
+        } else if (prefType == 'all'){
+            var idx = self.preferences['pinned'].indexOf(targetStudentID);
+            if (idx > -1) {
+                self.preferences['pinned'].splice(idx, 1);
+                update_flag = true;
+            }
+            var idx = self.preferences['banned'].indexOf(targetStudentID);
+            if (idx > -1) {
+                self.preferences['banned'].splice(idx, 1);
+                update_flag = true;
+            }
+            var idx = self.preferences['prefer'].indexOf(targetStudentID);
+            if (idx > -1) {
+                self.preferences['prefer'].splice(idx, 1);
+                update_flag = true;
+            }
+            var idx = self.preferences['avoid'].indexOf(targetStudentID);
+            if (idx > -1) {
+                self.preferences['avoid'].splice(idx, 1);
+                update_flag = true;
             }
         }
         self.checkRep()
@@ -90,14 +122,8 @@ function Student(name, id) {
 
     // returns true if pinned with another person
     self.isPinned = function() {
-        return preferences['pinned'].length > 0
+        return self.preferences['pinned'].length > 0
     }
 
-    //returns a copy of preference vector
-    self.getPreferences = function(prefType) {
-        if (prefType in preferences) {
-            return _.clone(preferences[prefType])
-        }
-    }
 
 }

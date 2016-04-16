@@ -49,15 +49,20 @@ function Classlist(studentArray) {
 
     // removes a student from this group 
     function remove(studentID) {
+        var update_flag = true;
         if (self.has(studentID)) {
             idx = studentIDs.indexOf(studentID);
             student = students.splice(idx, 1)[0];
             studentIDs.splice(idx, 1);
             value -= Math.pow(2, studentID);
             size--;
+            for (i = 0; i < size; i++) {
+                students[i].removeFromPreferences(studentID);
+            }
+            update_flag = true;
             checkRep();
-            return student;
         }
+        return update_flag;
     }
 
     // returns a copy of a student from this group
