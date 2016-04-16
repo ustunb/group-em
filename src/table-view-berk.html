@@ -278,8 +278,10 @@ $(document).ready(function() {
     loadTable(classroom);
   });
 
+
   $(document).on('keyup', "#add_student_box", function(e) {
-    if (e.which == 13) {
+      var charCode = event.which || event.keyCode;
+    if (charCode == '13'){
       parseStudentList();
       $("#add_student_box").val("");
     }
@@ -331,7 +333,7 @@ $(document).ready(function() {
     });
   });
 
-  //inpute classname textbox
+  //input classname textbox
   $("#classname_input").data('holder', ADD_CLASSNAME_PLACEHOLDER);
   $("#classname_input").on('focus', function(){
     $(this).attr('placeholder', '')
@@ -341,6 +343,15 @@ $(document).ready(function() {
   });
   $("#classname_input").attr('placeholder', ADD_CLASSNAME_PLACEHOLDER);
   
+  $(document).on('keyup', "#classname_input", function(e) {
+    var charCode = event.which || event.keyCode;
+    if (charCode == '13'){
+      console.log("hello")
+      $('input').blur();
+    }
+  });
+
+
   //input student textbox
   $("#add_student_box").data('holder', ADD_STUDENT_BOX_PLACEHOLDER)
   $("#add_student_box").on('focus', function(){

@@ -14,18 +14,34 @@ table {
 #classname_row {
     text-align: center;
     align-content: center;
-    padding-bottom: 2%;
+    padding-bottom: 5%;
     padding-top: 5%;
 }
 
 #classname_input {
+    border-radius: 5px;
     font: 36px Raleway;
     border-color: transparent;
-    box-shadow: inset 0px 0px 0px 0px red;;
     font-weight: bold;
     align-content: center;
     text-align:center;
-    color: #00838F;
+    color: #4C5365;
+      -webkit-transition: all 0.10s ease-in-out;
+    -moz-transition: all 0.10s ease-in-out;
+    -ms-transition: all 0.10s ease-in-out;
+    -o-transition: all 0.10s ease-in-out;
+    outline: none;
+    padding: 3px 0px 3px 3px;
+    margin: 5px 1px 3px 0px;
+    border: 1px #EFEDE7;
+}
+
+#classname_input:focus{
+    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    padding: 3px 0px 3px 3px;
+    margin: 5px 1px 3px 0px;
+    border: 1px solid #4C5365; 
+
 }
 
 #add_student_box {
@@ -35,9 +51,6 @@ table {
 }
 
 /*TABLE*/
-table td.student_name {
-    width: 20%;
-}
 
 
 table td {
@@ -49,24 +62,10 @@ table td {
     color: #00838F;
 }
 
-
-/*table headers*/
-table th {
-    width: 38%;
-    font-weight: normal;
-    font-size: 22px;
-    text-transform: lowercase;
-    white-space: nowrap;
-    -webkit-user-select: none; /* Chrome/Safari */        
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE10+ */
-}
-
-table th:nth-of-type(1) {
-    width: 20%;
-}
-table th:nth-of-type(4) {
-    width: 4%;
+table td.student_name {
+    width: 30%;
+    text-align: center;
+    vertical-align: middle;
 }
 
 table td.remove {
@@ -82,17 +81,32 @@ table td.remove:hover {
     background: #FED587;
 }
 
-table td.remove {
-    width: 8%;
-    color: #4C5365;
-    vertical-align: middle;
-    text-align: center;
-    background: #F39354;
-}
-
 table td.remove:before {
     font-family: FontAwesome;
     content: '\f014';
+}
+
+/*table headers*/
+table th {
+    width: 38%;
+    font-weight: normal;
+    font-size: 22px;
+    text-transform: lowercase;
+    white-space: nowrap;
+    -webkit-user-select: none; /* Chrome/Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+ */
+}
+
+table th:hover {
+    cursor: default;
+}
+
+table th:nth-of-type(1) {
+    width: 20%;
+}
+table th:nth-of-type(4) {
+    width: 4%;
 }
 
 table td p .fa-grip:before {
@@ -105,7 +119,6 @@ table td p .fa-grip:before {
 }
 
 table td p:hover .fa-grip:before {
-    color: yellow;
     cursor: -webkit-grab;
 }
 
@@ -131,8 +144,9 @@ table td p span:hover {
 }
 
 table td textarea {
-    width: 100%;
     font: 18px Raleway;
+    width: 100%;
+    
 }
 
 /* Make the textarea larger when it's the only thing. */
@@ -186,7 +200,7 @@ input[type=text], textarea {
   border: 1px #EFEDE7;
   /*/border: 1px solid #FED587*/*/
 }
- 
+
 input[type=text]:focus, textarea:focus {
   box-shadow: 0 0 5px rgba(81, 203, 238, 1);
   padding: 3px 0px 3px 3px;
