@@ -241,7 +241,7 @@ $(document).ready(function() {
 
   $("table").on('mouseenter',".student_name p",function() {
     var todrag = $(this);
-    $(this).css('cursor', 'grabbing');
+    $(this).css( 'cursor', 'pointer' );
     todrag.draggable({ helper:'clone', revert: "invalid"});
 
     $(".pair_with").droppable({

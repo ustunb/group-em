@@ -6,9 +6,11 @@
 <script src="../external_js/jquery-ui.js"></script>
 <script src="../src/classroom.js"></script>
 <link rel="stylesheet" href="../src/sidebar.css">
-<link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Cabin:400,700'>
+<!-- <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Cabin:400,700'> -->
+<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Raleway:400,300' rel='stylesheet' type='text/css'>
 <link rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
-<link rel='stylesheet' href="../src/table-view.css">
+<link rel='stylesheet' href="../src/table-view-berk.css">
 
 <body>
 
@@ -30,7 +32,7 @@
 <thead>
 <tr>
 <th id="classname_row" colspan="4">
-<input type="text" id="classname_input" placeholder="Enter Class Name"></input>
+<input type="text" id="classname_input"></input>
 </th>
 </tr>
 <tr>
@@ -57,7 +59,8 @@ group'em
 </body>
 
 <script>
-var ADD_STUDENT_BOX_PLACEHOLDER = "enter students"
+var ADD_CLASSNAME_PLACEHOLDER = "enter class name"
+var ADD_STUDENT_BOX_PLACEHOLDER = "enter students or copy/paste student list"
 var lastStudentID = 0;
 
 var parseStudentList = function() {
@@ -328,19 +331,29 @@ $(document).ready(function() {
     });
   });
 
+  //inpute classname textbox
+  $("#classname_input").data('holder', ADD_CLASSNAME_PLACEHOLDER);
+  $("#classname_input").on('focus', function(){
+    $(this).attr('placeholder', '')
+  });
+  $("#classname_input").on('focusout', function(){
+    $(this).attr('placeholder', $(this).data('holder'))
+  });
+  $("#classname_input").attr('placeholder', ADD_CLASSNAME_PLACEHOLDER);
+  
   //input student textbox
   $("#add_student_box").data('holder', ADD_STUDENT_BOX_PLACEHOLDER)
   $("#add_student_box").on('focus', function(){
     $(this).attr('placeholder', '')
-  })
+  });
   $("#add_student_box").on('focusout', function(){
     $(this).attr('placeholder',  $(this).data('holder'));
-  })
+  });
+  $("#add_student_box").attr('placeholder', ADD_STUDENT_BOX_PLACEHOLDER);
 
   loadClassroomFromLocalStorage(classroom);
   loadTable(classroom);
-  $("#add_student_box").focus();
-
+  
 });
 
 
