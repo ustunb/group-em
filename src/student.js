@@ -73,7 +73,7 @@ function Student(name, id) {
             if (targetStudentID != self.id()) {
                 if (!_.includes(self.preferences[prefType], targetStudentID)) {
                     self.preferences[prefType].push(targetStudentID);
-                    self.preferences[prefType].sort();
+                    //self.preferences[prefType].sort();
                     update_flag = true;
                     console.log(targetStudentID);
                     console.log(self.preferences);

@@ -148,16 +148,14 @@ function getTileHTML(name, type, tileID, tileClasses){
   return tileHTML
 }
 
-//class names
+//class names and IDs
+//tile_name_[SID1]: ID for tile with student SID1 in "student_name" column
 //tile_prefer_[SID1]_[SID2]: ID for tile with student SID2 in "prefer" column of student [SID1]
 //tile_avoid_[SID1]_[SID2]: ID for tile with student SID2 in "avoid" column of student [SID1]
 //class: tile_[SID] : class name for any tile student SID name on it 
 function addRow(student) {
   
-  // console.log("------ adding new row ------");
-
   //get new student ID
-  
   var studentID = student.id();
   var studentName = student.name();
   // console.log(student.toString())
@@ -315,6 +313,40 @@ $(document).ready(function() {
     }
   });
 
+  $(classroom).on('changestudents', function() {
+    localStorage.setItem('stored_classroom', JSON.stringify(classroom));
+    // updateTable(classroom);
+  });
+
+
+  //input classname textbox placeholder listeners
+  $("#classname_input").data('holder', ADD_CLASSNAME_PLACEHOLDER);
+  $("#classname_input").on('focus', function(){
+    $(this).attr('placeholder', '')
+  });
+  $("#classname_input").on('focusout', function(){
+    $(this).attr('placeholder', $(this).data('holder'))
+  });
+  $("#classname_input").attr('placeholder', ADD_CLASSNAME_PLACEHOLDER);
+  $(document).on('keyup', "#classname_input", function(e) {
+    var charCode = event.which || event.keyCode;
+    if (charCode == '13'){
+      console.log("hello")
+      $('input').blur();
+    }
+  });
+
+  //input student textbox placeholder listeners
+  $("#add_student_box").data('holder', ADD_STUDENT_BOX_PLACEHOLDER)
+  $("#add_student_box").on('focus', function(){
+    $(this).attr('placeholder', '')
+  });
+  $("#add_student_box").on('focusout', function(){
+    $(this).attr('placeholder',  $(this).data('holder'));
+  });
+  $("#add_student_box").attr('placeholder', ADD_STUDENT_BOX_PLACEHOLDER);
+
+  //group'em button listener
   document.getElementById("groupem_button").onclick = function () {
     if (classroom.getSize() > 0){
       location.href = "group-view.html";
@@ -323,10 +355,7 @@ $(document).ready(function() {
     }
   };
 
-  $(classroom).on('changestudents', function() {
-    localStorage.setItem('stored_classroom', JSON.stringify(classroom));
-    // updateTable(classroom);
-  });
+
 
   $(document).on('keyup', "#add_student_box", function(e) {
     var charCode = e.which || e.keyCode;
@@ -351,21 +380,16 @@ $(document).ready(function() {
     $(this).css( 'cursor', 'grabbing' );
     var todrag = $(this);
     var tileStudentID = todrag.parent().data("studentID")
-    console.log('PICKUP ID' + tileStudentID)
     todrag.draggable({'helper': 'clone', revert: true});
 
   $(".pair_with").droppable({
       accept: "p",
       drop: function(event, ui) {
         var rowStudentID = $(event.target).data("studentID");
-        console.log("DROP STUDENT ID: " + rowStudentID)
         console.log("tile for " + tileStudentID + " was dropped in pair_with column for student " + rowStudentID);
         if (rowStudentID != tileStudentID){
           var update_flag = classroom.getStudentFromID(rowStudentID).addToPreferences('prefer', tileStudentID);
               if (update_flag){
-                // console.log('updated preferences for student ' + rowStudentID)
-                // console.log(classroom.getStudentFromSID(rowStudentID).toString())
-                // $(this).append($(ui.draggable).clone());
                 updateTable(classroom);
               } else {
                 console.log('drop denied. preference must already exist.')
@@ -380,15 +404,11 @@ $(document).ready(function() {
       accept: "p",
       drop: function(event,ui) {
         var rowStudentID = $(this).data("studentID");
-        // console.log("tile for " + tileStudentID + " was dropped in pair_with column for student " + rowStudentID);
+        console.log("tile for " + tileStudentID + " was dropped in dont_pair_with column for student " + rowStudentID);
         if (rowStudentID != tileStudentID){
           var update_flag = classroom.getStudentFromID(rowStudentID).addToPreferences('avoid', tileStudentID);
               if (update_flag){
-                // console.log('updated preferences for student ' + rowStudentID)
-                // console.log(classroom.getStudentFromSID(rowStudentID).toString())
-                $(this).append($(ui.draggable).clone());
                 updateTable(classroom);
-                // console.log(rowStudent.toString())
               } else {
                 console.log('drop denied. preference must already exist.')
               }
@@ -432,10 +452,10 @@ $(document).ready(function() {
       accept: "p",
       drop: function(event,ui) {
         var targetStudentID = $(this).data("studentID");
-        console.log("tile for " + tileStudentID + " was picked up from " + sourceStudentID + " and dropped in pair_with column for student " + targetStudentID);
+        console.log("tile for " + tileStudentID + " was picked up from " + sourceStudentID + " and dropped in dont_pair_with column for student " + targetStudentID);
         if (targetStudentID != tileStudentID) {
           var successfulAddition = classroom.getStudentFromID(sourceStudentID).removeFromPreferences('prefer', tileStudentID);
-          var successfulRemoval = classroom.getStudentFromID(targetStudentID).addToPreferences('prefer', tileStudentID);
+          var successfulRemoval = classroom.getStudentFromID(targetStudentID).addToPreferences('avoid', tileStudentID);
               if (successfulAddition && successfulRemoval){
                 updateTable(classroom);
               } else {
@@ -498,44 +518,6 @@ $(document).ready(function() {
   });
 
 
-
-
-
-
-
-
-
-
-  
-
-
-  //input classname textbox placeholder listeners
-  $("#classname_input").data('holder', ADD_CLASSNAME_PLACEHOLDER);
-  $("#classname_input").on('focus', function(){
-    $(this).attr('placeholder', '')
-  });
-  $("#classname_input").on('focusout', function(){
-    $(this).attr('placeholder', $(this).data('holder'))
-  });
-  $("#classname_input").attr('placeholder', ADD_CLASSNAME_PLACEHOLDER);
-  $(document).on('keyup', "#classname_input", function(e) {
-    var charCode = event.which || event.keyCode;
-    if (charCode == '13'){
-      console.log("hello")
-      $('input').blur();
-    }
-  });
-
-
-  //input student textbox placeholder listeners
-  $("#add_student_box").data('holder', ADD_STUDENT_BOX_PLACEHOLDER)
-  $("#add_student_box").on('focus', function(){
-    $(this).attr('placeholder', '')
-  });
-  $("#add_student_box").on('focusout', function(){
-    $(this).attr('placeholder',  $(this).data('holder'));
-  });
-  $("#add_student_box").attr('placeholder', ADD_STUDENT_BOX_PLACEHOLDER);
 
   // loadClassroomFromLocalStorage(classroom);
   // loadTable(classroom);
