@@ -60,8 +60,21 @@ function Classlist(studentArray) {
         }
     }
 
-    function getMaxStudentID() {
-        return _.min(studentIDs)
+    // returns a copy of a student from this group
+    function getStudentFromID(studentID) {
+        if (self.has(studentID)) {
+            idx = studentIDs.indexOf(studentID);
+            return students[idx];
+            checkRep();
+        }
+    }
+
+    function getNextStudentID() {
+        if (size === 0){
+            return 1;
+        } else {
+            return _.max(studentIDs) + 1;
+        }    
     }
 
     //returns list of groups in current grouping
@@ -87,9 +100,11 @@ function Classlist(studentArray) {
     self.has = has;
     self.add = add;
     self.remove = remove;
-    self.equals = equals
-    self.getMaxStudentID = getMaxStudentID
-    self.toString = toString
+    self.equals = equals;
+    self.getStudentFromID = getStudentFromID;
+    self.getNextStudentID = getNextStudentID;
+    self.toString = toString;
+
 
     self.valueOf = function() {
         return value;

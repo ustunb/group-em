@@ -54,17 +54,17 @@ function Student(name, id) {
         if (_.includes(preferences['avoid'], self.id())) throw new Error('avoid list for student ' + id + 'includes own id')
     }
 
-    self.addToPreferences = function(prefType, targetStudent) {
+    self.addToPreferences = function(prefType, targetStudentID) {
         var update_flag = false;
         if (prefType in preferences) {
-            var targetID = targetStudent.id();
-            if (targetID != self.id()) {
-                if (!_.includes(preferences[prefType], targetID)) {
-                    preferences[prefType].push(targetID);
+            // var targetID = targetStudent.id();
+            if (targetStudentID != self.id()) {
+                if (!_.includes(preferences[prefType], targetStudentID)) {
+                    preferences[prefType].push(targetStudentID);
                     preferences[prefType].sort();
                     update_flag = true;
                     console.log(preferences)
-                    console.log(targetID)
+                    console.log(targetStudentID)
                 }
             }
         }
@@ -72,12 +72,12 @@ function Student(name, id) {
         return update_flag;
     }
 
-    self.removeFromPreferences = function(prefType, targetStudent) {
+    self.removeFromPreferences = function(prefType, targetStudentID) {
         var update_flag = false;
         if (prefType in preferences) {
-            var targetID = targetStudent.id()
-            if (targetID != self.id()) {
-                var idx = preferences[prefType].indexOf(targetID);
+            // var targetID = targetStudent.id()
+            if (targetStudentID != self.id()) {
+                var idx = preferences[prefType].indexOf(targetStudentID);
                 if (idx > -1) {
                     preferences[prefType].splice(idx, 1);
                     update_flag = true;

@@ -5,6 +5,7 @@
 <script src="../external_js/jquery-1.12.2.js"></script>
 <script src="../external_js/jquery-ui.js"></script>
 <script src="../src/classlist.js"></script>
+<script src="../src/student.js"></script>
 <link rel="stylesheet" href="../src/sidebar.css">
 <!-- <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Cabin:400,700'> -->
 <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
@@ -65,11 +66,14 @@ var lastStudentID = 0;
 
 var parseStudentList = function() {
   var student_list = $("#add_student_box").val();
-  console.log(student_list);
+  // console.log(student_list);
   student_list = student_list.replace(/\n/g, '1)(*3hf:Z');
   student_list = student_list.split('1)(*3hf:Z');
-  console.log(student_list);
-  var final_data = [];
+  
+  var studentArray = [];
+  var nextStudentID = classroom.getNextStudentID();
+  // console.log(nextStudentID);
+
   for (var i=0; i<student_list.length; i++) {
     var row_list = student_list[i].replace(/\t/g, '1)(*3hf:Z');
     row_list = row_list.split('1)(*3hf:Z');
@@ -77,47 +81,43 @@ var parseStudentList = function() {
     if (row_list.length == 1) {
       row_list[0] = row_list[0].replace(/;/g, ',');
       var name_list = row_list[0].split(",");
-      for (var k=0; k<name_list.length; k++){
-        final_data.push({name:name_list[k].trim(), prefer: [], avoid: []});
+      for (var k=0; k< name_list.length; k++){
+        var studentName = name_list[k].trim();
+        if (studentName.length > 0){
+          studentArray.push(new Student(studentName, nextStudentID));
+          nextStudentID++;
+        }
+      }
+    } else if (row_list.length == 2) {
+      studentArray.push(new Student(row_list[0], nextStudentID));
+      nextStudentID++;
+      // final_data.push({
+      //   name: row_list[0],
+      //    prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})
+      // });
+    } else {
+        studentArray.push(new Student(row_list[0], nextStudentID));
+        nextStudentID++;
+        //   name: row_list[0],
+      //    prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""}),
+      //    avoid:row_list[2].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})
+      // });
       }
     }
-    else if (row_list.length == 2) {
-      final_data.push({
-        name: row_list[0],
-         prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})
-      });
-    }
-    else {
-      final_data.push({
-        name: row_list[0],
-         prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""}),
-         avoid:row_list[2].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})
-      });
-    }
+  console.log(studentArray)
+  return studentArray;
+}
 
-  }
-  /**
-    student_list = student_list.replace(/\n/g, ',');
-    student_list = student_list.replace(/\t/g, ',');
-    student_list = student_list.replace(/;/g, ',');
-    var student_array = student_list.split(",");**/
-  for (var i = 0; i < final_data.length; i++) {
-    if (classroom.findStudentNamed(final_data[i].name.trim()) == null) {
-      if (final_data[i].name.trim() != "") {
-        classroom.addStudent({
-          name: final_data[i].name.trim(),
-           avoid: final_data[i].avoid,
-           prefer: final_data[i].prefer
-        });
-      }
-    }
-  }
-};
-
-var loadTable = function(classroom) {
+var updateTable = function(classroom) {
   $('table tbody').empty();
-  for (var i = 0; i < classroom.getStudentCount(); i++) {
-    addRow(classroom.getStudent(i));
+  if (classroom.getSize() > 0){
+    var studentArray = classroom.getStudents();
+    for (var i = 0; i < studentArray.length; i++) {
+      addRow(studentArray[i]);
+    }
+    $("groupem_button").prop('disabled', false)
+  } else {
+    $("groupem_button").prop('disabled', true)
   }
 }
 
@@ -143,11 +143,12 @@ function getTileHTML(name, type, tileID, tileClass){
 function addRow(student) {
   
   console.log("------ ADD ROW ------");
-  
-  lastStudentID++;
 
   //get new student ID
-  var studentID = lastStudentID;
+  
+  var studentID = student.id();
+  var studentName = student.name();
+  console.log(student.toString())
   
   //define IDs for table row and cell
   var rowID = "row_" + studentID;
@@ -170,23 +171,27 @@ function addRow(student) {
   $(row).append("<td class='dont_pair_with' id=" + avoidID + "></td>")
   $(row).append("<td class='remove' id=" + removeID + "></td>")
   
-  $(nameCell).append(getTileHTML(student.name))
-  for (i = 0; i < student.prefer.length; i++) {
-    var tileID = "tile_" + studentID + "_prefer_" + student.prefer[i].id
-    $(preferCell).append(getTileHTML(student.prefer[i], "prefer", tileID))
+  $(nameCell).append(getTileHTML(studentName))
+  var prefIDs = student.getPreferences('prefer')
+  for (i = 0; i < prefIDs; i++) {
+    var tileID = "tile_" + studentID + "_prefer_" + prefIDs[i];
+    $(preferCell).append(getTileHTML(prefIDs[i], "prefer", tileID));
+    $("#" + tileID).data('studentID', prefIDs[i]);
   }
 
-  for (i = 0; i < student.avoid.length; i++) {
-    var tileID = "tile_" + studentID + "_avoid_" + student.avoid[i].id
-    $(avoidCell).append(getTileHTML(student.avoid[i], "avoid", tileID))
+  var avoidIDs =  student.getPreferences('avoid')
+  for (i = 0; i < avoidIDs; i++) {
+    var tileID = "tile_" + studentID + "_avoid_" + avoidIDs[i];
+    $(avoidCell).append(getTileHTML(avoidIDs[i], "avoid", tileID));
+    $("#" + tileID).data('studentID', avoidIDs[i]);
   }
 
   //add data to all other elements
-  $(row).data("id", studentID)
-  $(preferCell).data('id', studentID)
-  $(nameCell).data("id", studentID)
-  $(avoidCell).data("id", studentID)
-  $(removeCell).data("id", studentID)
+  $(row).data("studentID", studentID)
+  $(preferCell).data('studentID', studentID)
+  $(nameCell).data("studentID", studentID)
+  $(avoidCell).data("studentID", studentID)
+  $(removeCell).data("studentID", studentID)
 
 }
 
@@ -224,7 +229,7 @@ function loadClassroomFromLocalStorage(classroom) {
     var json_classroom = JSON.parse(localStorage.getItem('stored_classroom'));
     var student_list = json_classroom.studentList;
     for (var s = 0; s < student_list.length; s++) {
-      classroom.setStudent(s, student_list[s]);
+      classroom.addStudent(new Student(s, student_list[s]));
     }
   } catch (e) {
     console.log('Could not load the classroom ' + e);
@@ -272,32 +277,26 @@ $(document).ready(function() {
     if (classroom.getSize() > 0){
       location.href = "group-view.html";
     } else {
-      alert("please add students")
+      alert("should not get here")
     }
   };
 
-// $("#groupem_button").hover(function () {
-//     if (classroom.getSize() > 0){
-//       console.log("valid hover")
-//     } else {
-//       $("#groupem_button").attr('background', 'black')
-//       $("#groupem_button").attr('color', 'black')
-//       console.log("invalid hover")
-//     }
-//   });
-
-
   $(classroom).on('changestudents', function() {
     localStorage.setItem('stored_classroom', JSON.stringify(classroom));
-    // loadTable(classroom);
+    // updateTable(classroom);
   });
-
 
   $(document).on('keyup', "#add_student_box", function(e) {
       var charCode = event.which || event.keyCode;
     if (charCode == '13'){
-      // parseStudentList();
+      console.log('user pressed enter on student box')
+      var studentArray = parseStudentList();
+      for (var i = 0; i < studentArray.length; i++){
+        classroom.add(studentArray[i]);
+      }
       $("#add_student_box").val("");
+      updateTable(classroom);
+      console.log(classroom)
     }
   });
 
@@ -314,18 +313,17 @@ $(document).ready(function() {
       accept: "p",
       drop: function(event, ui) {
         console.log("item was dropped in pair_with column");
-        var studentToAdd = todrag.text();
         console.log(this)
-        console.log($(this).data("id"))
-        var studentToModify = classroom.getStudentFromSID($(this).data("id"));
-        console.log(studentToModify)
-        var i = classroom.updatePreference(studentToModify, studentToAdd, "prefer");
-        if (i == 0) {
+        console.log($(this).data("studentID"))
+        var rowStudent = classroom.getStudentFromID($(this).data("studentID"));
+        var tileStudentID = todrag.parent().data("studentID")
+        console.log(tileStudentID);
+        var update_flag = rowStudent.addToPreferences('prefer', tileStudentID);
+        if (update_flag){
           $(this).append($(ui.draggable).clone());
-          loadTable(classroom);
+          updateTable(classroom);
         } else {
-          console.log('cannot update preferences')
-          //add feedback here
+          console.log('could not update preferences')
         }
       }
     });

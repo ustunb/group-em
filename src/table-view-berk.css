@@ -169,7 +169,6 @@ table tr:nth-of-type(4) td textarea {
     margin:auto;
 }
 
-
 input[type=text], textarea {
   -webkit-transition: all 0.10s ease-in-out;
   -moz-transition: all 0.10s ease-in-out;
@@ -188,7 +187,6 @@ input[type=text]:focus, textarea:focus {
   margin: 5px 1px 3px 0px;
   border: 1px solid #4C5365; 
 }
-
 
 #groupem_button {
     position: fixed;
