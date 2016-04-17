@@ -58,26 +58,25 @@ function Student(name, id) {
         }
     }
 
+    self.hasPreferenceFor = function(targetStudentID) {
+        for (var key in self.preferences){
+            if (_.includes(self.getPreferences(key), targetStudentID)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     self.checkRep = function() {
-        console.log('checkRep name: ' + self.name())
-        console.log('checkRep id: ' + self.id())
-        if (_.includes(self.getPreferences('banned'), self.id())) throw new Error('ban list for student ' + id + 'includes own id')
-        if (_.includes(self.getPreferences('pinned'), self.id())) throw new Error('pin list for student ' + id + 'includes own id')
-        if (_.includes(self.getPreferences('prefer'), self.id())) throw new Error('prefer list for student ' + id + 'includes own id')
-        if (_.includes(self.getPreferences('avoid'), self.id())) throw new Error('avoid list for student ' + id + 'includes own id')
+        if (self.hasPreferenceFor(self.id())) throw new Error ('preferences for student ' + self.id() + ' include own id');
     }
 
     self.addToPreferences = function(prefType, targetStudentID) {
         var update_flag = false;
         if (prefType in self.preferences) {
-            if (targetStudentID != self.id()) {
-                if (!_.includes(self.preferences[prefType], targetStudentID)) {
-                    self.preferences[prefType].push(targetStudentID);
-                    //self.preferences[prefType].sort();
-                    update_flag = true;
-                    console.log(targetStudentID);
-                    console.log(self.preferences);
-                }
+            if (!self.hasPreferenceFor(targetStudentID)){
+                self.preferences[prefType].push(targetStudentID);
+                update_flag = true;
             }
         }
         self.checkRep()
@@ -95,29 +94,15 @@ function Student(name, id) {
                     update_flag = true;
                 }
             }
-        } else if (prefType == 'all'){
+        } else if (prefType == 'all') {
             console.log('prefType' == 'all')
-            var idx = self.preferences['pinned'].indexOf(targetStudentID);
-            if (idx > -1) {
-                self.preferences['pinned'].splice(idx, 1);
-                update_flag = true;
+            for (var key in self.preferences){
+                var idx = self.preferences[key].indexOf(targetStudentID);
+                if (idx > -1) {
+                    self.preferences[key].splice(idx, 1);
+                    update_flag = true;
+                }
             }
-            var idx = self.preferences['banned'].indexOf(targetStudentID);
-            if (idx > -1) {
-                self.preferences['banned'].splice(idx, 1);
-                update_flag = true;
-            }
-            var idx = self.preferences['prefer'].indexOf(targetStudentID);
-            if (idx > -1) {
-                self.preferences['prefer'].splice(idx, 1);
-                update_flag = true;
-            }
-            var idx = self.preferences['avoid'].indexOf(targetStudentID);
-            if (idx > -1) {
-                self.preferences['avoid'].splice(idx, 1);
-                update_flag = true;
-            }
-            console.log(self.toString())
         }
         self.checkRep()
         return update_flag;

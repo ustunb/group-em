@@ -12,6 +12,9 @@ table {
     border-left: 1px solid #BCB8AD;
     border-right: 1px solid #BCB8AD;
     border-bottom: 1px solid #BCB8AD;
+    -webkit-user-select: none; /* Chrome/Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+ */
 }
 
 /*TABLE HEADERS*/
@@ -19,7 +22,7 @@ table th {
     text-align: center;
     content-align: center;
     font-weight: bold;
-    font-size: 22px;
+    font-size: 20px;
     text-transform: lowercase;
     white-space: nowrap;
     -webkit-user-select: none; /* Chrome/Safari */        
@@ -38,6 +41,7 @@ table th.student_name {
     border-left-style: hidden;
     border-right-style: hidden;
     border-bottom: 1px solid #BCB8AD;
+    padding-bottom: 0px;
 }
 
 table th.pair_with {
@@ -47,6 +51,7 @@ table th.pair_with {
     border-left-style: hidden;
     border-right-style: hidden;
     border-bottom: 1px solid #BCB8AD;
+    padding-bottom: 0px;
 }
 
 table th.dont_pair_with  {
@@ -215,6 +220,7 @@ table th textarea {
     width: 100%;
     font: 18px Raleway;
     height: 5em;
+    resize: none;
 }
 
 /* Make the textarea larger when it's the only thing. */
@@ -260,48 +266,126 @@ input[type=text]:focus, textarea:focus {
     border-top-style:hidden;
     border-left-style:hidden;
     border-right-style:hidden;
-    border-bottom: 1px solid #BCB8AD;
 }
 
 #classname_input {
-    border-radius: 5px;
     font: 36px Raleway;
-    border-color: transparent;
+    border-radius: 5px;
+    border-color: none;
     font-weight: bold;
     align-content: center;
     text-align:center;
     color: #4C5365;
+    outline: none;
+    border: 1px #EFEDE7;
     -webkit-transition: all 0.10s ease-in-out;
     -moz-transition: all 0.10s ease-in-out;
     -ms-transition: all 0.10s ease-in-out;
     -o-transition: all 0.10s ease-in-out;
-    outline: none;
-    padding: 3px 0px 3px 3px;
-    margin: 5px 1px 3px 0px;
-    border: 1px #EFEDE7;
-}
-
-#classname_input:focus{
-    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
-    padding: 3px 0px 3px 3px;
-    margin: 5px 1px 3px 0px;
-    border: 1px solid #4C5365; 
-
 }
 
 /* group'em button row */
 #button_row {
     text-align: center;
-    align-content: center;
-    padding-top: 10%;
     border-style: hidden;
+    white-space: nowrap;
+    align-content: bottom;
+    height: 4em;
 }
 
 /*group'em button*/
-#groupem_button {
+#button_container {
+    vertical-align: bottom;
+    width: 100%;
+    height: 4em;
+    position: relative;
+    bottom: 0%;
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+}
+
+#groupem_container {
+    border: 0px;
+    display:inline-block;
+    vertical-align: bottom;
+}
+
+#group_size_container {
+    border: 0px;
+    display:inline-block;
+    vertical-align: bottom;
+    color: white;
+    padding: 0px;
+}
+
+#increment_container {
+    border: 0px;
+    width: 30px;
+    height: 100%;
+    display: inline-block;
+    vertical-align: bottom;
+    font: FontAwesome 20px;
+}
+
+#increase_button_container {
+    display: block;
+    margin: 0px;
+    height: 50%;
+    vertical-align: top;
+    
+}
+
+#decrease_button_container{
+    display: block;
+    position:relative;
+    margin: 0px;
+    height:50%;
+}
+
+.increment_button {
+    display: block;
+    border-radius:5px;
+    font-size: 20px;
+    background-color: #4C5365;
+    border-width: 0px;
+    border-color: white;
+    pointer-events: all;
     text-align: center;
-    bottom: 5%;
-    height: 80px;
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    color: white;
+}
+
+.increment_button:focus {
+    border-color: white;
+    pointer-events: all;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    color: white;
+}
+
+#increase_group_size:before {
+    font-family: FontAwesome;
+    /*content: '\f055';*/
+    content: '\f067';
+}
+
+#decrease_group_size:before {
+    font-family: FontAwesome;
+    /*content: '\f055';*/
+    content: '\f068';
+}
+
+#groupem_button {
+    display: block;
+    text-align: center;
+    height: 100%;
     width: 200px;
     font: 28px Raleway;
     background-color: #4C5365;
@@ -311,6 +395,28 @@ input[type=text]:focus, textarea:focus {
     pointer-events: all;
 }
 
+#group_size_input {
+    display: block;
+    font: 40px Raleway;
+    text-align: center;
+    position:relative;
+    width: 80px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    border-width: 0px;
+    border-radius: 5px;
+    height:100%;
+    bottom: 0%;
+    background-color: #4C5365;
+}
+
+
 #groupem_button:hover{
     background-color: #F39354;
     color: #F39354;
@@ -319,7 +425,10 @@ input[type=text]:focus, textarea:focus {
 
 #groupem_button[disabled], groupem_button[disabled]:hover{
     cursor:not-allowed;
-    opacity: 0.65;
+    opacity: 0.30;
     background-color: #4C5365;
     color: white;
 }
+
+
+

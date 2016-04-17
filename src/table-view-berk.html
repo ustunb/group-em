@@ -14,7 +14,6 @@
 <link rel='stylesheet' href="../src/table-view-berk.css">
 
 <body>
-
 <div class="sidebar">
 <div style="position: relative; text-align: center; margin: 30px 0; height:150px; ">
 <img src="../images/logo_1.png" width=180 >
@@ -51,22 +50,33 @@
 </th>
 </tr>
 <tr>
+
 <th id="button_row" colspan="4">
-<button id="groupem_button" class="control_button" disabled>
-group'em
-</button>
+<div id="button_container">
+<div id="groupem_container">
+<button id="groupem_button" class="control_button" disabled>group'em</button>
+</div>
+<div id="group_size_container">
+<input id="group_size_input" placeholder="2"></input>
+</div>
+<div id="increment_container">
+<div id="increase_button_container"><button id="increase_group_size" class="increment_button"></button></div>
+<div id="decrease_button_container"><button id="decrease_group_size" class="increment_button"></button></div>
+</div>
+</div>
 </th>
+
 </tr>
 </tfoot>
 </table>
-
-
 </body>
 
 <script>
 var ADD_CLASSNAME_PLACEHOLDER = "enter class name"
 var ADD_STUDENT_BOX_PLACEHOLDER = "enter students or copy/paste student list"
+var REVERT_SPEED_DURATION = 500;
 
+//
 var parseStudentList = function() {
   var student_list = $("#add_student_box").val();
   // console.log(student_list);
@@ -111,6 +121,7 @@ var parseStudentList = function() {
   return studentArray;
 }
 
+//redraws table at each state change
 var updateTable = function(classroom) {
   $('table tbody').empty();
   if (classroom.getSize() > 0){
@@ -218,7 +229,6 @@ function addRow(student) {
   $(nameCell).data("studentID", studentID)
   $(avoidCell).data("studentID", studentID)
   $(removeCell).data("studentID", studentID)
-
 }
 
 //HANDLE COPY PASTING  http://stackoverflow.com/questions/3211505/detect-pasted-text-with-ctrlv-or-right-click-paste
@@ -318,7 +328,6 @@ $(document).ready(function() {
     // updateTable(classroom);
   });
 
-
   //input classname textbox placeholder listeners
   $("#classname_input").data('holder', ADD_CLASSNAME_PLACEHOLDER);
   $("#classname_input").on('focus', function(){
@@ -355,8 +364,6 @@ $(document).ready(function() {
     }
   };
 
-
-
   $(document).on('keyup', "#add_student_box", function(e) {
     var charCode = e.which || e.keyCode;
     if (charCode == '13'){
@@ -380,22 +387,23 @@ $(document).ready(function() {
     $(this).css( 'cursor', 'grabbing' );
     var todrag = $(this);
     var tileStudentID = todrag.parent().data("studentID")
-    todrag.draggable({'helper': 'clone', revert: true});
+    todrag.draggable({'helper': 'clone', 'revert': true, 'revertDuration': REVERT_SPEED_DURATION});
 
   $(".pair_with").droppable({
       accept: "p",
       drop: function(event, ui) {
-        var rowStudentID = $(event.target).data("studentID");
-        console.log("tile for " + tileStudentID + " was dropped in pair_with column for student " + rowStudentID);
-        if (rowStudentID != tileStudentID){
-          var update_flag = classroom.getStudentFromID(rowStudentID).addToPreferences('prefer', tileStudentID);
+        var targetStudentID = $(event.target).data("studentID");
+        console.log("tile for " + tileStudentID + " was dropped in pair_with column for student " + targetStudentID);
+        if (targetStudentID != tileStudentID){
+          var targetStudent = classroom.getStudentFromID(targetStudentID);
+            var update_flag = classroom.getStudentFromID(targetStudentID).addToPreferences('prefer', tileStudentID);
               if (update_flag){
                 updateTable(classroom);
               } else {
                 console.log('drop denied. preference must already exist.')
               }
         } else {
-          console.log('user tried to drop student in own preferences')
+          console.log('user tried to drop tile in invalid cell')
         }
       }
     });
@@ -403,17 +411,19 @@ $(document).ready(function() {
     $(".dont_pair_with").droppable({
       accept: "p",
       drop: function(event,ui) {
-        var rowStudentID = $(this).data("studentID");
-        console.log("tile for " + tileStudentID + " was dropped in dont_pair_with column for student " + rowStudentID);
-        if (rowStudentID != tileStudentID){
-          var update_flag = classroom.getStudentFromID(rowStudentID).addToPreferences('avoid', tileStudentID);
+        var targetStudentID = $(this).data("studentID");
+        console.log("tile for " + tileStudentID + " was dropped in dont_pair_with column for student " + targetStudentID);
+        if (targetStudentID != tileStudentID){
+          var targetStudent = classroom.getStudentFromID(targetStudentID);
+            var update_flag = classroom.getStudentFromID(targetStudentID).addToPreferences('avoid', tileStudentID);
               if (update_flag){
                 updateTable(classroom);
               } else {
                 console.log('drop denied. preference must already exist.')
               }
+          
         } else {
-          console.log('user tried to drop student in own preferences')
+          console.log('user tried to drop tile in invalid cell')
         }
       }
     });
@@ -516,8 +526,6 @@ $(document).ready(function() {
       }
     });
   });
-
-
 
   // loadClassroomFromLocalStorage(classroom);
   // loadTable(classroom);

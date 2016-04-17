@@ -79,11 +79,11 @@ function Classlist(studentArray) {
     }
 
     function getNextStudentID() {
-        if (self.size === 0){
+        if (self.size === 0) {
             return 1;
         } else {
             return _.max(self.studentIDs) + 1;
-        }    
+        }
     }
 
     //returns list of groups in current grouping
@@ -132,13 +132,13 @@ function Classlist(studentArray) {
     }
 
     //initialization
-    if (studentArray !=null) {
+    if (studentArray != null) {
         for (var i = 0; i < studentArray.length; i++) {
-        if (!self.add(studentArray[i])) {
-            throw new Error('student array should contain distinct students');
+            if (!self.add(studentArray[i])) {
+                throw new Error('student array should contain distinct students');
+            }
         }
-        }
-        checkRep();        
+        checkRep();
     }
 
 }
