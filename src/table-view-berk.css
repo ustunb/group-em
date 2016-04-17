@@ -239,26 +239,6 @@ table th:nth-of-type(4) th textarea {
     height: 8ex;
 }
 
-/*HIGHLIGHTING FOR CLASSNAME/NAME INPUT*/
-input[type=text], textarea {
-  -webkit-transition: all 0.10s ease-in-out;
-  -moz-transition: all 0.10s ease-in-out;
-  -ms-transition: all 0.10s ease-in-out;
-  -o-transition: all 0.10s ease-in-out;
-  outline: none;
-  padding: 3px 0px 3px 3px;
-  margin: 5px 1px 3px 0px;
-  border: 3px dashed #BCBAB4;
-  vertical-align: middle;
-}
-
-input[type=text]:focus, textarea:focus {
-
-  border: 3px solid #BCBAB4; 
-  box-shadow: 0 0 4px #BCBAB4;
-  padding: 3px 0px 3px 3px;
-  margin: 5px 1px 3px 0px;
-}
 
 /*CLASS NAME INPUT BOX*/ 
 #classname_row {
@@ -296,7 +276,9 @@ input[type=text]:focus, textarea:focus {
     height: 4em;
 }
 
-/*group'em button*/
+/*group'em button containers (for sizing and positioning)*/
+/*goal for positioning is:
+/[groupem_button, group_size_input, [increment_button; decrement_button]]*/
 #button_container {
     margin: auto;
     vertical-align: bottom;
@@ -310,84 +292,36 @@ input[type=text]:focus, textarea:focus {
 }
 
 #groupem_container {
-    border: 0px;
     display:inline-block;
     vertical-align: bottom;
 }
 
 #group_size_container {
-    border: 0px;
     display:inline-block;
     vertical-align: bottom;
-    color: white;
-    padding: 0px;
 }
 
 #increment_container {
-    border: 0px;
+    display: inline-block;
     width: 30px;
     height: 100%;
-    display: inline-block;
     vertical-align: bottom;
-    font: FontAwesome 20px;
 }
 
 #increase_button_container {
     display: block;
-    margin: 0px;
     height: 50%;
     vertical-align: top;
-    
 }
 
 #decrease_button_container{
     display: block;
-    position:relative;
-    margin: 0px;
     height:50%;
+    vertical-align: bottom;
 }
 
-.increment_button {
-    display: block;
-    border-radius:5px;
-    font-size: 20px;
-    background-color: #4C5365;
-    border-width: 0px;
-    border-color: white;
-    pointer-events: all;
-    text-align: center;
-    width: 100%;
-    height: 100%;
-    padding: 0px;
-    margin: 0px;
-    color: white;
-}
-
-.increment_button:focus {
-    border-color: white;
-    pointer-events: all;
-    text-align: center;
-    width: 100%;
-    height: 100%;
-    padding: 0px;
-    margin: 0px;
-    color: white;
-}
-
-#increase_group_size:before {
-    font-family: FontAwesome;
-    /*content: '\f055';*/
-    content: '\f067';
-}
-
-#decrease_group_size:before {
-    font-family: FontAwesome;
-    /*content: '\f055';*/
-    content: '\f068';
-}
-
+/*group'em button objects for content and behavior */
 #groupem_button {
-    display: block;
     text-align: center;
     height: 100%;
     width: 200px;
@@ -399,27 +333,18 @@ input[type=text]:focus, textarea:focus {
     pointer-events: all;
 }
 
-#group_size_input {
-    display: block;
-    font: 40px Raleway;
-    text-align: center;
-    position:relative;
-    width: 80px;
-    margin-bottom: 0px;
-    margin-top: 0px;
-    margin-left: 0px;
-    margin-right: 0px;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    padding-left: 0px;
-    padding-right: 0px;
-    border-width: 0px;
-    border-radius: 5px;
-    height:100%;
-    bottom: 0%;
-    background-color: #4C5365;
-}
+/*#groupem_button:before {
+    font-family: FontAwesome;
+    content: '\f0c0 \00a0';
+}*/
 
+
+#groupem_button[disabled], groupem_button[disabled]:hover{
+    /*cursor: not-allowed;*/
+    opacity: 0.30;
+    background-color: #4C5365;
+    color: white;
+}
 
 #groupem_button:hover{
     background-color: #F39354;
@@ -427,12 +352,96 @@ input[type=text]:focus, textarea:focus {
     background: #FED587;
 }
 
-#groupem_button[disabled], groupem_button[disabled]:hover{
-    cursor:not-allowed;
-    opacity: 0.30;
+/*group_size*/
+#group_size_input {
+    -webkit-transition: all 0.10s ease-in-out;
+    -moz-transition: all 0.10s ease-in-out;
+    -ms-transition: all 0.10s ease-in-out;
+    -o-transition: all 0.10s ease-in-out;
+    display: block;
+    font: 32px Raleway;
+    text-align: center;
+    position:relative;
+    width: 80px;
+    border-radius: 5px;
+    height:100%;
+    bottom: 0%;
+    background-color: white;
+    border: 3px solid #BCBAB4;
+    color: #4C5365;
+    outline: none;
+}
+
+input[type=number]:{ 
+    -webkit-appearance: none;
+}
+
+input[type=number]::-webkit-inner-spin-button:focus  input[type=number]::-webkit-inner-spin-button:hover{ 
+    /*-webkit-appearance: none;*/
+    cursor:pointer;
+    display:block;
+    width:20px;
+    padding: 0px;
+    margin: 0px;
+    color: #333;
+    text-align:right;
+    position:relative;
+}    
+
+
+/*increments*/
+.increment_button {
+    display: block;
+    font-family: FontAwesome;
+    font-size: 20px;
+    border-radius: 5px;
     background-color: #4C5365;
+    border-width: 0px;
+    border-color: white;
+    pointer-events: all;
+    text-align: center;
+    width: 100%;
+    height: 100%;
     color: white;
 }
 
+#increase_group_size:before {
+    content: '\f067';
+}
 
+#decrease_group_size:before {
+    content: '\f068';
+}
 
+/*FOCUS EFFECTS FOR TEXT INPUT ELEMENTS */
+input[type=text], textarea {
+  -webkit-transition: all 0.10s ease-in-out;
+  -moz-transition: all 0.10s ease-in-out;
+  -ms-transition: all 0.10s ease-in-out;
+  -o-transition: all 0.10s ease-in-out;
+  outline: none;
+  padding: 3px 0px 3px 3px;
+  margin: 5px 1px 3px 0px;
+  border: 3px dashed #BCBAB4;
+  vertical-align: middle;
+}
+
+input[type=text]:focus, textarea:focus{
+  /*border: 3px solid #BCBAB4; */
+/*box-shadow: 0 0 4px #BCBAB4;*/
+  /*border: 3px solid #CC99FF;*/
+  /*border: 0px;*/
+  box-shadow: 0 0 5px #BCBAB4;
+  background: #f9efec;
+  padding: 3px 0px 3px 3px;
+  margin: 5px 1px 3px 0px;
+}
+
+#group_size_input:focus {
+    -webkit-appearance:none;
+  border: 0px;
+  box-shadow: 0 0 5px #BCBAB4; 
+  background: #f9efec;
+  /*padding: 3px 0px 3px 3px;*/
+  /*margin: 5px 1px 3px 0px;*/
+}

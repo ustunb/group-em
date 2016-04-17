@@ -57,12 +57,12 @@
 <button id="groupem_button" class="control_button" disabled>group'em</button>
 </div>
 <div id="group_size_container">
-<input id="group_size_input" placeholder="2"></input>
+<input id="group_size_input" type="number" min="2" max="10"></input>
 </div>
-<div id="increment_container">
+<!-- <div id="increment_container">
 <div id="increase_button_container"><button id="increase_group_size" class="increment_button"></button></div>
 <div id="decrease_button_container"><button id="decrease_group_size" class="increment_button"></button></div>
-</div>
+</div> -->
 </div>
 </th>
 
@@ -75,6 +75,8 @@
 var ADD_CLASSNAME_PLACEHOLDER = "enter class name"
 var ADD_STUDENT_BOX_PLACEHOLDER = "enter students or copy/paste student list"
 var REVERT_SPEED_DURATION = 500;
+var MIN_STUDENTS_PER_GROUP = 2;
+var MAX_STUDENTS_PER_GROUP = Number.POSITIVE_INFINITY
 
 //
 var parseStudentList = function() {
@@ -121,19 +123,28 @@ var parseStudentList = function() {
   return studentArray;
 }
 
-//redraws table at each state change
-var updateTable = function(classroom) {
-  $('table tbody').empty();
-  if (classroom.getSize() > 0){
-    // console.log(classroom.toString())
-    var studentArray = classroom.getStudents();
-    for (var i = 0; i < studentArray.length; i++) {
-      addRow(studentArray[i]);
-    }
+
+//disables group'em button if students/group > students in class
+var updateGroupemButton = function(classroom){
+  console.log('students per group: ' + students_per_group)
+  var students_per_group = $("#group_size_input").data('students_per_group');
+  if (students_per_group <= classroom.getSize()){
     $("#groupem_button").prop('disabled', false);
   } else {
     $("#groupem_button").prop('disabled', true);
   }
+}
+
+//redraws table at each state change
+var updateTable = function(classroom) {
+  $('table tbody').empty();
+  if (classroom.getSize() > 0){
+    var studentArray = classroom.getStudents();
+    for (var i = 0; i < studentArray.length; i++) {
+      addRow(studentArray[i]);
+    }
+  }
+  updateGroupemButton(classroom);
 }
 
 function getTileHTML(name, type, tileID, tileClasses){
@@ -525,9 +536,52 @@ $(document).ready(function() {
     });
   });
 
-  // loadClassroomFromLocalStorage(classroom);
-  // loadTable(classroom);
+  /*group size input*/
+  $("#decrease_group_size").click(function(){
+    var students_per_group = $("#group_size_input").data('students_per_group');
+    var new_students_per_group = Math.max(students_per_group - 1, MIN_STUDENTS_PER_GROUP)
+    $("#group_size_input").data('students_per_group', new_students_per_group);
+    $("#group_size_input").attr('value', new_students_per_group);
+    updateGroupemButton(new_students_per_group);
+  })
+
+  $("#increase_group_size").click(function(){
+    var students_per_group = $("#group_size_input").data('students_per_group');
+    var new_students_per_group = Math.min(students_per_group + 1, MAX_STUDENTS_PER_GROUP);
+    var new_students_per_group = Math.min(new_students_per_group, classroom.getSize());
+    $("#group_size_input").data('students_per_group', new_students_per_group);
+    $("#group_size_input").attr('value', new_students_per_group);
+    updateGroupemButton(new_students_per_group)
+  })
+
+  isValidStudentsPerGroup = function(group_size){
+    var typeOK = (typeof group_size === 'number') && (group_size % 1 === 0);
+    var sizeOK = (group_size >= MIN_STUDENTS_PER_GROUP) && (group_size <= MAX_STUDENTS_PER_GROUP);
+    return typeOK && sizeOK
+  }
+
+  $("#group_size_input").on('focus', function(){
+    $(this).attr('value', '')
+  });
+
+  $("#group_size_input").on('focusout', function(){
+    var proposed_group_size = $(this).attr('value');
+    if (isValidStudentsPerGroup(proposed_group_size)){
+      $(this).attr('value', proposed_group_size);
+      $(this).data('students_per_group',proposed_group_size);
+    }
+  });
   
+  $("#group_size_input").data('students_per_group', MIN_STUDENTS_PER_GROUP)
+  $("#group_size_input").attr('value',MIN_STUDENTS_PER_GROUP)
+  $("#group_size_input").on('keyup',  function(e) {
+    var charCode = e.which || e.keyCode;
+    if (charCode == 13){
+      console.log('user pressed enter on group_size_input')
+      $('input').blur();
+    }
+  });
+
 });
 
 </script>
