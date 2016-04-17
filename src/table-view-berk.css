@@ -426,7 +426,7 @@ input[type=text], textarea {
   vertical-align: middle;
 }
 
-input[type=text]:focus, textarea:focus{
+input[type=text]:focus {
   /*border: 3px solid #BCBAB4; */
 /*box-shadow: 0 0 4px #BCBAB4;*/
   /*border: 3px solid #CC99FF;*/
@@ -435,6 +435,16 @@ input[type=text]:focus, textarea:focus{
   background: #f9efec;
   padding: 3px 0px 3px 3px;
   margin: 5px 1px 3px 0px;
+}
+
+textarea:focus {
+  /*border: 3px solid #BCBAB4; */
+/*box-shadow: 0 0 4px #BCBAB4;*/
+  /*border: 3px solid #CC99FF;*/
+  border: none;
+  box-shadow: 0 0 5px #BCBAB4;
+  background: #f9efec;
+  position: relative;
 }
 
 #group_size_input:focus {

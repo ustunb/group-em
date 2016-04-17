@@ -394,6 +394,7 @@ $(document).ready(function() {
   //drag and drop behavior for name tiles
   $("table").on('mouseenter',".tile_name", function() {
     $(this).css( 'cursor', 'grabbing' );
+    $(this).css( 'cursor', 'grabbing' );
     var todrag = $(this);
     var tileStudentID = todrag.parent().data("studentID")
     todrag.draggable({'helper': 'clone', 'revert': true, 'revertDuration': REVERT_SPEED_DURATION});
