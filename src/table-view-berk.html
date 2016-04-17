@@ -298,9 +298,8 @@ $(document).ready(function() {
   });
 
   $(document).on('click', ".removePreferTile", function(e) {
-    console.log('user clicked remove tile in prefer column');
-    var rowStudentID = $(this).closest('p').data('studentID');
-    var tileStudentID = $(this).closest('p').data('targetID');
+    var rowStudentID = $(this).closest('td').data('studentID');
+    var tileStudentID = $(this).closest('p').data('studentID');
     var rowStudent = classroom.getStudentFromID(rowStudentID)
     var update_flag = rowStudent.removeFromPreferences('prefer', tileStudentID);
     if (update_flag){
@@ -312,8 +311,8 @@ $(document).ready(function() {
 
   $(document).on('click', ".removeAvoidTile", function(e) {
     console.log('user clicked remove tile in avoid column');
-    var rowStudentID = $(this).closest('p').data('studentID');
-    var tileStudentID = $(this).closest('p').data('targetID');
+    var rowStudentID = $(this).closest('td').data('studentID');
+    var tileStudentID = $(this).closest('p').data('studentID');
     var rowStudent = classroom.getStudentFromID(rowStudentID)
     var update_flag = rowStudent.removeFromPreferences('avoid', tileStudentID);
     if (update_flag){
