@@ -22,7 +22,7 @@ table th {
     text-align: center;
     content-align: center;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 28px;
     text-transform: lowercase;
     white-space: nowrap;
     -webkit-user-select: none; /* Chrome/Safari */        
@@ -65,7 +65,7 @@ table th.dont_pair_with  {
 }
 
 table th.remove {
-    width: 10%;
+    width: 12%;
     border-top-style: hidden;
     border-left-style: hidden;
     border-right-style: hidden;
@@ -94,7 +94,8 @@ table td.student_name {
 }
 
 table td.remove {
-    width: 10%;
+    width: 12%;
+    font-size:18px;
     vertical-align: middle;
     text-align: center;
 /*    background: #F39354;
@@ -123,7 +124,7 @@ table td.remove:hover {
 
 table td.remove:before {
     font-family: FontAwesome;
-    font-size: 22px;
+    font-size: 18px;
     content: '\f014';
 }
 
@@ -248,9 +249,11 @@ input[type=text], textarea {
   padding: 3px 0px 3px 3px;
   margin: 5px 1px 3px 0px;
   border: 3px dashed #BCBAB4;
+  vertical-align: middle;
 }
 
 input[type=text]:focus, textarea:focus {
+
   border: 3px solid #BCBAB4; 
   box-shadow: 0 0 4px #BCBAB4;
   padding: 3px 0px 3px 3px;
@@ -295,9 +298,10 @@ input[type=text]:focus, textarea:focus {
 
 /*group'em button*/
 #button_container {
+    margin: auto;
     vertical-align: bottom;
     width: 100%;
-    height: 4em;
+    height: 80px;
     position: relative;
     bottom: 0%;
     margin: 0px;
