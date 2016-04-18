@@ -55,10 +55,10 @@ function Grouping(classroom, students_per_group) {
 
     var self = this;
     //randomly generated groups
-    students_per_group = students_per_group; //number of students per pool
-    random_groups = [];
-    pinned_groups = []; //explicitly enforced groups
-    //banned_groups = []; //explicitly banned groups
+    var students_per_group = students_per_group; //number of students per pool
+    var random_groups = [];
+    var pinned_groups = []; //explicitly enforced groups
+    var banned_groups = []; //explicitly banned groups
 
     //get number of groups in the current grouping
     function getNumberOfGroups() {
@@ -143,7 +143,7 @@ function Grouping(classroom, students_per_group) {
 
     //returns a String representation fo object for debugging
     function toString() {
-        var groupString = []
+        var groupString = [];
         groupString.push('-'.repeat(60));
         groupString.push('Randomly Generated Groups');
         groupString.push('-'.repeat(60));
@@ -164,7 +164,7 @@ function Grouping(classroom, students_per_group) {
 
     function getStudents() {
         var studentArray = getGroups().map(function(group) {
-            return group.getStudents()
+            return group.getStudents();
         });
         return _.flatten(studentArray)
     }
@@ -241,6 +241,7 @@ function Grouping(classroom, students_per_group) {
         return true;
     }
 
+
     //public methods
     self.getNumberOfGroups = getNumberOfGroups;
     self.getNumberOfStudents = getNumberOfStudents;
@@ -255,14 +256,77 @@ function Grouping(classroom, students_per_group) {
     self.assignStudentToGroup = assignStudentToGroup;
     self.pinGroup = pinGroup
     self.unpinGroup = unpinGroup
-        // self.banGroup = banGroup
-        //self.unbanGroup = unbanGroup
+    // self.banGroup = banGroup
+    //self.unbanGroup = unbanGroup
+        
+    self.toJSON = function() {
+        var jsonGrouping = {};
+        jsonGrouping['students_per_group'] = students_per_group;
+        jsonGrouping['random_groups'] = [];
+        for (var i = 0; i < random_groups.length; i++) {
+            jsonGrouping['random_groups'].push(random_groups[i].toJSON());
+        }
+        jsonGrouping['pinned_groups'] = [];
+        for (var i = 0; i < pinned_groups.length; i++) {
+            jsonGrouping['pinned_groups'].push(pinned_groups[i].toJSON());
+        }
+        jsonGrouping['banned_groups'] = [];
+        for (var i = 0; i < banned_groups.length; i++) {
+            jsonGrouping['banned_groups'].push(banned_groups[i].toJSON());
+        } 
+        return JSON.stringify(jsonGrouping);
+    }
+
+    self.fromJSON = function(jsonGrouping) {
+        var obj = JSON.parse(jsonGrouping);
+        students_per_group = parseInt(obj.students_per_group);
+
+        //create groups by parsing each individually from JSON
+        random_groups = [];
+        for (var i = 0; i < obj.random_groups.length; i++) {
+            var group = new Group();
+            random_groups.push(group.fromJSON(JSON.parse(obj.random_groups[i])));
+        }
+        pinned_groups = [];
+        for (var i = 0; i < obj.pinned_groups.length; i++) {
+            var group = new Group();
+            pinned_groups.push(group.fromJSON(JSON.parse(obj.pinned_groups[i])));
+        }
+        banned_groups = [];
+        for (var i = 0; i < obj.banned_groups.length; i++) {
+            var group = new Group();
+            banned_groups.push(group.fromJSON(JSON.parse(obj.banned_groups[i])));
+        }
+        return true
+    }
+
+
+    function fromJSON(){
+        var jsonGrouping = {};
+        jsonGrouping['students_per_group'] = students_per_group;
+        jsonGrouping['random_groups'] = [];
+        for (var i = 0; i < random_groups.length; i++) {
+            jsonGrouping['random_groups'].push(random_groups[i].toJSON());
+        }
+        for (var i = 0; i < pinned_groups.length; i++) {
+            jsonGrouping['pinned_groups'].push(pinned_groups[i].toJSON());
+        }
+        for (var i = 0; i < banned_groups.length; i++) {
+            jsonGrouping['banned_groups'].push(banned_groups[i].toJSON());
+        }
+        return JSON.stringify(jsonGrouping);
+
+
+    }
 
     //initialize
     console.log(new Group(classroom.getStudents()))
     random_groups.push(new Group(classroom.getStudents()));
     self.shuffle();
     checkRep();
+
+
+
 }
 
 

@@ -296,32 +296,38 @@ table th:nth-of-type(4) th textarea {
     border: 0px;
 }
 
-#groupem_container {
+#button_container {
     display:inline-block;
-    vertical-align: bottom;
+    vertical-align: middle;
+    height: 95%;
 }
 
 #group_size_container {
     display:inline-block;
-    vertical-align: bottom;
+    vertical-align: middle;
+    height: 95%;
 }
 
 #increment_container {
     display: inline-block;
     width: 30px;
     height: 100%;
-    vertical-align: bottom;
+    vertical-align: middle;
 }
 
 #increase_button_container {
     display: block;
-    height: 50%;
+    height: 45%;
+    padding-top: 10%;
+    padding-bottom: 5%;
     vertical-align: top;
 }
 
 #decrease_button_container{
     display: block;
-    height:50%;
+    height: 45%;
+    padding-bottom: 10%;
+    padding-top: 5%;
     vertical-align: bottom;
 }
 

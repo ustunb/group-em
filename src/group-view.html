@@ -53,30 +53,36 @@
 
 <script>
 
-/*
-localStorage.classroom contains a JSON string that can be initialized from Classlist.js
-{
-   "studentList": [
-     {"name":"Alice","avoid":[],"prefer":[],"sid":0},
-     {"name":"Bob","avoid":[],"prefer":[],"sid":1},
-     {"name":"Cory","avoid":[],"prefer":[],"sid":2},
-     {"name":"Dana","avoid":[],"prefer":[],"sid":3}
-   ]
-}"
-*/
 var MIN_STUDENTS_PER_GROUP = 2;
 var MAX_STUDENTS_PER_GROUP = Number.POSITIVE_INFINITY;
 
 var classroom = new Classlist();
-var storedClassroom = localStorage.getItem('classroom');
-classroom.fromJSON(storedClassroom);
-console.log(classroom.toString());
-console.log('stored students per group')
-console.log(localStorage.getItem('students_per_group'));
-var studentsPerGroup = parseInt(localStorage.getItem('students_per_group'));
 
-// create random pairs of students
-var grouping = new Grouping(classroom, studentsPerGroup);
+/*load data from localStorage*/
+var storedClassroom = localStorage.getItem('classroom');
+if (storedClassroom != null){
+  console.log('loading classroom grom local storage')
+  classroom.fromJSON(storedClassroom);
+  console.log(classroom.toString());
+  console.log(localStorage.getItem('students_per_group'));
+}
+
+var storedStudentsPerGroup = parseInt(localStorage.getItem('students_per_group'));
+if (storedStudentsPerGroup != null){
+  $("#group_size_input").data('students_per_group', storedStudentsPerGroup);
+  $("#group_size_input").attr('value', storedStudentsPerGroup);
+} else {
+  $("#group_size_input").data('students_per_group', MIN_STUDENTS_PER_GROUP);
+  $("#group_size_input").attr('value', MIN_STUDENTS_PER_GROUP);
+}
+
+var updateLocalStorage = function(grouping){
+  
+}
+
+
+//create random pairs of students
+var grouping = new Grouping(classroom, $("#group_size_input").data('students_per_group'));
 var assignments = grouping.getGroups();
 var students = grouping.getStudents();
 
@@ -96,7 +102,7 @@ console.log(assignments)
 console.log('students')
 console.log(students)
 console.log('studentsPerGroup')
-console.log(studentsPerGroup)
+// console.log($("#group_size_input").data('students_per_group'))
 
 // add join listener
 $(layout).on('join', function(e) {
@@ -177,10 +183,6 @@ $("#group_size_input").on('input', function(e) {
     $('#group_size_input').blur();
   }
 })
-
-$("#group_size_input").data('students_per_group', studentsPerGroup);
-$("#group_size_input").attr('value', studentsPerGroup);
-
 
 
 </script>
