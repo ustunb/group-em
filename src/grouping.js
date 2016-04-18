@@ -235,6 +235,11 @@ function Grouping(classroom, students_per_group) {
         return _.concat(random_groups, pinned_groups);
     }
 
+    function setStudentsPerGroup(new_students_per_group) {
+        students_per_group = new_students_per_group;
+        checkRep();
+        return true;
+    }
 
     //public methods
     self.getNumberOfGroups = getNumberOfGroups;
@@ -243,6 +248,7 @@ function Grouping(classroom, students_per_group) {
     self.getStudents = getStudents;
     self.getPinnedGroups = getPinnedGroups;
     self.getRandomGroups = getRandomGroups;
+    self.setStudentsPerGroup = setStudentsPerGroup;
     self.toString = toString;
     self.getGroupIDOf = getGroupIDOf;
     self.shuffle = shuffle;
@@ -253,13 +259,8 @@ function Grouping(classroom, students_per_group) {
         //self.unbanGroup = unbanGroup
 
     //initialize
-    var studentList = classroom.getStudentListForGrouping()
-    var sid = 1
-    for (var i = 0; i < studentList.length; i++) {
-        random_groups.push(new Group([new Student(studentList[i].name(), sid)]));
-        sid++;
-    }
-    console.log("HELLO")
+    console.log(new Group(classroom.getStudents()))
+    random_groups.push(new Group(classroom.getStudents()));
     self.shuffle();
     checkRep();
 }

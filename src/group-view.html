@@ -5,7 +5,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="../src/sidebar.css">
-<link href='https://fonts.googleapis.com/css?family=Cabin:400,700' rel='stylesheet' type='text/css'>
+<!-- <link href='https://fonts.googleapis.com/css?family=Cabin:400,700' rel='stylesheet' type='text/css'> -->
+<link href='https://fonts.googleapis.com/css?family=Raleway:400,300' rel='stylesheet' type='text/css'>
 <link rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
 <link rel='stylesheet' href='../src/group-view.css'>
 
@@ -25,14 +26,28 @@
 </div>
 </div>
 
-<div id = "control_div">
-<button id="shuffle_button" type="button">shuffle</button>
+
+
+
+<div id="control_container">
+<div id="button_container">
+<button id="shuffle_button" class="control_button" type="button">shuffle</button>
 </div>
+<div id="group_size_container">
+<input id="group_size_input" disabled></input>
+</div>
+<div id="increment_container">
+<div id="increase_button_container"><button id="increase_group_size" class="increment_button control_button"></button></div>
+<div id="decrease_button_container"><button id="decrease_group_size" class="increment_button control_button"></button></div>
+</div>
+</div>
+
 
 <script src="../external_js/lodash.js"></script>
 <script src="../external_js/d3.js"></script>
 <script src="../external_js/jquery-1.12.2.js"></script>
-<script src="../src/classroom.js"></script>
+
+<script src="../src/classlist.js"></script>
 <script src="../src/student.js"></script>
 <script src="../src/group.js"></script>
 <script src="../src/grouping.js"></script>
@@ -41,7 +56,7 @@
 <script>
 
 /*
-localStorage.stored_classroom contains a JSON string like this:
+localStorage.classroom contains a JSON string that can be initialized from Classlist.js
 {
    "studentList": [
      {"name":"Alice","avoid":[],"prefer":[],"sid":0},
@@ -51,19 +66,18 @@ localStorage.stored_classroom contains a JSON string like this:
    ]
 }"
 */
-var temp_classroom = JSON.parse(localStorage.getItem('stored_classroom'));
-var buildClassroom = function(c) {
-  var classroom = new Classroom();
-  for (var s = 0; s < c.length; s++) {
-    classroom.setStudent(s, c[s]);
-  }
-  return classroom;
-}
-console.log(temp_classroom.studentList)
-var classroom = buildClassroom(temp_classroom.studentList);
+var MIN_STUDENTS_PER_GROUP = 2;
+var MAX_STUDENTS_PER_GROUP = Number.POSITIVE_INFINITY;
+
+var classroom = new Classlist();
+var storedClassroom = localStorage.getItem('classroom');
+classroom.fromJSON(storedClassroom);
+console.log(classroom.toString());
+console.log('stored students per group')
+console.log(localStorage.getItem('students_per_group'))
+var studentsPerGroup = parseInt(localStorage.getItem('students_per_group'));
 
 // create random pairs of students
-var studentsPerGroup = 2
 var grouping = new Grouping(classroom, studentsPerGroup);
 var assignments = grouping.getGroups();
 var students = grouping.getStudents();
@@ -83,6 +97,9 @@ console.log(assignments)
 
 console.log('students')
 console.log(students)
+
+console.log('studentsPerGroup')
+console.log(studentsPerGroup)
 
 // add join listener
 $(layout).on('join', function(e) {
@@ -107,6 +124,68 @@ $('#shuffle_button').on('click', function(e) {
     layout.addCluster(assignments[i].getStudentIDs());
   }
 });
+
+/*group size input*/
+updateStudentsPerGroup = function(new_students_per_group){
+  console.log('updating students per group from '  + 
+              $("#group_size_input").data('students_per_group')  +
+              ' to ' + new_students_per_group);
+  $("#group_size_input").data('students_per_group', new_students_per_group);
+  $("#group_size_input").attr('value', new_students_per_group);
+  grouping.setStudentsPerGroup(new_students_per_group);
+  localStorage.setItem('students_per_group', new_students_per_group);
+}
+
+$("#decrease_group_size").click(function(){
+  var students_per_group = $("#group_size_input").data('students_per_group');
+  var new_students_per_group = Math.max(students_per_group - 1, MIN_STUDENTS_PER_GROUP)
+  if (new_students_per_group < students_per_group){
+    updateStudentsPerGroup(new_students_per_group);
+  }
+})
+
+$("#increase_group_size").click(function(){
+  var students_per_group = $("#group_size_input").data('students_per_group');
+  var new_students_per_group = Math.min(students_per_group + 1, MAX_STUDENTS_PER_GROUP);
+  var new_students_per_group = Math.min(new_students_per_group, classroom.getSize());
+  if (new_students_per_group > students_per_group){
+    updateStudentsPerGroup(new_students_per_group);
+  }
+})
+  
+isValidStudentsPerGroup = function(group_size){
+  var typeOK = (typeof group_size === 'number') && (group_size % 1 === 0);
+  var sizeOK = (group_size >= MIN_STUDENTS_PER_GROUP) && (group_size <= MAX_STUDENTS_PER_GROUP);
+  return typeOK && sizeOK
+}
+
+$("#group_size_input").on('focusout', function(){
+  var new_students_per_group = parseInt($(this).val());
+  if (isValidStudentsPerGroup(new_students_per_group)){
+    updateStudentsPerGroup(new_students_per_group);
+  } else {
+    $(this).val($(this).data('students_per_group'));
+  }
+});
+
+$("#group_size_input").on('input', function(e) {
+  var charCode = e.which || e.keyCode;
+  if (charCode == 13){
+    var new_students_per_group = parseInt($(this).val());
+    if (isValidStudentsPerGroup(new_students_per_group)){
+      updateStudentsPerGroup(new_students_per_group);
+    } else {
+    $(this).val = $(this).data('students_per_group');
+  }
+    $('#group_size_input').blur();
+  }
+})
+
+$("#group_size_input").data('students_per_group', studentsPerGroup);
+$("#group_size_input").attr('value', studentsPerGroup);
+
+
+
 </script>
 
 </body>

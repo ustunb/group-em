@@ -91,7 +91,6 @@ function Classlist(studentArray) {
         var classString = _.map(self.students, function(v) {
             return v.toString();
         }).join("\n");
-
         return classString;
     }
 
@@ -109,15 +108,11 @@ function Classlist(studentArray) {
     self.has = has;
     self.add = add;
     self.remove = remove;
-    // self.equals = equals;
+    self.equals = equals;
     self.getStudentFromID = getStudentFromID;
     self.getNextStudentID = getNextStudentID;
     self.toString = toString;
-
-
-    self.valueOf = function() {
-        return self.value;
-    }
+    self.valueOf = valueOf();
 
     self.getSize = function() {
         return self.size;
@@ -139,6 +134,33 @@ function Classlist(studentArray) {
             }
         }
         checkRep();
+    }
+
+    //parses a classroom object from JSON
+    self.fromJSON = function(jsonClasslist) {
+        var obj = JSON.parse(jsonClasslist);
+        self.students = [];
+        for (var i = 0; i < obj.students.length; i++) {
+            var studentObj = JSON.parse(obj.students[i]);
+            self.students.push(new Student(studentObj.name, studentObj.id, studentObj.preferences));
+        }
+        self.studentIDs = self.students.map(function(student) {
+            return student.id();
+        })
+        self.maxStudentID = _.max(self.studentIDs);
+        self.size = self.students.length;
+        self.value = valueOf();
+        return true
+    }
+
+    self.toJSON = function() {
+        var jsonClasslist = {};
+        var jsonClasslist = {};
+        jsonClasslist['students'] = [];
+        for (var i = 0; i < self.size; i++) {
+            jsonClasslist['students'].push(self.students[i].toJSON());
+        }
+        return JSON.stringify(jsonClasslist);
     }
 
 }

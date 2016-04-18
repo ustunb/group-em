@@ -1,0 +1,291 @@
+<meta charset='utf-8'>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../external_js/lodash.js"></script>
+<script src="../external_js/jquery-1.12.2.js"></script>
+<script src="../external_js/jquery-ui.js"></script>
+<script src="../src/classroom.js"></script>
+<link rel="stylesheet" href="../src/sidebar.css">
+<link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Cabin:400,700'>
+<link rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
+<link rel='stylesheet' href="../src/table-view.css">
+
+<body>
+
+<div class="sidebar">
+<div style="position: relative; text-align: center; margin: 30px 0; height:150px; ">
+<img src="../images/logo_1.png" width=180 >
+
+</div>
+<div id='cssmenu'>
+<ul>
+   <li class='active'><a href='#'><span>Creation</span></a></li>
+   <li class='last'><a href='group-view.html'><span>Groups</span></a></li>
+</ul>
+</div>
+</div>
+
+<div class="content">
+<table class="classroom">
+<thead>
+<tr>
+<th id="classname_row" colspan="4">
+<input type="text" id="classname_input" placeholder="Enter Class Name"></input>
+</th>
+</tr>
+<tr>
+  <th>Student</th>
+  <th>Wants to join</th>
+  <th>Wants to avoid</th>
+  <th></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+
+<div id="control_div">
+<button id="groupem_button" class="control_button" type="button">
+group'em
+</button>
+</div>
+
+</body>
+
+<script>
+
+var parseStudentList = function() {
+  var student_list = $("#newstudentbox").val();
+  console.log(student_list);
+  student_list = student_list.replace(/\n/g, '1)(*3hf:Z');
+  student_list = student_list.split('1)(*3hf:Z');
+  console.log(student_list);
+  var final_data = [];
+  for (var i=0; i<student_list.length; i++) {
+    var row_list = student_list[i].replace(/\t/g, '1)(*3hf:Z');
+    row_list = row_list.split('1)(*3hf:Z');
+    console.log(row_list);
+    if (row_list.length == 1) {
+      row_list[0] = row_list[0].replace(/;/g, ',');
+      var name_list = row_list[0].split(",");
+      for (var k=0; k<name_list.length; k++){
+        final_data.push({name:name_list[k].trim(), prefer: [], avoid: []});
+      }
+    }
+    else if (row_list.length == 2) {
+      final_data.push({
+        name: row_list[0],
+         prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})
+      });
+    }
+    else {
+      final_data.push({
+        name: row_list[0],
+         prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""}),
+         avoid:row_list[2].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})
+      });
+    }
+
+  }
+  /**
+    student_list = student_list.replace(/\n/g, ',');
+    student_list = student_list.replace(/\t/g, ',');
+    student_list = student_list.replace(/;/g, ',');
+    var student_array = student_list.split(",");**/
+  for (var i = 0; i < final_data.length; i++) {
+    if (classroom.findStudentNamed(final_data[i].name.trim()) == null) {
+      if (final_data[i].name.trim() != "") {
+        classroom.addStudent({
+          name: final_data[i].name.trim(),
+           avoid: final_data[i].avoid,
+           prefer: final_data[i].prefer
+        });
+      }
+    }
+  }
+};
+
+var loadTable = function(classroom) {
+  $('table tbody').empty();
+  for (var i = 0; i < classroom.getStudentCount(); i++) {
+    addRow(classroom.getStudent(i));
+  }
+  addLastRow();
+  $("#newstudentbox").focus();
+}
+
+function addRow(student) {
+  
+  console.log("------ ADD ROW ------");
+  var row = $('<tr>');
+  var cell = $('<td class="student_name">').appendTo(row);
+  var p = $('<p>').appendTo(cell)
+          .text(student.name)
+          .data('name', student.name);
+  $("<i class='fa fa-grip'></i>").prependTo(p);
+  console.log('data is', p.data('name'));
+
+  var prefercell = $('<td class="pair_with">').data('name', student.name);
+  for (i = 0; i < student.prefer.length; i++) {
+    $('<p>').text(student.prefer[i]).data('name', student.prefer[i])
+            .append('<span class="removeprefer"></span>').appendTo(prefercell);
+  }
+  prefercell.appendTo(row);
+
+
+  var avoidcell = $('<td class="dont_pair_with">').data('name', student.name);
+  for (i = 0; i < student.avoid.length; i++) {
+    $('<p>').text(student.avoid[i]).data('name', student.avoid[i])
+            .append('<span class="removeavoid"></span>').appendTo(avoidcell);
+  }
+  avoidcell.appendTo(row);
+
+  $('<td class="remove">').data('remove_sid', student.sid).appendTo(row);
+  $('table tbody').append(row);
+}
+
+function addLastRow() {
+  var row = $('<tr>');
+  $('<td class="student_name" colspan="4">')
+    .appendTo(row)
+    .html('<textarea id="newstudentbox" ' +
+          'placeholder="Enter new student names"></textarea>');
+  $('table tbody').append(row);
+}
+
+//HANDLE COPY PASTING  http://stackoverflow.com/questions/3211505/detect-pasted-text-with-ctrlv-or-right-click-paste
+function getTextAreaSelection(textarea) {
+  var start = textarea.selectionStart, end = textarea.selectionEnd;
+  return {
+    start: start,
+    end: end,
+    length: end - start,
+    text: textarea.value.slice(start, end)
+  };
+}
+
+function detectPaste(textarea, callback) {
+  textarea.onpaste = function() {
+    var sel = getTextAreaSelection(textarea);
+    var initialLength = textarea.value.length;
+    window.setTimeout(function() {
+      var val = textarea.value;
+      var pastedTextLength = val.length - (initialLength - sel.length);
+      var end = sel.start + pastedTextLength;
+      callback({
+        start: sel.start,
+        end: end,
+        length: pastedTextLength,
+        text: val.slice(sel.start, end)
+      });
+    }, 1);
+  };
+}
+/**
+  var textarea = document.getElementById("your_textarea");
+  detectPaste(textarea, function(pasteInfo) {
+  alert(pasteInfo.text);
+// pasteInfo also has properties for the start and end character
+// index and length of the pasted text
+});
+ **/
+$(document).ready(function() {
+  classroom = new Classroom();
+  loadClassroomFromLocalStorage(classroom);
+  loadTable(classroom);
+
+  $(document).on('click', ".remove", function(e) {
+    console.log('removal detected');
+    var student_id = $(this).data('remove_sid');
+    var student_name = String(classroom.getStudentFromSID(student_id).name);
+    classroom.removeStudent(student_id);
+    for (var i = 0; i < classroom.getStudentCount(); i++) {
+      var student = classroom.getStudent(i);
+      classroom.removePreference(student.name, student_name, "avoid");
+      classroom.removePreference(student.name, student_name, "prefer");
+    }
+  });
+
+  $(document).on('click', ".removeprefer", function(e) {
+    var removal_name = $(this).closest('p').data('name');
+    var target_name = $(this).closest('td').data('name');
+    classroom.removePreference(target_name, removal_name, "prefer");
+  });
+
+  $(document).on('click', ".removeavoid", function(e) {
+    var removal_name = $(this).closest('p').data('name');
+    var target_name = $(this).closest('td').data('name');
+    classroom.removePreference(target_name, removal_name, "avoid");
+  });
+
+
+  $(document).on('keyup', "#newstudentbox", function(e) {
+    if (e.which == 13) {
+      parseStudentList();
+      $("#newstudentbox").val("");
+    }
+  });
+
+  document.getElementById("groupem_button").onclick = function () {
+    location.href = "group-view.html";
+  };
+
+  $(classroom).on('changestudents', function() {
+    localStorage.setItem('stored_classroom', JSON.stringify(classroom));
+    loadTable(classroom);
+  });
+
+  $(document).on('paste', "#newstudentbox", function(e) {
+    var pastedata = $(this).val();
+  });
+
+  $("table").on('mouseenter',".student_name p",function() {
+    var todrag = $(this);
+    $(this).css( 'cursor', 'pointer' );
+    todrag.draggable({ helper:'clone', revert: "invalid"});
+
+    $(".pair_with").droppable({
+      accept: "p",
+      drop: function(event,ui) {
+        console.log("Item was Dropped in pair_with");
+        var studentToAdd = todrag.text();
+        var studentToModify = $(this).data("name");
+        var i = classroom.updatePreference(
+                   studentToModify, studentToAdd, "prefer");
+        if (i == 0) {
+          $(this).append($(ui.draggable).clone());
+          loadTable(classroom);
+        }
+      }
+    });
+    $(".dont_pair_with").droppable({
+      accept: "p",
+      drop: function(event,ui) {
+        console.log("Item was Dropped in dont_pair_with");
+        var studentToAdd = todrag.text();
+        var studentToModify = $(this).data("name");
+        var i = classroom.updatePreference(
+                    studentToModify, studentToAdd, "avoid");
+        if (i == 0) {
+          $(this).append($(ui.draggable).clone());
+          loadTable(classroom);
+        }
+      }
+    });
+  });
+
+});
+
+function loadClassroomFromLocalStorage(classroom) {
+  try {
+    var json_classroom = JSON.parse(localStorage.getItem('stored_classroom'));
+    var student_list = json_classroom.studentList;
+    for (var s = 0; s < student_list.length; s++) {
+      classroom.setStudent(s, student_list[s]);
+    }
+  } catch (e) {
+    console.log('Could not load the classroom ' + e);
+  }
+}
+
+</script>

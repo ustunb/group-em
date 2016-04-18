@@ -26,6 +26,10 @@ function Classroom() {
         return studentList[index];
     }
 
+    function parse(json){
+        
+    }
+
     function getStudentFromName(studentname) {
         for (var i = 0; i < studentList.length; i++) {
             if (studentList[i].name == studentname) {
