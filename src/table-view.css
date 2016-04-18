@@ -5,6 +5,19 @@ body, html {
   height: 100%;
 }
 
+#logo:before {
+    font-family: FontAwesome;
+    content: '\f0c0';
+    border-radius: 50%;
+    font-size: 100px;
+    padding: 10%;
+    margin-top: 10%;
+    color: #4C5365;
+    background: white;
+    text-align: center;
+}
+
+/**/
 table {
     margin: auto;
     width: 80%;
@@ -110,7 +123,6 @@ table td.remove {
     background: #EAE6DB;
     color: #FED587;
     color: white;
-    color: #4C5365;
     color: #3F3C36;
     /*background: #4C5365;
     color: #FED587;*/
