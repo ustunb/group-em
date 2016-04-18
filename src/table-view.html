@@ -152,6 +152,12 @@ var updatePage = function(classroom) {
     }
   }
   updateGroupemButton(classroom);
+  updateLocalStorage(classroom);
+}
+
+var updateLocalStorage = function(classroom){
+  localStorage.setItem('classroom', classroom.toJSON());
+  localStorage.setItem('students_per_group', $("#group_size_input").data('students_per_group'));
 }
 
 function getTileHTML(name, type, tileID, tileClasses){
@@ -308,7 +314,8 @@ $(document).ready(function() {
     var rowStudent = classroom.getStudentFromID(rowStudentID)
     var update_flag = rowStudent.removeFromPreferences('prefer', tileStudentID);
     if (update_flag){
-      $(this).parent().remove()  
+      $(this).parent().remove();
+      updateLocalStorage(classroom); 
     } else {
       console.log('removal failed')
     }
@@ -321,7 +328,8 @@ $(document).ready(function() {
     var rowStudent = classroom.getStudentFromID(rowStudentID)
     var update_flag = rowStudent.removeFromPreferences('avoid', tileStudentID);
     if (update_flag){
-      $(this).parent().remove()  
+      $(this).parent().remove();
+      updateLocalStorage(classroom); 
     } else {
       console.log('removal failed')
     }
@@ -364,6 +372,7 @@ $(document).ready(function() {
       }
       $("#add_student_box").val("");
       updatePage(classroom);
+      updateLocalStorage(classroom); 
       console.log(classroom.toString())
     }
   });
@@ -395,6 +404,7 @@ $(document).ready(function() {
             var update_flag = classroom.getStudentFromID(targetStudentID).addToPreferences('prefer', tileStudentID);
               if (update_flag){
                 updatePage(classroom);
+                updateLocalStorage(classroom); 
               } else {
                 console.log('drop denied. preference must already exist.')
               }
@@ -414,6 +424,7 @@ $(document).ready(function() {
             var update_flag = classroom.getStudentFromID(targetStudentID).addToPreferences('avoid', tileStudentID);
               if (update_flag){
                 updatePage(classroom);
+                updateLocalStorage(classroom);
               } else {
                 console.log('drop denied. preference must already exist.')
               }
@@ -445,6 +456,7 @@ $(document).ready(function() {
           var successfulAddition = classroom.getStudentFromID(targetStudentID).addToPreferences('prefer', tileStudentID);
               if (successfulRemoval && successfulAddition){
                 updatePage(classroom);
+                updateLocalStorage(classroom); 
               } else {
                 console.log('drop could not be completed at the model level')
               }
@@ -464,6 +476,7 @@ $(document).ready(function() {
           var successfulRemoval = classroom.getStudentFromID(targetStudentID).addToPreferences('avoid', tileStudentID);
               if (successfulAddition && successfulRemoval){
                 updatePage(classroom);
+                updateLocalStorage(classroom); 
               } else {
                 console.log('drop could not be completed at the model level')
               }
@@ -494,6 +507,7 @@ $(document).ready(function() {
           var successfulAddition = classroom.getStudentFromID(targetStudentID).addToPreferences('prefer', tileStudentID);
               if (successfulAddition && successfulRemoval){
                 updatePage(classroom);
+                updateLocalStorage(classroom); 
               } else {
                 console.log('drop could not be completed at the model level')
               }
@@ -513,6 +527,7 @@ $(document).ready(function() {
           var successfulAddition = classroom.getStudentFromID(targetStudentID).addToPreferences('avoid', tileStudentID);
               if (successfulAddition && successfulRemoval){
                 updatePage(classroom);
+                updateLocalStorage(classroom); 
               } else {
                 console.log('drop could not be completed at the model level')
               }
@@ -531,6 +546,7 @@ $(document).ready(function() {
     var new_students_per_group = Math.max(students_per_group - 1, MIN_STUDENTS_PER_GROUP)
     if (new_students_per_group < students_per_group){
       updateStudentsPerGroup(classroom, new_students_per_group);
+      updateLocalStorage(classroom); 
     }
   })
 
@@ -540,6 +556,7 @@ $(document).ready(function() {
     var new_students_per_group = Math.min(new_students_per_group, classroom.getSize());
     if (new_students_per_group > students_per_group){
       updateStudentsPerGroup(classroom, new_students_per_group);
+      updateLocalStorage(classroom); 
     }
   })
     
@@ -554,6 +571,7 @@ $(document).ready(function() {
     var new_students_per_group = parseInt($(this).val());
     if (isValidStudentsPerGroup(new_students_per_group)){
       updateStudentsPerGroup(classroom, new_students_per_group);
+      updateLocalStorage(classroom); 
     } else {
       $(this).val($(this).data('students_per_group'));
     }
@@ -565,6 +583,7 @@ $(document).ready(function() {
       var new_students_per_group = parseInt($(this).val());
       if (isValidStudentsPerGroup(new_students_per_group)){
         updateStudentsPerGroup(classroom, new_students_per_group);
+        updateLocalStorage(classroom); 
       } else {
       $(this).val = $(this).data('students_per_group');
     }
@@ -581,8 +600,6 @@ $(document).ready(function() {
   $("#groupem_button").click(function(){
     if (classroom.getSize() >= MIN_STUDENTS_PER_GROUP){
       location.href = "group-view.html";
-      localStorage.setItem('classroom', classroom.toJSON());
-      localStorage.setItem('students_per_group', $("#group_size_input").data('students_per_group'));
     } else {
       alert("should never get here since groupem button should be disabled if size < MIN_STUDENTS_PER_GROUP")
     }
@@ -606,6 +623,7 @@ $(document).ready(function() {
     }
   }
   updatePage(classroom);
+  updateLocalStorage(classroom); 
 });
 
 </script>
