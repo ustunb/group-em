@@ -344,7 +344,7 @@ table th:nth-of-type(4) th textarea {
 }*/
 
 
-#groupem_button[disabled], groupem_button[disabled]:hover{
+#groupem_button[disabled], #groupem_button[disabled]:hover{
     /*cursor: not-allowed;*/
     opacity: 0.30;
     background-color: #4C5365;

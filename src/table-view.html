@@ -37,7 +37,7 @@
   <th unselectable="on" class="student_name">Student</th>
   <th unselectable="on" class="pair_with">Pair With</th>
   <th unselectable="on" class="dont_pair_with">Don't Pair With</th>
-  <th unselectable="on" class="remove"></th>
+  <th unselectable="on" class="remove" id=></th>
 </tr>
 </thead>
 <tbody></tbody>
@@ -296,15 +296,12 @@ $(document).ready(function() {
   
   $(document).on('click', ".remove", function(e) {
     var removedStudentID = $(this).data('studentID');
-    console.log('user tried to delete student : ' + removedStudentID);
-    var update_flag = classroom.remove(removedStudentID); //remove student from model + preferences
-    if (update_flag){
-      // var rowID = "#row_" + removedStudentID;
-      // $(rowID).remove();
-      // var tileClass = ".tile_" + removedStudentID;
-      // $(tileClass).remove();
-      updatePage(classroom);
-      //alternatively, you could also do updateTable(classroom) to redraw the table
+    if (removedStudentID != null){
+      if (classroom.remove(removedStudentID)){
+        updatePage(classroom);
+      }
+    } else {
+      console.log('user clicked on top row');
     }
   });
 
