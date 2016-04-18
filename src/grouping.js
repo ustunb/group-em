@@ -198,7 +198,7 @@ function Grouping(classroom, students_per_group) {
         var old_group_location = locateGroup(getGroupIDOf(student_id));
         if (old_group_location.state === 'random') {
             old_idx = old_group_location.index;
-            var student = random_groups[old_idx].remove(student_id)
+            var student = self.random_groups[old_idx].remove(student_id)
             if (group_id == null) {
                 //add student to new group
                 self.random_groups.push(new Group([student]));
@@ -210,7 +210,7 @@ function Grouping(classroom, students_per_group) {
             }
 
             //delete group from random groups;
-            if (random_groups[old_idx].getSize() == 0) {
+            if (self.random_groups[old_idx].getSize() == 0) {
                 self.random_groups.splice(old_idx, 1);
             }
         }
@@ -238,7 +238,6 @@ function Grouping(classroom, students_per_group) {
         checkRep();
         return true;
     }
-
 
     //public methods
     self.getNumberOfGroups = getNumberOfGroups;
