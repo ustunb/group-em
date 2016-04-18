@@ -80,7 +80,6 @@ var REVERT_SPEED_DURATION = 500;
 var MIN_STUDENTS_PER_GROUP = 2;
 var MAX_STUDENTS_PER_GROUP = Number.POSITIVE_INFINITY;
 
-
 var classroom = new Classlist();
 
 var parseStudentList = function(classroom) {
@@ -132,6 +131,15 @@ var updateGroupemButton = function(classroom){
   } else {
     $("#groupem_button").prop('disabled', true);
   }
+}
+
+var updateStudentsPerGroup = function(classroom, new_students_per_group){ 
+    console.log('updating students per group from '  + 
+                $("#group_size_input").data('students_per_group')  +
+                ' to ' + new_students_per_group);
+    $("#group_size_input").data('students_per_group', new_students_per_group);
+    $("#group_size_input").attr('value', new_students_per_group);
+    updateGroupemButton(classroom);
 }
 
 //redraws table at each state change
@@ -512,14 +520,7 @@ $(document).ready(function() {
   });
 
   /*group size input*/
-  updateStudentsPerGroup = function(new_students_per_group){
-    console.log('updating students per group from '  + 
-                $("#group_size_input").data('students_per_group')  +
-                ' to ' + new_students_per_group);
-    $("#group_size_input").data('students_per_group', new_students_per_group);
-    $("#group_size_input").attr('value', new_students_per_group);
-    updateGroupemButton(classroom);
-  }
+  
 
   $("#decrease_group_size").click(function(){
     var students_per_group = $("#group_size_input").data('students_per_group');

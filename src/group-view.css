@@ -2,7 +2,7 @@ html, body, body > svg, body > div {
  position: fixed;
  margin:0; padding:0; height:100%; width:100%; overflow:hidden;
  font: 28px;
- font-family: 'Raleway', sans-serif; 
+ font-family: 'Raleway';
 }
 
 /** 
