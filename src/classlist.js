@@ -126,6 +126,7 @@ function Classlist(studentArray) {
         return _.clone(self.studentIDs);
     }
 
+
     //initialization
     if (studentArray != null) {
         for (var i = 0; i < studentArray.length; i++) {
@@ -140,10 +141,22 @@ function Classlist(studentArray) {
     self.fromJSON = function(jsonClasslist) {
         var obj = JSON.parse(jsonClasslist);
         self.students = [];
+
+        //get IDs of all listed students
+        var allIDs = []
         for (var i = 0; i < obj.students.length; i++) {
             var studentObj = JSON.parse(obj.students[i]);
+            allIDs.push(studentObj.id);
+        }
+
+        for (var i = 0; i < obj.students.length; i++) {
+            var studentObj = JSON.parse(obj.students[i]);
+            for (key in studentObj.preferences){
+                studentObj.preferences[key] = _.intersection(allIDs, studentObj.preferences[key]);
+            }
             self.students.push(new Student(studentObj.name, studentObj.id, studentObj.preferences));
         }
+        
         self.studentIDs = self.students.map(function(student) {
             return student.id();
         })

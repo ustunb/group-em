@@ -531,7 +531,7 @@ $(document).ready(function() {
     var students_per_group = $("#group_size_input").data('students_per_group');
     var new_students_per_group = Math.max(students_per_group - 1, MIN_STUDENTS_PER_GROUP)
     if (new_students_per_group < students_per_group){
-      updateStudentsPerGroup(new_students_per_group);
+      updateStudentsPerGroup(classroom, new_students_per_group);
     }
   })
 
@@ -540,7 +540,7 @@ $(document).ready(function() {
     var new_students_per_group = Math.min(students_per_group + 1, MAX_STUDENTS_PER_GROUP);
     var new_students_per_group = Math.min(new_students_per_group, classroom.getSize());
     if (new_students_per_group > students_per_group){
-      updateStudentsPerGroup(new_students_per_group);
+      updateStudentsPerGroup(classroom, new_students_per_group);
     }
   })
     
@@ -554,7 +554,7 @@ $(document).ready(function() {
   $("#group_size_input").on('focusout', function(){
     var new_students_per_group = parseInt($(this).val());
     if (isValidStudentsPerGroup(new_students_per_group)){
-      updateStudentsPerGroup(new_students_per_group);
+      updateStudentsPerGroup(classroom, new_students_per_group);
     } else {
       $(this).val($(this).data('students_per_group'));
     }
@@ -565,7 +565,7 @@ $(document).ready(function() {
     if (charCode == 13){
       var new_students_per_group = parseInt($(this).val());
       if (isValidStudentsPerGroup(new_students_per_group)){
-        updateStudentsPerGroup(new_students_per_group);
+        updateStudentsPerGroup(classroom, new_students_per_group);
       } else {
       $(this).val = $(this).data('students_per_group');
     }
@@ -606,6 +606,8 @@ $(document).ready(function() {
       $("#group_size_input").attr('value', parseInt(storedStudentsPerGroup));
     }
   }
+  console.log(classroom.toString())
+  console.log(classroom)
 
   updatePage(classroom);
 });
