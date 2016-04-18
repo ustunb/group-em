@@ -429,7 +429,7 @@ $(document).ready(function() {
     var sourceStudentID = todrag.parent().data("studentID");
 
     console.log('PICKUP ID' + tileStudentID)
-    todrag.draggable({revert: true});
+    todrag.draggable({revert: true, cancel: 'span'});
 
   $(".pair_with").droppable({
       accept: "p",
@@ -478,7 +478,7 @@ $(document).ready(function() {
     var sourceStudentID = todrag.parent().data("studentID");
 
     console.log('PICKUP ID' + tileStudentID)
-    todrag.draggable({revert: true});
+    todrag.draggable({revert: true, cancel: 'span'});
 
   $(".pair_with").droppable({
       accept: "p",
