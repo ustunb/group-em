@@ -112,6 +112,8 @@ function Group(studentArray) {
     self.fromJSON = function(jsonGroup) {
         var obj = JSON.parse(jsonGroup);
         self.students = [];
+        console.log(jsonGroup)
+        console.log(obj)
 
         //get IDs of all students in JSON object
         var allIDs = [];
@@ -132,6 +134,7 @@ function Group(studentArray) {
         self.studentIDs = self.students.map(function(s) {return s.id();});
         self.size = self.students.length;
         self.value = self.valueOf();
+        console.log('initialized from JSON', self.toString());
         return true
     }
 
@@ -139,16 +142,18 @@ function Group(studentArray) {
         var jsonGroup = {};
         jsonGroup['students'] = [];
         for (var i = 0; i < self.size; i++) {
-            jsonGroup['students'].push(students[i].toJSON());
+            jsonGroup['students'].push(self.students[i].toJSON());
         }
         return JSON.stringify(jsonGroup);
     }
 
     //initialization
-    for (var i = 0; i < studentArray.length; i++) {
-        if (!self.add(studentArray[i])) {
-            throw new Error('student array should contain distinct students');
-        }
+    if (studentArray != null){
+        for (var i = 0; i < studentArray.length; i++) {
+            if (!self.add(studentArray[i])) {
+                throw new Error('student array should contain distinct students');
+            }
+        }    
+        checkRep();
     }
-    checkRep();
 }
