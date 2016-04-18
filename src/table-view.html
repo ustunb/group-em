@@ -144,7 +144,6 @@ var updateStudentsPerGroup = function(classroom, new_students_per_group){
 
 //redraws table at each state change
 var updatePage = function(classroom) {
-  console.log(classroom)
   $('table tbody').empty();
   if (classroom.getSize() > 0){
     var studentArray = classroom.getStudents();
@@ -606,9 +605,6 @@ $(document).ready(function() {
       $("#group_size_input").attr('value', parseInt(storedStudentsPerGroup));
     }
   }
-  console.log(classroom.toString())
-  console.log(classroom)
-
   updatePage(classroom);
 });
 
