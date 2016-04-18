@@ -126,6 +126,10 @@ function Classlist(studentArray) {
         return _.clone(self.studentIDs);
     }
 
+    self.getStudentNames = function() {
+        return map(self.students, function (s){s.name()});
+    }
+
 
     //initialization
     if (studentArray != null) {

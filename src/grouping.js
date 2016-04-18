@@ -195,17 +195,22 @@ function Grouping(classroom, students_per_group) {
 
     //switch student from one group to another group
     function assignStudentToGroup(student_id, group_id) {
+        // console.log('assigning student', 'student_id', student_id, 'group_id', group_id);
         var old_group_location = locateGroup(getGroupIDOf(student_id));
+        // console.log('old_group_location', old_group_location);
         if (old_group_location.state === 'random') {
             old_idx = old_group_location.index;
-            var student = self.random_groups[old_idx].remove(student_id)
+            var student = self.random_groups[old_idx].remove(student_id);
+            // console.log('removed student', student.toString())
             if (group_id == null) {
                 //add student to new group
+                // console.log('adding student to new group', self.random_groups)
                 self.random_groups.push(new Group([student]));
+                console.log(self.random_groups)
             } else {
                 //add student to existing group;
                 var new_group_location = locateGroup(group_id);
-                console.log(student.toString())
+                // console.log(student.toString())
                 self.random_groups[new_group_location.index].add(student);
             }
 
@@ -219,12 +224,13 @@ function Grouping(classroom, students_per_group) {
 
     //randomly create new groups of students from student_pool
     function shuffle() {
+        console.log(self.random_groups)
         var studentArray = self.random_groups.map(function(group) {
             return group.getStudents()
         });
         studentArray = _.flatten(studentArray);
         studentArray = _.shuffle(studentArray);
-        studentArray = _.chunk(studentArray, students_per_group);
+        studentArray = _.chunk(studentArray, self.students_per_group);
         self.random_groups = studentArray.map(function(students) {
             return new Group(students);
         })

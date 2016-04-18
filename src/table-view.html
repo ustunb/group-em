@@ -184,6 +184,7 @@ function getTileHTML(name, type, tileID, tileClasses){
   return tileHTML
 }
 
+
 //class names and IDs
 //tile_name_[SID1]: ID for tile with student SID1 in "student_name" column
 //tile_prefer_[SID1]_[SID2]: ID for tile with student SID2 in "prefer" column of student [SID1]
@@ -195,6 +196,8 @@ function addRow(student, classroom) {
   var studentID = student.id();
   var studentName = student.name();
   // console.log(student.toString())
+  
+
   
   //define IDs for table row and cell
   var rowID = "row_" + studentID;

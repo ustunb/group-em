@@ -50,7 +50,7 @@ function Group(studentArray) {
     function remove(studentID) {
         if (self.has(studentID)) {
             idx = self.studentIDs.indexOf(studentID);
-            student = students.splice(idx, 1)[0];
+            student = self.students.splice(idx, 1)[0];
             self.studentIDs.splice(idx, 1);
             self.value -= Math.pow(2, studentID);
             self.size--;

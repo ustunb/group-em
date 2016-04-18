@@ -80,7 +80,7 @@ if (storedStudentsPerGroup != null){
 }
 
 var updateLocalStorage = function(grouping){
-  
+  //todo
 }
 
 
@@ -100,11 +100,11 @@ for (var i = 0; i < assignments.length; i++) {
   layout.addCluster(assignments[i].getStudentIDs());
 }
 
-console.log('assignments')
-console.log(assignments)
-console.log('students')
-console.log(students)
-console.log('studentsPerGroup')
+// console.log('assignments')
+// console.log(assignments)
+// console.log('students')
+// console.log(students)
+// console.log('studentsPerGroup')
 // console.log($("#group_size_input").data('students_per_group'))
 
 // add join listener
@@ -116,6 +116,9 @@ $(layout).on('join', function(e) {
 });
 
 $('#shuffle_button').on('click', function(e) {
+  localStorage.setItem('students_per_group', $("#group_size_input").data('students_per_group'));
+  grouping.setStudentsPerGroup($("#group_size_input").data('students_per_group'));
+  console.log(grouping)
   var assignments = grouping.shuffle();
   layout.clear()
   
