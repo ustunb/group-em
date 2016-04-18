@@ -160,16 +160,21 @@ table td p span:hover {
 }
 
 .tile_name {
+    background: #60BADF;
+}
+
+.tile_name:nth-of-type(1) {
     height: 90%;
     width: 90%;
     max-height: 40px;
     max-width: 300px;
-    line-height:40px;
+    line-height: 30px;
     background: #60BADF;
     min-height: 40px;
     font-size: 20px;
     vertical-align: middle;
     text-align: center;
+    box-sizing: border-box;
 }
 
 .tile_prefer {

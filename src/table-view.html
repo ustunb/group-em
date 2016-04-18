@@ -379,7 +379,12 @@ $(document).ready(function() {
     $(this).css( 'cursor', 'grabbing' );
     var todrag = $(this);
     var tileStudentID = todrag.parent().data("studentID")
-    todrag.draggable({'helper': 'clone', 'revert': true, 'revertDuration': REVERT_SPEED_DURATION});
+    todrag.draggable({
+        helper: 'clone',
+        cursorAt: { top: 8, left: 20 }, /* To deal with small tile */
+        revert: true,
+        revertDuration: REVERT_SPEED_DURATION
+    });
 
   $(".pair_with").droppable({
       accept: "p",
