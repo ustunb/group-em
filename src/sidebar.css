@@ -75,23 +75,26 @@ body{
   font-family: FontAwesome;
   font-size: 18px;
   content: '\f0ce\00a0\00a0';
+  text-align: left;
 }
 
 #link_to_table_view:after{
   font-size: 20px;
   content: 'list students';
+  text-align: right;
 }
-
 
 #link_to_group_view:before{
   font-family: FontAwesome;
   font-size: 18px;
   content: '\f0c0\00a0\00a0';
+  text-align: left;
 }
 
 #link_to_group_view:after{
   font-size: 20px;
   content: 'make groups';
+  text-align: right;
 }
 
 
