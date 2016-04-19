@@ -619,12 +619,12 @@ $(document).ready(function() {
   } else {
     console.log('found classroom in local storage');
     classroom.fromJSON(storedClassroom);
-    // var storedStudentsPerGroup = parseInt(localStorage.getItem('students_per_group'));
-    // if (storedStudentsPerGroup != null){
-    //   console.log('found students per group in local storage')
-    //   $("#group_size_input").data('students_per_group', parseInt(storedStudentsPerGroup));
-    //   $("#group_size_input").attr('value', parseInt(storedStudentsPerGroup));
-    // }
+    var storedStudentsPerGroup = parseInt(localStorage.getItem('students_per_group'));
+    if (storedStudentsPerGroup != null){
+      console.log('found students per group in local storage')
+      $("#group_size_input").data('students_per_group', parseInt(storedStudentsPerGroup));
+      $("#group_size_input").attr('value', parseInt(storedStudentsPerGroup));
+    }
   }
   updatePage(classroom);
   updateLocalStorage(classroom); 
