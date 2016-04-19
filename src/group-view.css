@@ -115,17 +115,18 @@ svg line.breaking {
     pointer-events: all;
 }
 
-#shuffle_button:hover {
-    background-color: #F39354;
-    color: #F39354;
-    background: #FED587;
-}
 
 .control_button:focus, .control_button:active {
     box-shadow: 0 0 5px #f9efec;
     padding: 0px;
     margin: 0px;
     outline: none;
+}
+
+#shuffle_button:hover .control_button:hover{
+    background-color: #F39354;
+    color: #F39354;
+    background: #FED587;
 }
 
 /*group_size*/
