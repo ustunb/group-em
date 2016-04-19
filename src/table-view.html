@@ -383,6 +383,7 @@ $(document).ready(function() {
   $("table").on('mouseenter',".tile_name", function() {
     $(this).css( 'cursor', 'grabbing' )
     $(this).css( 'z-index', DRAGGABLE_Z_INDEX);
+
     var todrag = $(this);
     var tileStudentID = todrag.parent().data("studentID")
     todrag.draggable({
@@ -390,9 +391,11 @@ $(document).ready(function() {
         cursorAt: { top: 8, left: 20 }, /* To deal with small tile */
         revert: true,
         containment: $('tbody'),
-        revertDuration: REVERT_SPEED_DURATION
+        revertDuration: REVERT_SPEED_DURATION,
+        opacity: 0.75,
     });
 
+    //todo add for loop + hoverClass to highlight areas that are droppable
   $(".pair_with").droppable({
       accept: "p",
       drop: function(event, ui) {
