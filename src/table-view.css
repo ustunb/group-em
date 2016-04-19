@@ -137,6 +137,7 @@ table td p .fa-grip:before {
     color: white;
     padding-right: 8px;
     cursor: -webkit-grab;
+    cursor: grab;
 }
 
 table td p {
@@ -148,7 +149,15 @@ table td p {
     color: white;
     white-space: nowrap;
     cursor: -webkit-grab;
+    cursor: grab;
 }
+
+table td p.ui-draggable-dragging {
+    cursor: -webkit-grabbing;
+    cursor: grabbing;
+}
+
+
 
 /* delete element in tiles */
 table td p span:hover {
@@ -176,6 +185,10 @@ table td p span:hover {
     vertical-align: middle;
     text-align: center;
     box-sizing: border-box;
+}
+
+.tile_name:hover, .tile_name:nth-of-type(2) {
+    box-shadow: 0 3px 11px black;
 }
 
 .tile_prefer {
