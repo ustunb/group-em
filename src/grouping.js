@@ -168,26 +168,50 @@ function Grouping(classroom) {
 
     // adds a student group to the list of pinned groups
     function pinGroup(group_id) {
-        var pin_flag = false;
+        var update_flag = false;
         var location = locateGroup(group_id);
         if (location.state === 'random' && location.index > 0) {
             self.pinned_groups.push(random_groups.splice(location.index)[0]);
-            pin_flag = true;
+            update_flag = true;
             checkRep();
         }
-        return pin_flag;
+        return update_flag;
     }
 
     //removes a group from the list of pinned groups
     function unpinGroup(group_id) {
-        var unpin_flag = false;
+        var update_flag = false;
         var idx = locateGroup(group_id);
         if (location.state === 'pinned' && location.index > 0) {
             self.random_groups.push(pinned_groups.splice(location.index)[0]);
-            unpin_flag = true;
+            update_flag = true;
             checkRep();
         }
-        return unpin_flag;
+        return update_flag;
+    }
+
+    // adds a student group to the list of banned groups
+    function banGroup(group_id) {
+        var update_flag = false;
+        var location = locateGroup(group_id);
+        if (location.state === 'random' && location.index > 0) {
+            self.pinned_groups.push(random_groups.splice(location.index)[0]);
+            update_flag = true;
+            checkRep();
+        }
+        return update_flag;
+    }
+
+    //removes a group from the list of banned groups
+    function unbanGroup(group_id) {
+        var update_flag = false;
+        var idx = locateGroup(group_id);
+        if (location.state === 'banned' && location.index > 0) {
+            self.random_groups.push(pinned_groups.splice(location.index)[0]);
+            update_flag = true;
+            checkRep();
+        }
+        return update_flag;
     }
 
     //switch student from one group to another group
@@ -299,20 +323,3 @@ function Grouping(classroom) {
     }
 
 }
-
-
-// //adds group to the list of banned groups
-// function banGroup(group) {
-//     var ban_flag = false;
-//     //TODO
-//     checkRep();
-//     return ban_flag;
-// }
-
-// //remove group from the list of banned groups
-// function unbanGroup(group) {
-//     var unban_flag = false;
-//     //TODO
-//     checkRep();
-//     return unban_flag;
-// }
