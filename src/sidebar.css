@@ -165,14 +165,15 @@ body{
   border-right: 4px solid #4C5365;
   color: white;
 }
+
 #cssmenu > ul > li > a:hover {
   background: #4C5365;
-  color: red;
 }
+
 #cssmenu > ul > li.active a {
   background:  #6e7891;  
-  color: white;
 }
+
 #cssmenu > ul > li a:hover,
 #cssmenu > ul > li:hover a {
   background: #FED587;  
