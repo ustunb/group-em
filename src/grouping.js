@@ -9,13 +9,14 @@
 
 /* create a new Grouping
 
-var grouping = new Grouping(classroom, students_per_group);
+var grouping = new Grouping(classroom);
 
 */
 
 /* get node/edge information for D3
-
-var grouping = new Grouping(classroom, students_per_group);
+var students_per_group = 2
+var grouping = new Grouping(classroom);
+grouping.shuffle(students_per_group);
 var groupArray = grouping.getGroups(); 
 
 for (var j = 0; j < groupArray.length; j++) {
@@ -51,11 +52,10 @@ TODO
 TODO
 
 */
-function Grouping(classroom, students_per_group) {
+function Grouping(classroom) {
 
     var self = this;
     //randomly generated groups
-    self.students_per_group = parseInt(students_per_group); //number of students per pool
     self.random_groups = [];
     self.pinned_groups = []; //explicitly enforced groups
     self.banned_groups = []; //explicitly banned groups
@@ -135,9 +135,6 @@ function Grouping(classroom, students_per_group) {
 
     //checks representation invariants
     function checkRep() {
-        if (!_.isInteger(self.students_per_group)) throw new Error('students per group must be integer')
-        if (self.students_per_group < 1.0) throw new Error('at least 1 student per group is needed');
-        if (self.students_per_group > getNumberOfStudents()) throw new Error('students per group (=' + students_per_group + ') + is larger than total students (=' + getNumberOfStudents() + ')');
         return true;
     }
 
@@ -223,26 +220,20 @@ function Grouping(classroom, students_per_group) {
     }
 
     //randomly create new groups of students from student_pool
-    function shuffle() {
+    function shuffle(students_per_group) {
         console.log(self.random_groups)
         var studentArray = self.random_groups.map(function(group) {
             return group.getStudents()
         });
         studentArray = _.flatten(studentArray);
         studentArray = _.shuffle(studentArray);
-        studentArray = _.chunk(studentArray, self.students_per_group);
+        studentArray = _.chunk(studentArray, students_per_group);
         self.random_groups = studentArray.map(function(students) {
             return new Group(students);
         })
         console.log(toString())
         checkRep();
         return _.concat(self.random_groups, self.pinned_groups);
-    }
-
-    function setStudentsPerGroup(new_students_per_group) {
-        self.students_per_group = new_students_per_group;
-        checkRep();
-        return true;
     }
 
     //public methods
@@ -252,7 +243,6 @@ function Grouping(classroom, students_per_group) {
     self.getStudents = getStudents;
     self.getPinnedGroups = getPinnedGroups;
     self.getRandomGroups = getRandomGroups;
-    self.setStudentsPerGroup = setStudentsPerGroup;
     self.toString = toString;
     self.getGroupIDOf = getGroupIDOf;
     self.shuffle = shuffle;
@@ -264,7 +254,6 @@ function Grouping(classroom, students_per_group) {
 
     self.toJSON = function() {
         var jsonGrouping = {};
-        jsonGrouping['students_per_group'] = self.students_per_group;
         jsonGrouping['random_groups'] = [];
         for (var i = 0; i < self.random_groups.length; i++) {
             jsonGrouping['random_groups'].push(self.random_groups[i].toJSON());
@@ -282,8 +271,6 @@ function Grouping(classroom, students_per_group) {
 
     self.fromJSON = function(jsonGrouping) {
         var obj = JSON.parse(jsonGrouping);
-        self.students_per_group = parseInt(obj.students_per_group);
-        //create groups by parsing each individually from JSON
         self.random_groups = [];
         for (var i = 0; i < obj.random_groups.length; i++) {
             var group = new Group();
@@ -307,9 +294,7 @@ function Grouping(classroom, students_per_group) {
 
     //initialize
     if (classroom != null) {
-        console.log(new Group(classroom.getStudents()))
         self.random_groups.push(new Group(classroom.getStudents()));
-        self.shuffle();
         checkRep();
     }
 

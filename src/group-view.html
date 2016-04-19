@@ -5,7 +5,6 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="../src/sidebar.css">
-<!-- <link href='https://fonts.googleapis.com/css?family=Cabin:400,700' rel='stylesheet' type='text/css'> -->
 <link href='https://fonts.googleapis.com/css?family=Raleway:400,300' rel='stylesheet' type='text/css'>
 <link rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
 <link rel='stylesheet' href='../src/group-view.css'>
@@ -60,14 +59,13 @@ var MIN_STUDENTS_PER_GROUP = 2;
 var MAX_STUDENTS_PER_GROUP = Number.POSITIVE_INFINITY;
 
 var classroom = new Classlist();
+var layout = new ClusterLayout('svg');
 
 /*load data from localStorage*/
 var storedClassroom = localStorage.getItem('classroom');
 if (storedClassroom != null){
-  console.log('loading classroom grom local storage')
   classroom.fromJSON(storedClassroom);
-  console.log(classroom.toString());
-  console.log(localStorage.getItem('students_per_group'));
+  console.log('loading classroom grom local storage', classroom.toString());
 }
 
 var storedStudentsPerGroup = parseInt(localStorage.getItem('students_per_group'));
@@ -79,59 +77,47 @@ if (storedStudentsPerGroup != null){
   $("#group_size_input").attr('value', MIN_STUDENTS_PER_GROUP);
 }
 
-var updateLocalStorage = function(grouping){
-  //todo
-}
-
-
-//create random pairs of students
-var grouping = new Grouping(classroom, $("#group_size_input").data('students_per_group'));
-var assignments = grouping.getGroups();
-var students = grouping.getStudents();
-
-var layout = new ClusterLayout('svg');
-  // add students
+function updateLayout(layout, students, assignments){  
+  layout.clear();
   for (var i = 0; i < students.length; i++) {
     layout.addNode(students[i].id(), students[i].name());
   }
-
-// add groups
-for (var i = 0; i < assignments.length; i++) {
-  layout.addCluster(assignments[i].getStudentIDs());
-}
-
-// console.log('assignments')
-// console.log(assignments)
-// console.log('students')
-// console.log(students)
-// console.log('studentsPerGroup')
-// console.log($("#group_size_input").data('students_per_group'))
-
-// add join listener
-$(layout).on('join', function(e) {
-  console.log('join', e.node, 'to', e.cluster);
-  console.log(grouping.toString());
-  grouping.assignStudentToGroup(e.node, e.cluster);
-  console.log(grouping.toString());
-});
-
-$('#shuffle_button').on('click', function(e) {
-  localStorage.setItem('students_per_group', $("#group_size_input").data('students_per_group'));
-  grouping.setStudentsPerGroup($("#group_size_input").data('students_per_group'));
-  console.log(grouping)
-  var assignments = grouping.shuffle();
-  layout.clear()
-  
-  // add students
-  for (var i = 0; i < students.length; i++) {
-    layout.addNode(students[i].id(), students[i].name());
-  }
-
-  // add groups
   for (var i = 0; i < assignments.length; i++) {
-    console.log(assignments[i].getStudentIDs());
     layout.addCluster(assignments[i].getStudentIDs());
   }
+}
+
+//create random pairs of students
+var grouping = new Grouping(classroom);
+var assignments = grouping.shuffle($("#group_size_input").data('students_per_group'));
+var students = grouping.getStudents();
+updateLayout(layout, students, assignments);
+
+// console.log('assignments', assignments)
+// console.log('students', students)
+// console.log('studentsPerGroup', $("#group_size_input").data('students_per_group'))
+
+
+var updateLocalStorage = function(grouping){
+  localStorage.setItem('students_per_group', parseInt($("#group_size_input").data('students_per_group')));
+  localStorage.setItem('grouping', grouping.toJSON());
+}
+
+
+//join event listener (for manual group updates)
+$(layout).on('join', function(e) {
+  console.log('adding', e.node, 'to', e.cluster);
+  grouping.assignStudentToGroup(e.node, e.cluster);
+  console.log('new grouping', grouping.toString());
+  // updateLocalStorage(grouping) //todo when we reload grouping from disk
+});
+
+//shuffle listener
+$('#shuffle_button').on('click', function(e) {
+  var students_per_group  = $("#group_size_input").data('students_per_group')
+  var assignments = grouping.shuffle(students_per_group);
+  updateLayout(layout, students, assignments);
+  updateLocalStorage(grouping);
 });
 
 /*group size input*/
@@ -141,8 +127,7 @@ updateStudentsPerGroup = function(new_students_per_group){
               ' to ' + new_students_per_group);
   $("#group_size_input").data('students_per_group', new_students_per_group);
   $("#group_size_input").attr('value', new_students_per_group);
-  grouping.setStudentsPerGroup(new_students_per_group);
-  localStorage.setItem('students_per_group', new_students_per_group);
+  updateLocalStorage(grouping);
 }
 
 $("#decrease_group_size").click(function(){
@@ -189,7 +174,6 @@ $("#group_size_input").on('input', function(e) {
     $('#group_size_input').blur();
   }
 })
-
 
 </script>
 
