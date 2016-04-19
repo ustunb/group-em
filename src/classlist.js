@@ -176,6 +176,7 @@ function Classlist(studentArray) {
         var jsonClasslist = {};
         jsonClasslist['students'] = [];
         for (var i = 0; i < self.size; i++) {
+            console.log(self.students[i].toJSON());
             jsonClasslist['students'].push(self.students[i].toJSON());
         }
         return JSON.stringify(jsonClasslist);

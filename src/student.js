@@ -33,14 +33,15 @@ function Student(name, id, preferences) {
             'pinned': [],
         }
     } else {
-        self.preferences = [];
-        var preferenceTypes = ['banned', 'avoid', 'pinned', 'prefer']
+        self.preferences = {};
+        var preferenceTypes = ['banned', 'avoid', 'pinned', 'prefer'];
         for (var i = 0; i < preferenceTypes.length; i++) {
             var prefType = preferenceTypes[i];
             if (prefType in preferences) {
                 self.preferences[prefType] = _.clone(preferences[prefType]);
             } else {
-                throw new Error("initialization error: student preferences must contain a field named '" + prefType + "'");
+                self.preferences[prefType] = [];
+                // throw new Error("initialization error: student preferences must contain a field named '" + prefType + "'");
             }
         }
     }
@@ -73,7 +74,7 @@ function Student(name, id, preferences) {
         return JSON.stringify({
             'name': name,
             'id': id,
-            'preferences': preferences
+            'preferences': self.preferences,
         });
     }
 

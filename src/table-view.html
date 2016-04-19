@@ -161,6 +161,8 @@ var updatePage = function(classroom) {
 var updateLocalStorage = function(classroom){
   localStorage.setItem('classroom', classroom.toJSON());
   localStorage.setItem('students_per_group', $("#group_size_input").data('students_per_group'));
+  console.log("updated localStorage['classroom']", localStorage.getItem('classroom'))
+  console.log("updated localStorage['students_per_group']", localStorage.getItem('classroom'))
 }
 
 function getTileHTML(name, type, tileID, tileClasses){
@@ -331,7 +333,7 @@ $(document).ready(function() {
     var update_flag = rowStudent.removeFromPreferences('avoid', tileStudentID);
     if (update_flag){
       $(this).parent().remove();
-      updateLocalStorage(classroom); 
+      updateLocalStorage(classroom);
     } else {
       console.log('removal failed')
     }
@@ -375,7 +377,7 @@ $(document).ready(function() {
       $("#add_student_box").val("");
       updatePage(classroom);
       updateLocalStorage(classroom); 
-      console.log(classroom.toString())
+      console.log(classroom.toString());
     }
   });
 
@@ -617,8 +619,9 @@ $(document).ready(function() {
     classroom.add(new Student('nick', 3, {'prefer':[4], 'avoid':[1], 'pinned':[], 'banned':[]}));
     classroom.add(new Student('shruti', 4, {'prefer':[3], 'avoid':[2], 'pinned':[], 'banned':[]}));
   } else {
-    console.log('found classroom in local storage');
+    console.log('classroom JSON', storedClassroom)
     classroom.fromJSON(storedClassroom);
+    console.log('loading classroom from local storage', classroom.toString());
     var storedStudentsPerGroup = parseInt(localStorage.getItem('students_per_group'));
     if (storedStudentsPerGroup != null){
       console.log('found students per group in local storage')
