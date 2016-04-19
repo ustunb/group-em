@@ -159,7 +159,6 @@ table td p.ui-draggable-dragging {
 }
 
 
-
 /* delete element in tiles */
 table td p span:hover {
     color: red;
@@ -359,11 +358,13 @@ table th:nth-of-type(4) th textarea {
     pointer-events: all;
 }
 
-.control_button:focus, .control_button:active {
+.control_button:focus, .control_button:active, .control_button:hover {
     box-shadow: 0 0 5px #f9efec;
     padding: 0px;
     margin: 0px;
     outline: none;
+    color: #F39354;
+    background: #FED587;
 }
 
 /*#groupem_button:before {
@@ -377,12 +378,6 @@ table th:nth-of-type(4) th textarea {
     opacity: 0.30;
     background-color: #4C5365;
     color: white;
-}
-
-#groupem_button:hover{
-    background-color: #F39354;
-    color: #F39354;
-    background: #FED587;
 }
 
 /*group_size*/
