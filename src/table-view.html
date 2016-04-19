@@ -166,26 +166,20 @@ var updateLocalStorage = function(classroom){
 }
 
 function getTileHTML(name, type, tileID, tileClasses){
-  var tileHTML = "<p"
-  if (tileID != null){
-    tileHTML += " id= '" + tileID + "'";
+  var result = $('<p>').text(name);
+  if (tileID != null) {
+    result.attr('id', tileID);
   }
-  if (tileClasses != null){
-    tileHTML += " class= 'tile ";
-    for (var i = 0; i < tileClasses.length; i++){
-      tileHTML += tileClasses[i] + " ";
-    }
-    tileHTML += "'";
+  if (tileClasses != null) {
+    result.addClass(tileClasses.join(' '));
   }
-  tileHTML += ">"
-  tileHTML += "<i class='fa fa-grip'></i>" + name 
-  if (type == "prefer") {
-      tileHTML += "<span class='removePreferTile'></span>"
-  } else if (type == "avoid") {
-      tileHTML += "<span class='removeAvoidTile'></span>"
+  if (type == 'prefer') {
+    result.append($("<span class='removePreferTile'></span>"));
   }
-  tileHTML += "</p>"
-  return tileHTML
+  if (type == 'avoid') {
+    result.append($("<span class='removeAvoidTile'></span>"));
+  }
+  return result;
 }
 
 
