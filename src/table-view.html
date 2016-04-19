@@ -197,8 +197,6 @@ function addRow(student, classroom) {
   var studentName = student.name();
   // console.log(student.toString())
   
-
-  
   //define IDs for table row and cell
   var rowID = "row_" + studentID;
   var nameID = "name_cell_" + studentID;
@@ -385,13 +383,13 @@ $(document).ready(function() {
   //drag and drop behavior for name tiles
   $("table").on('mouseenter',".tile_name", function() {
     $(this).css( 'cursor', 'grabbing' );
-    $(this).css( 'cursor', 'grabbing' );
     var todrag = $(this);
     var tileStudentID = todrag.parent().data("studentID")
     todrag.draggable({
         helper: 'clone',
         cursorAt: { top: 8, left: 20 }, /* To deal with small tile */
         revert: true,
+        containment: $('tbody'),
         revertDuration: REVERT_SPEED_DURATION
     });
 
