@@ -80,6 +80,7 @@ var ADD_STUDENT_BOX_PLACEHOLDER = "enter student or copy/paste student list"
 var REVERT_SPEED_DURATION = 500;
 var MIN_STUDENTS_PER_GROUP = 2;
 var MAX_STUDENTS_PER_GROUP = Number.POSITIVE_INFINITY;
+var DRAGGABLE_Z_INDEX = 3;
 
 var classroom = new Classlist();
 
@@ -382,7 +383,8 @@ $(document).ready(function() {
 
   //drag and drop behavior for name tiles
   $("table").on('mouseenter',".tile_name", function() {
-    $(this).css( 'cursor', 'grabbing' );
+    $(this).css( 'cursor', 'grabbing' )
+    $(this).css( 'z-index', DRAGGABLE_Z_INDEX);
     var todrag = $(this);
     var tileStudentID = todrag.parent().data("studentID")
     todrag.draggable({
