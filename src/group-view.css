@@ -14,11 +14,16 @@ html, body, body > svg, body > div {
 
  svg circle, svg g text {
    cursor: move;
+   cursor: -webkit-grab;
  }
 
- svg g.node text{
+ svg g.node text {
   fill: white;
   font-family: Raleway;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 svg g.node circle {
@@ -30,6 +35,7 @@ svg g.node circle {
 
 svg line.link {
  cursor: move;
+ cursor: -webkit-grab;
  stroke: #EFEDE7;
  stroke-width: 75px;
  stroke-linecap: round;
