@@ -153,6 +153,7 @@ table td p {
 }
 
 table td p.ui-draggable-dragging {
+    box-shadow: 0 3px 11px black;
     cursor: -webkit-grabbing;
     cursor: grabbing;
 }
