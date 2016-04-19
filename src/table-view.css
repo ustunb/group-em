@@ -345,6 +345,13 @@ table th:nth-of-type(4) th textarea {
     pointer-events: all;
 }
 
+.control_button:focus, .control_button:active {
+    box-shadow: 0 0 5px #f9efec;
+    padding: 0px;
+    margin: 0px;
+    outline: none;
+}
+
 /*#groupem_button:before {
     font-family: FontAwesome;
     content: '\f0c0 \00a0';
