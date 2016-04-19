@@ -1,3 +1,22 @@
+/**
+ * color coordination
+ * users: #60BADF
+ * prefer: #6AD5A2
+ * avoid: #F39354;
+ * background: #4C5365;
+ * active background: #6E7891;
+ * inactive text: #A9A9A9;
+ * shadow for drag: #939085
+ * field input:
+ * hover background: #FED587;
+ * hover text: #F39354;
+ *
+ * unused but nice:
+ * #DFB0EA
+ * #818AAA
+ */
+
+
 body, html {
   font: 28px;
   font-family: 'Raleway', sans-serif;
@@ -5,8 +24,6 @@ body, html {
   height: 100%;
 }
 
-
-/**/
 table {
     margin: auto;
     width: 80%;
@@ -320,6 +337,10 @@ table th:nth-of-type(4) th textarea {
     display:inline-block;
     vertical-align: middle;
     height: 95%;
+    width: 80px;
+    border-radius: 5px;
+    border: 3px solid #BCBAB4;
+    font-size: 28px;
 }
 
 #increment_container {
@@ -367,12 +388,6 @@ table th:nth-of-type(4) th textarea {
     background: #FED587;
 }
 
-/*#groupem_button:before {
-    font-family: FontAwesome;
-    content: '\f0c0 \00a0';
-}*/
-
-
 #groupem_button[disabled], #groupem_button[disabled]:hover{
     /*cursor: not-allowed;*/
     opacity: 0.30;
@@ -386,33 +401,50 @@ table th:nth-of-type(4) th textarea {
     background: #FED587;
 }
 
-/*group_size*/
+
+/*#group_size_icon {
+    display: inline-block;
+    text-align: right;
+    width: 45%;
+    position: relative;
+    padding-right: 5px;
+    padding-top: 0.5em;
+}*/
+
+/*#group_size_icon:before{
+    content:'\f235';
+    font-size: 28px;
+    font-family: FontAwesome;
+}*/
+
 #group_size_input {
     -webkit-transition: all 0.10s ease-in-out;
     -moz-transition: all 0.10s ease-in-out;
     -ms-transition: all 0.10s ease-in-out;
     -o-transition: all 0.10s ease-in-out;
-    display: block;
     font: 32px Raleway;
+    font-weight: bold;
+    /*position:relative;*/
+    /*width: 50%;
+    text-align: left;*/
+    width: 100%;
     text-align: center;
-    position:relative;
-    width: 80px;
-    border-radius: 5px;
+    padding: 0px;
+    margin: 0px;
+    /*border: none;*/
     height:100%;
     bottom: 0%;
     background-color: white;
-    border: 3px solid #BCBAB4;
     color: #4C5365;
     outline: none;
 }
 
-
-input[type=number]:{ 
+/*if we want to allow for text input into group size*/
+/*input[type=number]:{ 
     -webkit-appearance: none;
 }
-
 input[type=number]::-webkit-inner-spin-button:focus  input[type=number]::-webkit-inner-spin-button:hover{ 
-    /*-webkit-appearance: none;*/
+    -webkit-appearance: none;
     cursor:pointer;
     display:block;
     width:20px;
@@ -421,7 +453,7 @@ input[type=number]::-webkit-inner-spin-button:focus  input[type=number]::-webkit
     color: #333;
     text-align:right;
     position:relative;
-}    
+}    */
 
 
 /*increments*/
@@ -463,7 +495,7 @@ input[type=text], textarea {
 
 input[type=text]:focus {
   /*border: 3px solid #BCBAB4; */
-/*box-shadow: 0 0 4px #BCBAB4;*/
+  /*box-shadow: 0 0 4px #BCBAB4;*/
   /*border: 3px solid #CC99FF;*/
   /*border: 0px;*/
   box-shadow: 0 0 5px #BCBAB4;
@@ -475,7 +507,7 @@ input[type=text]:focus {
 
 textarea:focus {
   /*border: 3px solid #BCBAB4; */
-/*box-shadow: 0 0 4px #BCBAB4;*/
+  /*box-shadow: 0 0 4px #BCBAB4;*/
   /*border: 3px solid #CC99FF;*/
   border: none;
   box-shadow: 0 0 5px #BCBAB4;
@@ -485,9 +517,9 @@ textarea:focus {
 
 #group_size_input:focus {
     -webkit-appearance:none;
-  border: 0px;
-  box-shadow: 0 0 5px #BCBAB4; 
-  background: #f9efec;
-  /*padding: 3px 0px 3px 3px;*/
-  /*margin: 5px 1px 3px 0px;*/
+    border: 0px;
+    box-shadow: 0 0 5px #BCBAB4; 
+    background: #f9efec;
+    /*padding: 3px 0px 3px 3px;*/
+    /*margin: 5px 1px 3px 0px;*/
 }

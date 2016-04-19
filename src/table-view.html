@@ -13,9 +13,12 @@
 
 <div class="sidebar">
 <div style="position: relative; text-align: center; margin: 30px 0; height:150px; " >
+
 <div id = "logo_container">
+<a id = "logo_link" href="../index.html">
 <div id = "logo_icon"></div>
 <div id = 'logo_name'></div>
+</a>
 </div>
 </div>
 <div id='cssmenu'>
@@ -52,12 +55,8 @@
 
 <th id="button_row" colspan="4">
 <div id="control_container">
-<div id="button_container">
-<button id="groupem_button" class="control_button" disabled>group'em</button>
-</div>
-<div id="group_size_container">
-<input id="group_size_input" disabled></input>
-</div>
+<div id="button_container"><button id="groupem_button" class="control_button" disabled>group'em</button></div>
+<div id="group_size_container"><span id = "group_size_icon"></span><input id="group_size_input" disabled></input></div>
 <div id="increment_container">
 <div id="increase_button_container"><button id="increase_group_size" class="increment_button control_button"></button></div>
 <div id="decrease_button_container"><button id="decrease_group_size" class="increment_button control_button"></button></div>
@@ -81,6 +80,7 @@ var REVERT_SPEED_DURATION = 500;
 var MIN_STUDENTS_PER_GROUP = 2;
 var MAX_STUDENTS_PER_GROUP = Number.POSITIVE_INFINITY;
 var DRAGGABLE_Z_INDEX = 3;
+var GROUP_SIZE_FADE_SPEED = 50;
 
 var classroom = new Classlist();
 
@@ -141,6 +141,7 @@ var updateStudentsPerGroup = function(classroom, new_students_per_group){
                 ' to ' + new_students_per_group);
     $("#group_size_input").data('students_per_group', new_students_per_group);
     $("#group_size_input").attr('value', new_students_per_group);
+    $("#group_size_input").fadeOut(GROUP_SIZE_FADE_SPEED).fadeIn('slow')
     updateGroupemButton(classroom);
 }
 
@@ -186,17 +187,19 @@ function getTileHTML(name, type, tileID, tileClasses){
 }
 
 
-//class names and IDs
-//tile_name_[SID1]: ID for tile with student SID1 in "student_name" column
-//tile_prefer_[SID1]_[SID2]: ID for tile with student SID2 in "prefer" column of student [SID1]
-//tile_avoid_[SID1]_[SID2]: ID for tile with student SID2 in "avoid" column of student [SID1]
-//class: tile_[SID] : class name for any tile student SID name on it 
+//adds a new row to the table; all elements are have IDs derived from the student ID
 function addRow(student, classroom) {
+
+  //element / ID overview
+  //tile_name_[SID1]: ID for tile with student SID1 in "student_name" column
+  //tile_prefer_[SID1]_[SID2]: ID for tile with student SID2 in "prefer" column of student [SID1]
+  //tile_avoid_[SID1]_[SID2]: ID for tile with student SID2 in "avoid" column of student [SID1]
+  //class: tile_[SID] : class name for any tile student SID name on it 
   
   //get new student ID
+  //console.log(student.toString())
   var studentID = student.id();
   var studentName = student.name();
-  // console.log(student.toString())
   
   //define IDs for table row and cell
   var rowID = "row_" + studentID;
@@ -219,12 +222,19 @@ function addRow(student, classroom) {
   $(row).append("<td class='dont_pair_with' id=" + avoidID + "></td>")
   $(row).append("<td class='remove' id=" + removeID + "></td>")  
 
+  //add data to all other elements
+  $(row).data("studentID", studentID)
+  $(preferCell).data('studentID', studentID)
+  $(nameCell).data("studentID", studentID)
+  $(avoidCell).data("studentID", studentID)
+  $(removeCell).data("studentID", studentID)
+
   //add name tile
   var tileID  = "tile_name_" + studentID;
   var tileHTML = getTileHTML(studentName, "name", tileID, ["tile_name"])
   $(nameCell).append(tileHTML)
 
-  //add pair with tiles
+  //add pair with tiles  (data contains studentID of tile_name)
   var prefIDs = student.getPreferences('prefer');
   for (i = 0; i < prefIDs.length; i++) {
     var targetStudent = classroom.getStudentFromID(prefIDs[i]);
@@ -234,10 +244,9 @@ function addRow(student, classroom) {
     $(preferCell).append(tileHTML);
     console.log('adding '  + tileHTML + 'to ' + preferCell)
     $("#" + tileID).data('studentID', prefIDs[i]);
-    // $("#" + tileID).data('targetID', );
   }
 
-  //add don't pair with tiles
+  //add dont_pair_with tiles (data contains studentID of tile_name)
   var avoidIDs =  student.getPreferences('avoid');
   for (i = 0; i < avoidIDs.length; i++) {
     var targetStudent = classroom.getStudentFromID(avoidIDs[i]);
@@ -245,17 +254,10 @@ function addRow(student, classroom) {
     var tileClasses = ["tile_avoid", "tile_" + avoidIDs[i]];
     var tileHTML = getTileHTML(targetStudent.name(), "avoid", tileID, tileClasses);
     $(avoidCell).append(tileHTML);
-    $("#" + tileID).data('studentID', avoidIDs[i]);
-    // $("#" + tileID).data('targetID', );
-    // console.log("#" + tileID)
+    $("#" + tileID).data('studentID', avoidIDs[i]);  
   }
 
-  //add data to all other elements
-  $(row).data("studentID", studentID)
-  $(preferCell).data('studentID', studentID)
-  $(nameCell).data("studentID", studentID)
-  $(avoidCell).data("studentID", studentID)
-  $(removeCell).data("studentID", studentID)
+  
 }
 
 //HANDLE COPY PASTING  http://stackoverflow.com/questions/3211505/detect-pasted-text-with-ctrlv-or-right-click-paste
@@ -498,7 +500,7 @@ $(document).ready(function() {
     console.log('PICKUP ID' + tileStudentID)
     todrag.draggable({revert: true, cancel: 'span'});
 
-  $(".pair_with").droppable({
+    $(".pair_with").droppable({
       accept: "p",
       drop: function(event, ui) {
         var targetStudentID = $(this).data("studentID");
@@ -537,11 +539,10 @@ $(document).ready(function() {
         }
       }
     });
+  
   });
 
   /*group size input*/
-  
-
   $("#decrease_group_size").click(function(){
     var students_per_group = $("#group_size_input").data('students_per_group');
     var new_students_per_group = Math.max(students_per_group - 1, MIN_STUDENTS_PER_GROUP)
@@ -549,6 +550,7 @@ $(document).ready(function() {
       updateStudentsPerGroup(classroom, new_students_per_group);
       updateLocalStorage(classroom); 
     }
+    $("#decrease_group_size").blur();
   })
 
   $("#increase_group_size").click(function(){
@@ -559,6 +561,7 @@ $(document).ready(function() {
       updateStudentsPerGroup(classroom, new_students_per_group);
       updateLocalStorage(classroom); 
     }
+    $("#increase_group_size").blur();
   })
     
 
@@ -616,12 +619,12 @@ $(document).ready(function() {
   } else {
     console.log('found classroom in local storage');
     classroom.fromJSON(storedClassroom);
-    var storedStudentsPerGroup = parseInt(localStorage.getItem('students_per_group'));
-    if (storedStudentsPerGroup != null){
-      console.log('found students per group in local storage')
-      $("#group_size_input").data('students_per_group', parseInt(storedStudentsPerGroup));
-      $("#group_size_input").attr('value', parseInt(storedStudentsPerGroup));
-    }
+    // var storedStudentsPerGroup = parseInt(localStorage.getItem('students_per_group'));
+    // if (storedStudentsPerGroup != null){
+    //   console.log('found students per group in local storage')
+    //   $("#group_size_input").data('students_per_group', parseInt(storedStudentsPerGroup));
+    //   $("#group_size_input").attr('value', parseInt(storedStudentsPerGroup));
+    // }
   }
   updatePage(classroom);
   updateLocalStorage(classroom); 

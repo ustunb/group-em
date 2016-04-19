@@ -16,8 +16,10 @@
 <div class="sidebar">
 <div style="position: relative; text-align: center; margin: 30px 0; height:150px; " >
 <div id = "logo_container">
+<a id="logo_link" href="index.html">
 <div id = "logo_icon"></div>
 <div id = 'logo_name'></div>
+</a>
 </div>
 </div>
 <div id='cssmenu'>
@@ -33,9 +35,7 @@
 <div id="button_container">
 <button id="shuffle_button" class="control_button" type="button">shuffle</button>
 </div>
-<div id="group_size_container">
-<input id="group_size_input" disabled></input>
-</div>
+<div id="group_size_container"><span id = "group_size_icon"></span><input id="group_size_input" disabled></input></div>
 <div id="increment_container">
 <div id="increase_button_container"><button id="increase_group_size" class="increment_button control_button"></button></div>
 <div id="decrease_button_container"><button id="decrease_group_size" class="increment_button control_button"></button></div>
@@ -57,6 +57,7 @@
 
 var MIN_STUDENTS_PER_GROUP = 2;
 var MAX_STUDENTS_PER_GROUP = Number.POSITIVE_INFINITY;
+var GROUP_SIZE_FADE_SPEED = 50;
 
 var classroom = new Classlist();
 var layout = new ClusterLayout('svg');
@@ -128,6 +129,7 @@ updateStudentsPerGroup = function(new_students_per_group){
   $("#group_size_input").data('students_per_group', new_students_per_group);
   $("#group_size_input").attr('value', new_students_per_group);
   updateLocalStorage(grouping);
+  $("#group_size_input").fadeOut(GROUP_SIZE_FADE_SPEED).fadeIn('slow')
 }
 
 $("#decrease_group_size").click(function(){
@@ -136,6 +138,8 @@ $("#decrease_group_size").click(function(){
   if (new_students_per_group < students_per_group){
     updateStudentsPerGroup(new_students_per_group);
   }
+  $("#decrease_group_size").blur();
+
 })
 
 $("#increase_group_size").click(function(){
@@ -145,6 +149,7 @@ $("#increase_group_size").click(function(){
   if (new_students_per_group > students_per_group){
     updateStudentsPerGroup(new_students_per_group);
   }
+  $("#decrease_group_size").blur();
 })
   
 isValidStudentsPerGroup = function(group_size){

@@ -1,17 +1,29 @@
 /* Starter CSS for Flyout Menu */
+/**
+ * color coordination
+ * users: #60BADF
+ * prefer: #6AD5A2
+ * avoid: #F39354;
+ * background: #4C5365;
+ * active background: #6E7891;
+ * inactive text: #A9A9A9;
+ * shadow for drag: #939085
+ * field input:
+ * hover background: #FED587;
+ * hover text: #F39354
+ */
+
 body{
-  margin: 0;
+  margin: 0px;
   background: white; 
   color: #4C5365;
   font-family: 'Raleway';
-  /*background-image: url('../images/school.png');*/
 }
 
 .content {
   width: 70%;
   height: 100%;
   float: left;
-  /*background-image: url('../images/school.png');*/
 }
 
 .sidebar {
@@ -34,6 +46,10 @@ body{
   padding: 0px;
 }
 
+#logo_link:link, #logo_link:visited, #logo_link:active, #logo_link:hover{
+  text-decoration: none;
+}
+
 #logo_icon:before {
     font-family: FontAwesome;
     font-size: 60pt;
@@ -41,7 +57,7 @@ body{
     content: '\f0c0';
     border-radius: 50%;
     height: 50%;
-    color: #60BADF;
+    color: #60BADF; 
     background: white;
     text-align: left;
 }
