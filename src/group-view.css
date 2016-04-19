@@ -23,6 +23,7 @@ html, body, body > svg, body > div {
 
 svg g.node circle {
  fill:#444B5D;
+ fill: #60BADF;
  stroke: #004D40;
  stroke-width: 0px;
 }
