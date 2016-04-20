@@ -1,21 +1,23 @@
 /**
- * color coordination
+ * Color Palette 
+ * SublimeText users: get Color Highlighter to see these inline
+ *
  * users: #60BADF
  * prefer: #6AD5A2
  * avoid: #F39354;
  * background: #4C5365;
- * active background: #6E7891;
- * inactive text: #A9A9A9;
+ * background (active): #6E7891;
+ * greyed out text: #A9A9A9;
  * shadow for drag: #939085
- * field input:
+ * input-field active: #f9efec
  * hover background: #FED587;
- * hover text: #F39354;
+ * hover text: #F39354
  *
- * unused but nice:
+ * used colors for other things:
  * #DFB0EA
  * #818AAA
+ *
  */
-
 
 body, html {
   font: 28px;

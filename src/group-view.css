@@ -1,3 +1,24 @@
+/**
+ * Color Palette 
+ * SublimeText users: get Color Highlighter to see these inline
+ *
+ * users: #60BADF
+ * prefer: #6AD5A2
+ * avoid: #F39354;
+ * background: #4C5365;
+ * background (active): #6E7891;
+ * greyed out text: #A9A9A9;
+ * shadow for drag: #939085
+ * input-field active: #f9efec
+ * hover background: #FED587;
+ * hover text: #F39354
+ *
+ * used colors for other things:
+ * #DFB0EA
+ * #818AAA
+ *
+ */
+
 html, body, body > svg, body > div {
  position: fixed;
  margin:0; padding:0; height:100%; width:100%; overflow:hidden;
@@ -5,9 +26,6 @@ html, body, body > svg, body > div {
  font-family: 'Raleway';
 }
 
-/** 
- * colors based on https://www.headspace.com/
- */
  body > div {
    pointer-events: none;
  }
