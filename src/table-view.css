@@ -46,6 +46,7 @@ table th {
     font-size: 28px;
     text-transform: lowercase;
     white-space: nowrap;
+
     -webkit-user-select: none; /* Chrome/Safari */        
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* IE10+ */
@@ -63,6 +64,7 @@ table th.student_name {
     border-right-style: hidden;
     border-bottom: 1px solid #BCB8AD;
     padding-bottom: 0px;
+    /*visibility:hidden;*/
 }
 
 table th.pair_with {
@@ -73,6 +75,7 @@ table th.pair_with {
     border-right-style: hidden;
     border-bottom: 1px solid #BCB8AD;
     padding-bottom: 0px;
+    /*visibility:hidden;*/
 }
 
 table th.dont_pair_with  {
@@ -83,6 +86,7 @@ table th.dont_pair_with  {
     border-left-style: hidden;
     border-right-style: hidden;
     border-bottom: 1px solid #BCB8AD;
+    /*visibility:hidden;*/
 }
 
 table th.remove {
@@ -298,6 +302,7 @@ table th:nth-of-type(4) th textarea {
     text-align:center;
     color: #4C5365;
     outline: none;
+    visibility:hidden;
     border: 1px #EFEDE7;
     -webkit-transition: all 0.10s ease-in-out;
     -moz-transition: all 0.10s ease-in-out;
@@ -327,12 +332,14 @@ table th:nth-of-type(4) th textarea {
     margin: 0px;
     padding: 0px;
     border: 0px;
+    /*visibility:hidden;*/
 }
 
 #button_container {
     display:inline-block;
     vertical-align: middle;
     height: 95%;
+    visibility:hidden;
 }
 
 #group_size_container {
@@ -343,6 +350,7 @@ table th:nth-of-type(4) th textarea {
     border-radius: 5px;
     border: 3px solid #BCBAB4;
     font-size: 28px;
+    /*visibility:hidden;*/
 }
 
 #increment_container {

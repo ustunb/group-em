@@ -86,7 +86,7 @@ body{
 
 #link_to_table_view:after{
   font-size: 20px;
-  content: 'list students';
+  content: 'student list';
   text-align: right;
 }
 
@@ -99,7 +99,7 @@ body{
 
 #link_to_group_view:after{
   font-size: 20px;
-  content: 'make groups';
+  content: 'view groups';
   text-align: right;
 }
 

@@ -75,7 +75,7 @@
 <script>
 var ADD_INITIAL_LIST = false;
 var ADD_CLASSNAME_PLACEHOLDER = "enter class name"
-var ADD_STUDENT_BOX_PLACEHOLDER = "enter student or copy/paste student list"
+var ADD_STUDENT_BOX_PLACEHOLDER = "type in (or copy/paste) student names"
 var REVERT_SPEED_DURATION = 500;
 var MIN_STUDENTS_PER_GROUP = 2;
 var MAX_STUDENTS_PER_GROUP = Number.POSITIVE_INFINITY;
@@ -294,6 +294,8 @@ function detectPaste(textarea, callback) {
 });
  **/
 $(document).ready(function() {
+
+  $("#add_student_box").focus();
   
   $(document).on('click', ".remove", function(e) {
     var removedStudentID = $(this).data('studentID');
@@ -352,7 +354,6 @@ $(document).ready(function() {
   //input student textbox placeholder listeners
   $("#add_student_box").data('holder', ADD_STUDENT_BOX_PLACEHOLDER)
   $("#add_student_box").on('focus', function(){
-    $(this).attr('placeholder', '')
   });
   $("#add_student_box").on('focusout', function(){
     $(this).attr('placeholder',  $(this).data('holder'));
@@ -363,7 +364,14 @@ $(document).ready(function() {
   $(document).on('keyup', "#add_student_box", function(e) {
     var charCode = e.which || e.keyCode;
     if (charCode == '13'){
-      console.log('user pressed enter on student box')
+      //$("#classname_input").css('visibility', 'visible');
+      //$("#button_container").css('visibility', 'visible');
+      //$("#group_size_container").css('visibility', 'visible');
+      //$("#control_container").css('visibility', 'visible');
+      //$("table th.student_name").css('visibility', 'visible');
+      //$("table th.pair_with").css('visibility', 'visible');
+      //$("table th.dont_pair_with").css('visibility', 'visible');
+
       var studentArray = parseStudentList(classroom);
       for (var i = 0; i < studentArray.length; i++){
         classroom.add(studentArray[i]);
