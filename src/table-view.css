@@ -302,7 +302,7 @@ table th:nth-of-type(4) th textarea {
     text-align:center;
     color: #4C5365;
     outline: none;
-    visibility:hidden;
+    /*visibility:hidden;*/
     border: 1px #EFEDE7;
     -webkit-transition: all 0.10s ease-in-out;
     -moz-transition: all 0.10s ease-in-out;
@@ -339,7 +339,7 @@ table th:nth-of-type(4) th textarea {
     display:inline-block;
     vertical-align: middle;
     height: 95%;
-    visibility:hidden;
+    /*visibility:hidden;*/
 }
 
 #group_size_container {
