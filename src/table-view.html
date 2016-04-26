@@ -56,7 +56,7 @@
 <th id="button_row" colspan="4">
 <div id="control_container">
 <div id="button_container"><button id="groupem_button" class="control_button" disabled>group'em</button></div>
-<div id="group_size_container"><span id = "group_size_icon"></span><input id="group_size_input" disabled></input></div>
+<div id="group_size_container"><span id = "group_size_icon_container"></span><input id="group_size_input" disabled></input></div>
 <div id="increment_container">
 <div id="increase_button_container"><button id="increase_group_size" class="increment_button control_button"></button></div>
 <div id="decrease_button_container"><button id="decrease_group_size" class="increment_button control_button"></button></div>
@@ -125,9 +125,11 @@ var parseStudentList = function(classroom) {
   return studentArray;
 }
 
+
 var updateGroupemButton = function(classroom){
   var students_per_group = $("#group_size_input").data('students_per_group');
   console.log('students per group: ' + students_per_group)
+  console.log($("#group_size_input").data('students_per_group'))
   if (students_per_group <= classroom.getSize()){
     $("#groupem_button").prop('disabled', false);
   } else {
@@ -140,7 +142,23 @@ var updateStudentsPerGroup = function(classroom, new_students_per_group){
                 $("#group_size_input").data('students_per_group')  +
                 ' to ' + new_students_per_group);
     $("#group_size_input").data('students_per_group', new_students_per_group);
-    $("#group_size_input").attr('value', new_students_per_group);
+    
+    if (new_students_per_group == 1){
+      var iconHTML = '<p id="group_size_icon_1x" class = "group_size_icon">&#xf007</p>';
+    } else if (new_students_per_group == 2){
+      var iconHTML = '<p id="group_size_icon_2x" class = "group_size_icon">&#xf007&#xf007</p>';
+    } else if (new_students_per_group == 3){
+      var iconHTML = '<p id="group_size_icon_3x" class = "group_size_icon">&#xf007&#xf007<br>&#xf007</p>';
+    } else if (new_students_per_group == 4){
+      var iconHTML = '<p id="group_size_icon_4x" class = "group_size_icon">&#xf007&#xf007<br>&#xf007&#xf007</p>';
+    } else if (new_students_per_group > 4){
+      var iconHTML = '<p id="group_size_icon_nx" class = "group_size_icon">&#xf235</p>';
+    } 
+    $("#group_size_icon_container").html(iconHTML);
+
+    if (new_students_per_group > 4){
+      $("#group_size_icon_container").after(new_students_per_group);      
+    }
     $("#group_size_input").fadeOut(GROUP_SIZE_FADE_SPEED).fadeIn('slow')
     updateGroupemButton(classroom);
 }
@@ -160,9 +178,12 @@ var updatePage = function(classroom) {
 
 var updateLocalStorage = function(classroom){
   localStorage.setItem('classroom', classroom.toJSON());
-  localStorage.setItem('students_per_group', $("#group_size_input").data('students_per_group'));
   console.log("updated localStorage['classroom']", localStorage.getItem('classroom'))
-  console.log("updated localStorage['students_per_group']", localStorage.getItem('classroom'))
+  var student_per_group = $("#group_size_input").data('students_per_group')
+  if (Number(student_per_group) === student_per_group && student_per_group % 1 === 0){
+    localStorage.setItem('students_per_group', $("#group_size_input").data('students_per_group'));
+    console.log("updated localStorage['students_per_group']", localStorage.getItem('classroom'))
+  }
 }
 
 function getTileHTML(name, type, tileID, tileClasses){
@@ -252,8 +273,7 @@ function addRow(student, classroom) {
     $(avoidCell).append(tileHTML);
     $("#" + tileID).data('studentID', avoidIDs[i]);  
   }
-
-  
+ 
 }
 
 //HANDLE COPY PASTING  http://stackoverflow.com/questions/3211505/detect-pasted-text-with-ctrlv-or-right-click-paste
@@ -556,6 +576,7 @@ $(document).ready(function() {
     var students_per_group = $("#group_size_input").data('students_per_group');
     var new_students_per_group = Math.min(students_per_group + 1, MAX_STUDENTS_PER_GROUP);
     var new_students_per_group = Math.min(new_students_per_group, classroom.getSize());
+    console.log(new_students_per_group)
     if (new_students_per_group > students_per_group){
       updateStudentsPerGroup(classroom, new_students_per_group);
       updateLocalStorage(classroom); 
@@ -595,7 +616,6 @@ $(document).ready(function() {
   })
 
   $("#group_size_input").data('students_per_group', MIN_STUDENTS_PER_GROUP);
-  $("#group_size_input").attr('value', MIN_STUDENTS_PER_GROUP);
   $("#group_size_input").attr('min', MIN_STUDENTS_PER_GROUP)
   $("#group_size_input").attr('max', MAX_STUDENTS_PER_GROUP)
 
@@ -622,12 +642,15 @@ $(document).ready(function() {
     var storedStudentsPerGroup = parseInt(localStorage.getItem('students_per_group'));
     if (storedStudentsPerGroup != null){
       console.log('found students per group in local storage')
-      $("#group_size_input").data('students_per_group', parseInt(storedStudentsPerGroup));
-      $("#group_size_input").attr('value', parseInt(storedStudentsPerGroup));
+       if (Number(storedStudentsPerGroup) === storedStudentsPerGroup && storedStudentsPerGroup % 1 === 0){
+          $("#group_size_input").data('students_per_group', parseInt(storedStudentsPerGroup));  
+       }
     }
   }
   updatePage(classroom);
-  updateLocalStorage(classroom); 
+  updateStudentsPerGroup(classroom, $("#group_size_input").data('students_per_group'));
+  updateLocalStorage(classroom);
+  console.log('STUDENTS PER GROUP HERE', $("#group_size_input").data('students_per_group'))
 });
 
 </script>
