@@ -5,6 +5,7 @@
 <script src="../external_js/jquery-1.12.2.js"></script>
 <script src="../external_js/jquery-ui.js"></script>
 <link rel="stylesheet" href="../src/sidebar.css">
+  <link href="../src/toggle_button.css" rel="stylesheet">
 <!-- <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Cabin:400,700'> -->
 <!-- <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'> -->
 <link href='https://fonts.googleapis.com/css?family=Raleway:400,300' rel='stylesheet' type='text/css'>
@@ -25,6 +26,16 @@
 <ul>
    <li class='active' ><a id='link_to_table_view' href='#'></a></li>
    <li class='last'><a id='link_to_group_view' href='group-view.html'></a></li>
+   <li class='teachermode_switch'>
+      <p>
+        <span id='teachermode_text'>Teacher Mode:</span>
+
+        <span class="switch">
+            <input id="cmn-toggle-4" class="cmn-toggle cmn-toggle-round-flat" type="checkbox">
+            <label for="cmn-toggle-4"></label>
+        </span>
+      </p>
+    </li>
 </ul>
 </div>
 </div>
@@ -41,7 +52,7 @@
   <th unselectable="on" class="student_name">Student</th>
   <th unselectable="on" class="pair_with">Pair With</th>
   <th unselectable="on" class="dont_pair_with">Don't Pair With</th>
-  <th unselectable="on" class="remove" id=></th>
+  <th unselectable="on" class="remove"></th>
 </tr>
 </thead>
 <tbody></tbody>
