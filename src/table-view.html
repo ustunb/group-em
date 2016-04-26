@@ -29,7 +29,7 @@
    <li class='last'><a id='link_to_group_view' href='group-view.html'></a></li>
    <li class='teachermode_switch'>
       <p>
-        <span id='teachermode_text'>#TODO name:</span>
+        <span id='teachermode_text'>Private:</span>
 
         <span class="switch">
             <input id="cmn-toggle-4" class="cmn-toggle cmn-toggle-round-flat" type="checkbox">
@@ -563,7 +563,7 @@ $(document).ready(function() {
 
   $('input:checkbox').change(
     function(){
-        $("body").toggleClass('hideprefs', $(this).is(':checked'));
+        $("body").toggleClass('hideprefs', !$(this).is(':checked'));
     });
 
   /*group size input*/

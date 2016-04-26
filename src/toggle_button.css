@@ -8,17 +8,22 @@
 .switch {
   display:inline;
   float:right;
+  position: absolute;
 }
 
 #teachermode_text {
-  margin: 0px;
+  line-height: 1.5;
   color: white;
   font-family: 'Raleway';
+  margin-top: 10px;
+  padding: 10%;
+  font-size: 20px;
 }
 
 .settings {
   display: table;
   width: 100%;
+
 }
 .settings .row {
   display: table-row;
