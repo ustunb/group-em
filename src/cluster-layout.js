@@ -17,19 +17,30 @@ function clear() {
     rebuilding: false,
     svg: d3.select(svg),
     force: d3.layout.force().charge(-400).linkDistance(60).gravity(0),
+    zoomsel: null,
     linksel: null,
     joinsel: null,
     nodesel: null,
     linkdrag: null,
-    nodedrag: null
+    nodedrag: null,
+    zoom: null,
   };
   state.svg.selectAll('*').remove();
+  state.zoomsel =
+    state.svg.insert('g').classed('zooms', true);
   state.joinsel =
-    state.svg.insert('g').classed('joins', true).selectAll('line');
+    state.zoomsel.insert('g').classed('joins', true).selectAll('line');
   state.linksel =
-    state.svg.insert('g').classed('links', true).selectAll('line');
+    state.zoomsel.insert('g').classed('links', true).selectAll('line');
   state.nodesel =
-    state.svg.insert('g').classed('nodes', true).selectAll('g');
+    state.zoomsel.insert('g').classed('nodes', true).selectAll('g');
+  // Enable zoom behavior without panning.
+  state.zoom = d3.behavior.zoom().scaleExtent([0.3,7.0]);
+  state.zoom.on('zoom', function() {
+    state.zoomsel.attr("transform",
+        "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+  });
+  state.svg.call(state.zoom).on('mousedown.zoom', null);
   resize();
   state.force.on('tick', tick);
 }

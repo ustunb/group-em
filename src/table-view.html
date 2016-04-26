@@ -5,12 +5,14 @@
 <script src="../external_js/jquery-1.12.2.js"></script>
 <script src="../external_js/jquery-ui.js"></script>
 <link rel="stylesheet" href="../src/sidebar.css">
+  <link href="../src/toggle_button.css" rel="stylesheet">
 <!-- <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Cabin:400,700'> -->
 <!-- <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'> -->
 <link href='https://fonts.googleapis.com/css?family=Raleway:400,300' rel='stylesheet' type='text/css'>
 <link rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
 <link rel='stylesheet' href="../src/table-view.css">
 
+<body class = "hideprefs">
 <div class="sidebar">
 <div style="position: relative; text-align: center; margin: 30px 0; height:150px; " >
 
@@ -25,6 +27,16 @@
 <ul>
    <li class='active' ><a id='link_to_table_view' href='#'></a></li>
    <li class='last'><a id='link_to_group_view' href='group-view.html'></a></li>
+   <li class='teachermode_switch'>
+      <p>
+        <span id='teachermode_text'>Private:</span>
+
+        <span class="switch">
+            <input id="cmn-toggle-4" class="cmn-toggle cmn-toggle-round-flat" type="checkbox">
+            <label for="cmn-toggle-4"></label>
+        </span>
+      </p>
+    </li>
 </ul>
 </div>
 </div>
@@ -41,7 +53,7 @@
   <th unselectable="on" class="student_name">Student</th>
   <th unselectable="on" class="pair_with">Pair With</th>
   <th unselectable="on" class="dont_pair_with">Don't Pair With</th>
-  <th unselectable="on" class="remove" id=></th>
+  <th unselectable="on" class="remove"></th>
 </tr>
 </thead>
 <tbody></tbody>
@@ -75,7 +87,7 @@
 <script>
 var ADD_INITIAL_LIST = false;
 var ADD_CLASSNAME_PLACEHOLDER = "enter class name"
-var ADD_STUDENT_BOX_PLACEHOLDER = "enter student or copy/paste student list"
+var ADD_STUDENT_BOX_PLACEHOLDER = "type in (or copy/paste) student names"
 var REVERT_SPEED_DURATION = 500;
 var MIN_STUDENTS_PER_GROUP = 2;
 var MAX_STUDENTS_PER_GROUP = Number.POSITIVE_INFINITY;
@@ -314,6 +326,8 @@ function detectPaste(textarea, callback) {
 });
  **/
 $(document).ready(function() {
+
+  $("#add_student_box").focus();
   
   $(document).on('click', ".remove", function(e) {
     var removedStudentID = $(this).data('studentID');
@@ -372,7 +386,6 @@ $(document).ready(function() {
   //input student textbox placeholder listeners
   $("#add_student_box").data('holder', ADD_STUDENT_BOX_PLACEHOLDER)
   $("#add_student_box").on('focus', function(){
-    $(this).attr('placeholder', '')
   });
   $("#add_student_box").on('focusout', function(){
     $(this).attr('placeholder',  $(this).data('holder'));
@@ -383,7 +396,14 @@ $(document).ready(function() {
   $(document).on('keyup', "#add_student_box", function(e) {
     var charCode = e.which || e.keyCode;
     if (charCode == '13'){
-      console.log('user pressed enter on student box')
+      //$("#classname_input").css('visibility', 'visible');
+      //$("#button_container").css('visibility', 'visible');
+      //$("#group_size_container").css('visibility', 'visible');
+      //$("#control_container").css('visibility', 'visible');
+      //$("table th.student_name").css('visibility', 'visible');
+      //$("table th.pair_with").css('visibility', 'visible');
+      //$("table th.dont_pair_with").css('visibility', 'visible');
+
       var studentArray = parseStudentList(classroom);
       for (var i = 0; i < studentArray.length; i++){
         classroom.add(studentArray[i]);
@@ -560,6 +580,11 @@ $(document).ready(function() {
     });
   
   });
+
+  $('input:checkbox').change(
+    function(){
+        $("body").toggleClass('hideprefs', !$(this).is(':checked'));
+    });
 
   /*group size input*/
   $("#decrease_group_size").click(function(){
