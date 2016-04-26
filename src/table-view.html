@@ -12,6 +12,7 @@
 <link rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
 <link rel='stylesheet' href="../src/table-view.css">
 
+<body class = "hideprefs">
 <div class="sidebar">
 <div style="position: relative; text-align: center; margin: 30px 0; height:150px; " >
 
@@ -28,7 +29,7 @@
    <li class='last'><a id='link_to_group_view' href='group-view.html'></a></li>
    <li class='teachermode_switch'>
       <p>
-        <span id='teachermode_text'>Teacher Mode:</span>
+        <span id='teachermode_text'>#TODO name:</span>
 
         <span class="switch">
             <input id="cmn-toggle-4" class="cmn-toggle cmn-toggle-round-flat" type="checkbox">
@@ -559,6 +560,11 @@ $(document).ready(function() {
     });
   
   });
+
+  $('input:checkbox').change(
+    function(){
+        $("body").toggleClass('hideprefs', $(this).is(':checked'));
+    });
 
   /*group size input*/
   $("#decrease_group_size").click(function(){

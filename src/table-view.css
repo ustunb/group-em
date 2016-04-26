@@ -75,8 +75,13 @@ table th.pair_with {
     border-right-style: hidden;
     border-bottom: 1px solid #BCB8AD;
     padding-bottom: 0px;
-    /*visibility:hidden;*/
+    
 }
+
+.hideprefs table .pair_with {
+    display : none;
+}
+
 
 table th.dont_pair_with  {
     width: 25%;
@@ -88,6 +93,9 @@ table th.dont_pair_with  {
     border-bottom: 1px solid #BCB8AD;
     /*visibility:hidden;*/
 }
+.hideprefs table .dont_pair_with {
+    display : none;
+}
 
 table th.remove {
     width: 12%;
@@ -96,6 +104,7 @@ table th.remove {
     border-right-style: hidden;
     border-bottom: 1px solid #BCB8AD;
 }
+
 
 /*TABLE ROWS */
 table tr {
