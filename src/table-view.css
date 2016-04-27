@@ -5,6 +5,7 @@
  * users: #60BADF
  * prefer: #6AD5A2
  * avoid: #F39354;
+ * text: #4C5365;
  * background: #4C5365;
  * background (active): #6E7891;
  * greyed out text: #A9A9A9;
@@ -13,13 +14,13 @@
  * hover background: #FED587;
  * hover text: #F39354
  *
- * used colors for other things:
+ * useful colors for other things:
  * #DFB0EA
  * #818AAA
  *
  */
 
-body, html {
+ body, html {
   font: 28px;
   font-family: 'Raleway', sans-serif;
   width: 100%;
@@ -150,8 +151,6 @@ table td.remove {
     color: #FED587;
     color: white;
     color: #3F3C36;
-    /*background: #4C5365;
-    color: #FED587;*/
 }
 
 table td.remove:hover {
@@ -223,6 +222,7 @@ table td p span:hover {
     text-align: center;
     box-sizing: border-box;
 }
+
 
 .tile_name:hover, .tile_name:nth-of-type(2) {
     box-shadow: 0 3px 11px #939085;
@@ -357,14 +357,12 @@ table th:nth-of-type(4) th textarea {
 }
 
 #group_size_container {
-    display:inline-block;
-    vertical-align: middle;
+    display: inline-block;
+    vertical-align: top;
     height: 95%;
     width: 80px;
     border-radius: 5px;
     border: 3px solid #BCBAB4;
-    font-size: 28px;
-    /*visibility:hidden;*/
 }
 
 #increment_container {
@@ -389,6 +387,9 @@ table th:nth-of-type(4) th textarea {
     padding-top: 5%;
     vertical-align: bottom;
 }
+
+/*justify-content:center;;width:80px;height:80px;*/
+
 
 /*group'em button objects for content and behavior */
 #groupem_button {
@@ -425,48 +426,47 @@ table th:nth-of-type(4) th textarea {
     background: #FED587;
 }
 
-
-/*#group_size_icon {
-    display: inline-block;
-    text-align: right;
-    width: 45%;
-    position: relative;
-    padding-right: 5px;
-    padding-top: 0.5em;
-}*/
-
-/*#group_size_icon:before{
-    content:'\f235';
-    font-size: 28px;
-    font-family: FontAwesome;
-}*/
-
-#group_size_input {
-    -webkit-transition: all 0.10s ease-in-out;
-    -moz-transition: all 0.10s ease-in-out;
-    -ms-transition: all 0.10s ease-in-out;
-    -o-transition: all 0.10s ease-in-out;
-    font: 32px Raleway;
-    font-weight: bold;
-    /*position:relative;*/
-    /*width: 50%;
-    text-align: left;*/
+/* GROUP SIZE */
+.group_size_icon_container {
     width: 100%;
-    text-align: center;
-    padding: 0px;
-    margin: 0px;
-    /*border: none;*/
-    height:100%;
-    bottom: 0%;
-    background-color: white;
-    color: #4C5365;
-    outline: none;
 }
 
+.group_size_icon {
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+    font-family: FontAwesome;
+    font-size: 28px;
+    color: #4C5365;
+    white-space: normal;
+    word-wrap: break-word;
+    width:80%;
+    height: 100%;
+}
+
+#group_size_icon_nx_number {
+    display: inline-block;
+    line-height: 100%;
+    font-family: Raleway;
+    font-size: 28px;
+    color: #4C5365;
+}
+
+#group_size_icon_1x, #group_size_icon_2x{
+    margin-top: 30%;
+}
+
+#group_size_icon_3x, #group_size_icon_4x{
+    padding-top: 15%;
+}
+
+
 /*if we want to allow for text input into group size*/
+
 /*input[type=number]:{ 
     -webkit-appearance: none;
 }
+
 input[type=number]::-webkit-inner-spin-button:focus  input[type=number]::-webkit-inner-spin-button:hover{ 
     -webkit-appearance: none;
     cursor:pointer;
@@ -477,7 +477,28 @@ input[type=number]::-webkit-inner-spin-button:focus  input[type=number]::-webkit
     color: #333;
     text-align:right;
     position:relative;
-}    */
+    }    */
+
+
+/*#group_size_input {
+    -webkit-transition: all 0.10s ease-in-out;
+    -moz-transition: all 0.10s ease-in-out;
+    -ms-transition: all 0.10s ease-in-out;
+    -o-transition: all 0.10s ease-in-out;
+    font: 32px Raleway;
+    font-weight: bold;
+    position:relative;
+    width: 100%;
+    text-align: center;
+    padding: 0px;
+    margin: 0px;
+    height:100%;
+    bottom: 0%;
+    background-color: white;
+    color: #4C5365;
+    outline: none;
+}
+*/
 
 
 /*increments*/
@@ -507,44 +528,44 @@ input[type=number]::-webkit-inner-spin-button:focus  input[type=number]::-webkit
 /*.increment_button:after {
     font-size: 18px;
     content: '\f007';
-}*/
+    }*/
 
-/*FOCUS EFFECTS FOR TEXT INPUT ELEMENTS */
-input[type=text], textarea {
-  -webkit-transition: all 0.10s ease-in-out;
-  -moz-transition: all 0.10s ease-in-out;
-  -ms-transition: all 0.10s ease-in-out;
-  -o-transition: all 0.10s ease-in-out;
-  outline: none;
-  padding: 3px 0px 3px 3px;
-  margin: 5px 1px 3px 0px;
-  border: 3px dashed #BCBAB4;
-  vertical-align: middle;
-}
+    /*FOCUS EFFECTS FOR TEXT INPUT ELEMENTS */
+    input[type=text], textarea {
+      -webkit-transition: all 0.10s ease-in-out;
+      -moz-transition: all 0.10s ease-in-out;
+      -ms-transition: all 0.10s ease-in-out;
+      -o-transition: all 0.10s ease-in-out;
+      outline: none;
+      padding: 3px 0px 3px 3px;
+      margin: 5px 1px 3px 0px;
+      border: 3px dashed #BCBAB4;
+      vertical-align: middle;
+  }
 
-input[type=text]:focus {
-  /*border: 3px solid #BCBAB4; */
-  /*box-shadow: 0 0 4px #BCBAB4;*/
-  /*border: 3px solid #CC99FF;*/
-  /*border: 0px;*/
-  box-shadow: 0 0 5px #BCBAB4;
-  background: #f9efec;
-  padding: 3px 0px 3px 3px;
-  margin: 5px 1px 3px 0px;
-}
+  input[type=text]:focus {
+      /*border: 3px solid #BCBAB4; */
+      /*box-shadow: 0 0 4px #BCBAB4;*/
+      /*border: 3px solid #CC99FF;*/
+      /*border: 0px;*/
+      box-shadow: 0 0 5px #BCBAB4;
+      background: #f9efec;
+      padding: 3px 0px 3px 3px;
+      margin: 5px 1px 3px 0px;
+  }
 
 
-textarea:focus {
-  /*border: 3px solid #BCBAB4; */
-  /*box-shadow: 0 0 4px #BCBAB4;*/
-  /*border: 3px solid #CC99FF;*/
-  border: none;
-  box-shadow: 0 0 5px #BCBAB4;
-  background: #f9efec;
-  position: relative;
-}
+  textarea:focus {
+      /*border: 3px solid #BCBAB4; */
+      /*box-shadow: 0 0 4px #BCBAB4;*/
+      /*border: 3px solid #CC99FF;*/
+      border: none;
+      box-shadow: 0 0 5px #BCBAB4;
+      background: #f9efec;
+      position: relative;
+  }
 
-#group_size_input:focus {
+  #group_size_input:focus {
     -webkit-appearance:none;
     border: 0px;
     box-shadow: 0 0 5px #BCBAB4; 

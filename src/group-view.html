@@ -37,7 +37,7 @@
 <div id="button_container">
 <button id="shuffle_button" class="control_button" type="button">shuffle</button>
 </div>
-<div id="group_size_container"><span id = "group_size_icon"></span><input id="group_size_input" disabled></input></div>
+<div id="group_size_container"><div id="group_size_icon_container"></div></div>
 <div id="increment_container">
 <div id="increase_button_container"><button id="increase_group_size" class="increment_button control_button"></button></div>
 <div id="decrease_button_container"><button id="decrease_group_size" class="increment_button control_button"></button></div>
@@ -73,11 +73,11 @@ if (storedClassroom != null){
 
 var storedStudentsPerGroup = parseInt(localStorage.getItem('students_per_group'));
 if (storedStudentsPerGroup != null){
-  $("#group_size_input").data('students_per_group', storedStudentsPerGroup);
-  $("#group_size_input").attr('value', storedStudentsPerGroup);
+  console.log('found students_per_group in local storage = ', storedStudentsPerGroup);
+  $("#group_size_container").data('students_per_group', storedStudentsPerGroup);
 } else {
-  $("#group_size_input").data('students_per_group', MIN_STUDENTS_PER_GROUP);
-  $("#group_size_input").attr('value', MIN_STUDENTS_PER_GROUP);
+  console.log('did not find students_per_group in local storage; setting students_per_group to ', MIN_STUDENTS_PER_GROUP);
+  $("#group_size_container").data('students_per_group', MIN_STUDENTS_PER_GROUP); 
 }
 
 function updateLayout(layout, students, assignments){  
@@ -90,21 +90,42 @@ function updateLayout(layout, students, assignments){
   }
 }
 
+var updateLocalStorage = function(grouping){
+  localStorage.setItem('students_per_group', $("#group_size_container").data('students_per_group'));
+  if (grouping != null){
+    localStorage.setItem('grouping', grouping.toJSON());
+  }
+}
+
+/*group size input*/
+var updateStudentsPerGroup = function(new_students_per_group){ 
+    console.log('updating students per group from '  + 
+                $("#group_size_container").data('students_per_group')  +
+                ' to ' + new_students_per_group);
+    $("#group_size_container").data('students_per_group', new_students_per_group);
+    
+    if (new_students_per_group == 1){
+      var iconHTML = '<span id="group_size_icon_1x" class = "group_size_icon">&#xf007</span>';
+    } else if (new_students_per_group == 2){
+      var iconHTML = '<span id="group_size_icon_2x" class = "group_size_icon">&#xf007&#xf007</span>';
+    } else if (new_students_per_group == 3){
+      var iconHTML = '<span id="group_size_icon_3x" class = "group_size_icon">&#xf007&#xf007&#xf007</span>';
+    } else if (new_students_per_group == 4){
+      var iconHTML = '<span id="group_size_icon_4x" class = "group_size_icon">&#xf007&#xf007&#xf007&#xf007</span>';
+    } else if (new_students_per_group > 4){
+      var iconHTML = '<span id="group_size_icon_nx" class = "group_size_icon"> &#xf235 <p id="group_size_icon_nx_number">' + new_students_per_group + '</p></span>';
+    } 
+    $("#group_size_icon_container").html(iconHTML);
+    updateLocalStorage();
+}
+
 //create random pairs of students
 var grouping = new Grouping(classroom);
-var assignments = grouping.shuffle($("#group_size_input").data('students_per_group'));
+var assignments = grouping.shuffle($("#group_size_container").data('students_per_group'));
 var students = grouping.getStudents();
 updateLayout(layout, students, assignments);
-
-// console.log('assignments', assignments)
-// console.log('students', students)
-// console.log('studentsPerGroup', $("#group_size_input").data('students_per_group'))
-
-
-var updateLocalStorage = function(grouping){
-  localStorage.setItem('students_per_group', parseInt($("#group_size_input").data('students_per_group')));
-  localStorage.setItem('grouping', grouping.toJSON());
-}
+updateStudentsPerGroup($("#group_size_container").data('students_per_group'));
+updateLocalStorage(grouping);
 
 
 //join event listener (for manual group updates)
@@ -117,35 +138,23 @@ $(layout).on('join', function(e) {
 
 //shuffle listener
 $('#shuffle_button').on('click', function(e) {
-  var students_per_group  = $("#group_size_input").data('students_per_group')
+  var students_per_group  = $("#group_size_container").data('students_per_group');
   var assignments = grouping.shuffle(students_per_group);
   updateLayout(layout, students, assignments);
   updateLocalStorage(grouping);
 });
 
-/*group size input*/
-updateStudentsPerGroup = function(new_students_per_group){
-  console.log('updating students per group from '  + 
-              $("#group_size_input").data('students_per_group')  +
-              ' to ' + new_students_per_group);
-  $("#group_size_input").data('students_per_group', new_students_per_group);
-  $("#group_size_input").attr('value', new_students_per_group);
-  updateLocalStorage(grouping);
-  $("#group_size_input").fadeOut(GROUP_SIZE_FADE_SPEED).fadeIn('slow')
-}
-
 $("#decrease_group_size").click(function(){
-  var students_per_group = $("#group_size_input").data('students_per_group');
+  var students_per_group = $("#group_size_container").data('students_per_group');
   var new_students_per_group = Math.max(students_per_group - 1, MIN_STUDENTS_PER_GROUP)
   if (new_students_per_group < students_per_group){
     updateStudentsPerGroup(new_students_per_group);
   }
   $("#decrease_group_size").blur();
-
 })
 
 $("#increase_group_size").click(function(){
-  var students_per_group = $("#group_size_input").data('students_per_group');
+  var students_per_group = $("#group_size_container").data('students_per_group');
   var new_students_per_group = Math.min(students_per_group + 1, MAX_STUDENTS_PER_GROUP);
   var new_students_per_group = Math.min(new_students_per_group, classroom.getSize());
   if (new_students_per_group > students_per_group){
@@ -159,29 +168,6 @@ isValidStudentsPerGroup = function(group_size){
   var sizeOK = (group_size >= MIN_STUDENTS_PER_GROUP) && (group_size <= MAX_STUDENTS_PER_GROUP);
   return typeOK && sizeOK
 }
-
-$("#group_size_input").on('focusout', function(){
-  var new_students_per_group = parseInt($(this).val());
-  if (isValidStudentsPerGroup(new_students_per_group)){
-    updateStudentsPerGroup(new_students_per_group);
-  } else {
-    $(this).val($(this).data('students_per_group'));
-  }
-});
-
-$("#group_size_input").on('input', function(e) {
-  var charCode = e.which || e.keyCode;
-  if (charCode == 13){
-    var new_students_per_group = parseInt($(this).val());
-    if (isValidStudentsPerGroup(new_students_per_group)){
-      updateStudentsPerGroup(new_students_per_group);
-    } else {
-    $(this).val = $(this).data('students_per_group');
-  }
-    $('#group_size_input').blur();
-  }
-})
-
 </script>
 
 </body>

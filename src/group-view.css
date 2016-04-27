@@ -153,24 +153,37 @@ svg line.breaking {
   background: #FED587;
 }
 
+.group_size_icon_container {
+    width: 100%;
+}
 
-#group_size_input {
-  -webkit-transition: all 0.10s ease-in-out;
-  -moz-transition: all 0.10s ease-in-out;
-  -ms-transition: all 0.10s ease-in-out;
-  -o-transition: all 0.10s ease-in-out;
-  font: 32px Raleway;
-  font-weight: bold;
-  width: 100%;
-  text-align: center;
-  padding: 0px;
-  margin: 0px;
-  border: 0px;
-  height:100%;
-  bottom: 0%;
-  background-color: white;
-  color: #4C5365;
-  outline: none;
+.group_size_icon {
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+    font-family: FontAwesome;
+    font-size: 28px;
+    color: #4C5365;
+    white-space: normal;
+    word-wrap: break-word;
+    width:80%;
+    height: 100%;
+}
+
+#group_size_icon_nx_number {
+    display: inline-block;
+    line-height: 100%;
+    font-family: Raleway;
+    font-size: 28px;
+    color: #4C5365;
+}
+
+#group_size_icon_1x, #group_size_icon_2x{
+    margin-top: 30%;
+}
+
+#group_size_icon_3x, #group_size_icon_4x{
+    padding-top: 15%;
 }
 
 /*increments*/
@@ -196,4 +209,27 @@ svg line.breaking {
 #decrease_group_size:before {
   content: '\f068';
 }
+
+
+/*
+#group_size_input {
+  -webkit-transition: all 0.10s ease-in-out;
+  -moz-transition: all 0.10s ease-in-out;
+  -ms-transition: all 0.10s ease-in-out;
+  -o-transition: all 0.10s ease-in-out;
+  font: 32px Raleway;
+  font-weight: bold;
+  width: 100%;
+  text-align: center;
+  padding: 0px;
+  margin: 0px;
+  border: 0px;
+  height:100%;
+  bottom: 0%;
+  background-color: white;
+  color: #4C5365;
+  outline: none;
+}
+*/
+
 
