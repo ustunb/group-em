@@ -13,6 +13,7 @@
 <link rel='stylesheet' href="../src/table-view.css">
 
 <body class = "hideprefs">
+<div class="container">
 <div class="sidebar">
 <div style="position: relative; text-align: center; margin: 30px 0; height:150px; " >
 
@@ -79,6 +80,7 @@
 </tr>
 </tfoot>
 </table>
+</div>
 </body>
 
 <script src="../src/classlist.js"></script>
@@ -168,6 +170,7 @@ var updatePage = function(classroom) {
   }
   updateGroupemButton(classroom);
   updateLocalStorage(classroom);
+
 }
 
 var updateLocalStorage = function(classroom){
@@ -206,6 +209,8 @@ function addRow(student, classroom) {
   
   //get new student ID
   //console.log(student.toString())
+
+ 
   var studentID = student.id();
   var studentName = student.name();
   
@@ -264,8 +269,16 @@ function addRow(student, classroom) {
     $(avoidCell).append(tileHTML);
     $("#" + tileID).data('studentID', avoidIDs[i]);  
   }
+ var height = $('.container').height();
+  var height1 = $('.classroom').height();
+  console.log(height);
+  if(height>height1){
+      $('.sidebar').css({'height': height+"px"});
+  }
+  else{
+      $('.sidebar').css({'height': height1+"px"});
+  }
 
-  
 }
 
 //HANDLE COPY PASTING  http://stackoverflow.com/questions/3211505/detect-pasted-text-with-ctrlv-or-right-click-paste
