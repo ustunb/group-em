@@ -114,7 +114,6 @@ var parseStudentList = function(classroom) {
   for (var i=0; i<student_list.length; i++) {
     var row_list = student_list[i].replace(/\t/g, '1)(*3hf:Z');
     row_list = row_list.split('1)(*3hf:Z');
-    console.log(row_list);
     if (row_list.length == 1) {
       row_list[0] = row_list[0].replace(/;/g, ',');
       var name_list = row_list[0].split(",");
@@ -148,8 +147,6 @@ var parseStudentList = function(classroom) {
 
 var updateGroupemButton = function(classroom){
   var students_per_group = $("#group_size_container").data('students_per_group');
-  console.log('students per group: ' + students_per_group)
-  console.log($("#group_size_container").data('students_per_group'))
   if (students_per_group <= classroom.getSize()){
     $("#groupem_button").prop('disabled', false);
     $("#button_container").tooltipster('content', 'HELLO')
@@ -161,7 +158,6 @@ var updateGroupemButton = function(classroom){
 }
 
 var updateStudentsPerGroup = function(classroom, new_students_per_group){ 
-    console.log('updating students per group from ', $("#group_size_container").data('students_per_group'), ' to ', new_students_per_group);
     
     $("#group_size_container").data('students_per_group', new_students_per_group);
     
@@ -183,11 +179,16 @@ var updateStudentsPerGroup = function(classroom, new_students_per_group){
 
 //redraws table at each state change
 var updatePage = function(classroom) {
+  var scrollLeft = window.pageXOffset ||
+  (document.documentElement || document.body.parentNode || document.body).scrollLeft;
+
+  var scrollTop  = window.pageYOffset ||
+  (document.documentElement || document.body.parentNode || document.body).scrollTop;
   $('table tbody').empty();
   if (classroom.getSize() > 0){
     var studentArray = classroom.getStudents();
     for (var i = 0; i < studentArray.length; i++) {
-      addRow(studentArray[i], classroom);
+      addRow(studentArray[i], classroom, scrollLeft, scrollTop);
     }
   }
   updateGroupemButton(classroom);
@@ -197,11 +198,9 @@ var updatePage = function(classroom) {
 
 var updateLocalStorage = function(classroom){
   localStorage.setItem('classroom', classroom.toJSON());
-  console.log("updated localStorage['classroom']", localStorage.getItem('classroom'))
   var student_per_group = $("#group_size_container").data('students_per_group')
   if (Number(student_per_group) === student_per_group && student_per_group % 1 === 0){
     localStorage.setItem('students_per_group', $("#group_size_container").data('students_per_group'));
-    console.log("updated localStorage['students_per_group']", localStorage.getItem('classroom'))
   }
 }
 
@@ -224,7 +223,7 @@ function getTileHTML(name, type, tileID, tileClasses){
 
 
 //adds a new row to the table; all elements are have IDs derived from the student ID
-function addRow(student, classroom) {
+function addRow(student, classroom, scrollLeft, scrollTop) {
 
   //element / ID overview
   //tile_name_[SID1]: ID for tile with student SID1 in "student_name" column
@@ -280,7 +279,6 @@ function addRow(student, classroom) {
     var tileClasses = ["tile_prefer", "tile_" + prefIDs[i]];
     var tileHTML = getTileHTML(targetStudent.name(), "prefer", tileID, tileClasses)
     $(preferCell).append(tileHTML);
-    console.log('adding '  + tileHTML + 'to ' + preferCell)
     $("#" + tileID).data('studentID', prefIDs[i]);
   }
 
@@ -294,16 +292,19 @@ function addRow(student, classroom) {
     $(avoidCell).append(tileHTML);
     $("#" + tileID).data('studentID', avoidIDs[i]);  
   }
-  
- var height = $('.container').height();
+
+
+  var height = $('.container').height();
   var height1 = $('.classroom').height();
-  console.log(height);
   if(height>height1){
       $('.sidebar').css({'height': height+"px"});
   }
   else{
       $('.sidebar').css({'height': height1+"px"});
   }
+  console.log("ST: "+scrollTop);
+   window.scrollTo(scrollLeft, scrollTop);
+
 
 }
 
@@ -354,9 +355,7 @@ $(document).ready(function() {
       if (classroom.remove(removedStudentID)){
         updatePage(classroom);
       }
-    } else {
-      console.log('user clicked on top row');
-    }
+    } 
   });
 
   $(document).on('click', ".removePreferTile", function(e) {
@@ -367,13 +366,10 @@ $(document).ready(function() {
     if (update_flag){
       $(this).parent().remove();
       updateLocalStorage(classroom); 
-    } else {
-      console.log('removal failed')
-    }
+    } 
   });
 
   $(document).on('click', ".removeAvoidTile", function(e) {
-    console.log('user clicked remove tile in avoid column');
     var rowStudentID = $(this).closest('td').data('studentID');
     var tileStudentID = $(this).closest('p').data('studentID');
     var rowStudent = classroom.getStudentFromID(rowStudentID)
@@ -381,9 +377,7 @@ $(document).ready(function() {
     if (update_flag){
       $(this).parent().remove();
       updateLocalStorage(classroom);
-    } else {
-      console.log('removal failed')
-    }
+    } 
   });
 
   //input classname textbox placeholder listeners
@@ -430,7 +424,6 @@ $(document).ready(function() {
       $("#add_student_box").val("");
       updatePage(classroom);
       updateLocalStorage(classroom); 
-      console.log(classroom.toString());
     }
   });
 
@@ -459,19 +452,14 @@ $(document).ready(function() {
       accept: "p",
       drop: function(event, ui) {
         var targetStudentID = $(event.target).data("studentID");
-        console.log("tile for " + tileStudentID + " was dropped in pair_with column for student " + targetStudentID);
         if (targetStudentID != tileStudentID){
           var targetStudent = classroom.getStudentFromID(targetStudentID);
             var update_flag = classroom.getStudentFromID(targetStudentID).addToPreferences('prefer', tileStudentID);
               if (update_flag){
                 updatePage(classroom);
                 updateLocalStorage(classroom); 
-              } else {
-                console.log('drop denied. preference must already exist.')
-              }
-        } else {
-          console.log('user tried to drop tile in invalid cell')
-        }
+              } 
+        } 
       }
    });
 
@@ -479,19 +467,14 @@ $(document).ready(function() {
       accept: "p",
       drop: function(event,ui) {
         var targetStudentID = $(this).data("studentID");
-        console.log("tile for " + tileStudentID + " was dropped in dont_pair_with column for student " + targetStudentID);
         if (targetStudentID != tileStudentID){
           var targetStudent = classroom.getStudentFromID(targetStudentID);
             var update_flag = classroom.getStudentFromID(targetStudentID).addToPreferences('avoid', tileStudentID);
               if (update_flag){
                 updatePage(classroom);
                 updateLocalStorage(classroom);
-              } else {
-                console.log('drop denied. preference must already exist.')
-              }
+              } 
           
-        } else {
-          console.log('user tried to drop tile in invalid cell')
         }
       }
   });
@@ -503,15 +486,12 @@ $(document).ready(function() {
     var todrag = $(this);
     var tileStudentID = todrag.data("studentID");
     var sourceStudentID = todrag.parent().data("studentID");
-
-    console.log('PICKUP ID' + tileStudentID)
     todrag.draggable({revert: true, cancel: 'span'});
 
   $(".pair_with").droppable({
       accept: "p",
       drop: function(event, ui) {
         var targetStudentID = $(this).data("studentID");
-        console.log("tile for " + tileStudentID + " was picked up from " + sourceStudentID + " and dropped in pair_with column for student " + targetStudentID);
         if ((targetStudentID != tileStudentID) && (targetStudentID != sourceStudentID)){
           var successfulRemoval = classroom.getStudentFromID(sourceStudentID).removeFromPreferences('prefer', tileStudentID);
           var successfulAddition = classroom.getStudentFromID(targetStudentID).addToPreferences('prefer', tileStudentID);
@@ -519,11 +499,9 @@ $(document).ready(function() {
                 updatePage(classroom);
                 updateLocalStorage(classroom); 
               } else {
-                console.log('drop could not be completed at the model level')
+
               }
-        } else {
-          console.log('user tried to drop tile in invalid cell')
-        }
+        } 
       }
     });
 
@@ -531,19 +509,14 @@ $(document).ready(function() {
       accept: "p",
       drop: function(event,ui) {
         var targetStudentID = $(this).data("studentID");
-        console.log("tile for " + tileStudentID + " was picked up from " + sourceStudentID + " and dropped in dont_pair_with column for student " + targetStudentID);
         if (targetStudentID != tileStudentID) {
           var successfulAddition = classroom.getStudentFromID(sourceStudentID).removeFromPreferences('prefer', tileStudentID);
           var successfulRemoval = classroom.getStudentFromID(targetStudentID).addToPreferences('avoid', tileStudentID);
               if (successfulAddition && successfulRemoval){
                 updatePage(classroom);
                 updateLocalStorage(classroom); 
-              } else {
-                console.log('drop could not be completed at the model level')
-              }
-        } else {
-          console.log('user tried to drop tile in invalid cell')
-        }
+              } 
+        } 
       }
     });
   });
@@ -555,26 +528,20 @@ $(document).ready(function() {
     var tileStudentID = todrag.data("studentID");
     var sourceStudentID = todrag.parent().data("studentID");
 
-    console.log('PICKUP ID' + tileStudentID)
     todrag.draggable({revert: true, cancel: 'span'});
 
     $(".pair_with").droppable({
       accept: "p",
       drop: function(event, ui) {
         var targetStudentID = $(this).data("studentID");
-        console.log("tile for " + tileStudentID + " was picked up from " + sourceStudentID + " and dropped in pair_with column for student " + targetStudentID);
         if (targetStudentID != tileStudentID){
           var successfulRemoval = classroom.getStudentFromID(sourceStudentID).removeFromPreferences('avoid', tileStudentID);
           var successfulAddition = classroom.getStudentFromID(targetStudentID).addToPreferences('prefer', tileStudentID);
               if (successfulAddition && successfulRemoval){
                 updatePage(classroom);
                 updateLocalStorage(classroom); 
-              } else {
-                console.log('drop could not be completed at the model level')
-              }
-        } else {
-          console.log('user tried to drop tile in invalid cell')
-        }
+              } 
+        } 
       }
     });
 
@@ -582,19 +549,14 @@ $(document).ready(function() {
       accept: "p",
       drop: function(event,ui) {
         var targetStudentID = $(this).data("studentID");
-        console.log("tile for " + tileStudentID + " was picked up from " + sourceStudentID + " and dropped in pair_with column for student " + targetStudentID);
         if ((targetStudentID != tileStudentID) && (targetStudentID != sourceStudentID)){
           var successfulRemoval = classroom.getStudentFromID(sourceStudentID).removeFromPreferences('avoid', tileStudentID);
           var successfulAddition = classroom.getStudentFromID(targetStudentID).addToPreferences('avoid', tileStudentID);
               if (successfulAddition && successfulRemoval){
                 updatePage(classroom);
                 updateLocalStorage(classroom); 
-              } else {
-                console.log('drop could not be completed at the model level')
-              }
-        } else {
-          console.log('user tried to drop tile in invalid cell')
-        }
+              } 
+        } 
       }
     });
   
@@ -622,7 +584,6 @@ $(document).ready(function() {
     var students_per_group = $("#group_size_container").data('students_per_group');
     var new_students_per_group = Math.min(students_per_group + 1, MAX_STUDENTS_PER_GROUP);
     var new_students_per_group = Math.min(new_students_per_group, classroom.getSize());
-    console.log(new_students_per_group)
     if (new_students_per_group > students_per_group){
       updateStudentsPerGroup(classroom, new_students_per_group);
       updateLocalStorage(classroom); 
@@ -655,12 +616,9 @@ $(document).ready(function() {
     classroom.add(new Student('nick', 3, {'prefer':[4], 'avoid':[1], 'pinned':[], 'banned':[]}));
     classroom.add(new Student('shruti', 4, {'prefer':[3], 'avoid':[2], 'pinned':[], 'banned':[]}));
   } else {
-    console.log('classroom JSON', storedClassroom)
     classroom.fromJSON(storedClassroom);
-    console.log('loading classroom from local storage', classroom.toString());
     var storedStudentsPerGroup = parseInt(localStorage.getItem('students_per_group'));
     if (storedStudentsPerGroup != null){
-      console.log('found students per group in local storage')
        if (Number(storedStudentsPerGroup) === storedStudentsPerGroup && storedStudentsPerGroup % 1 === 0){
           $("#group_size_container").data('students_per_group', parseInt(storedStudentsPerGroup));  
        }
@@ -669,7 +627,6 @@ $(document).ready(function() {
   updatePage(classroom);
   updateStudentsPerGroup(classroom, $("#group_size_container").data('students_per_group'));
   updateLocalStorage(classroom);
-  console.log('STUDENTS PER GROUP HERE', $("#group_size_container").data('students_per_group'))
   
 });
 
