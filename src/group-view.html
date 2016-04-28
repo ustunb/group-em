@@ -63,6 +63,9 @@ var GROUP_SIZE_FADE_SPEED = 50;
 
 var classroom = new Classlist();
 var layout = new ClusterLayout('svg');
+$(layout).on('clustersel', function(e) {
+  console.log(e);
+});
 
 /*load data from localStorage*/
 var storedClassroom = localStorage.getItem('classroom');

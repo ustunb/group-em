@@ -17,6 +17,7 @@ function clear() {
     rebuilding: false,
     svg: d3.select(svg),
     force: d3.layout.force().charge(-400).linkDistance(60).gravity(0),
+    clustersel: null,
     zoomsel: null,
     linksel: null,
     joinsel: null,
@@ -41,31 +42,32 @@ function clear() {
         "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
   });
   state.svg.call(state.zoom).on('mousedown.zoom', null);
+  state.svg.on('mousedown.clustersel', function() { updateclustersel(null); });
   resize();
   state.force.on('tick', tick);
 }
 clear();
-this.clear = clear;
+layout.clear = clear;
 
 function startbounce() {
   // TODO: eliminate links, and animate notes
 }
-this.startbounce = startbounce;
+layout.startbounce = startbounce;
 
 function endbounce() {
   // TODO: start force layout
 }
-this.endbounce = endbounce;
+layout.endbounce = endbounce;
 
 
-this.addNode = function addNode(id, obj) {
+layout.addNode = function addNode(id, obj) {
   var node = {id: id, ndata: obj, cluster: null};
   state.nodes.push(node);
   state.nodes_by_id[id] = node;
   invalidate();
 }
 
-this.addCluster = function addCluster(node_id_list) {
+layout.addCluster = function addCluster(node_id_list) {
   var id = state.next_cluster_id++;
   var cluster = { id: id, nodes: [] }
   node_id_list.map(function(sid) {
@@ -74,6 +76,42 @@ this.addCluster = function addCluster(node_id_list) {
   state.clusters.push(cluster);
   state.clusters_by_id[id] = cluster;
   invalidate();
+}
+
+/* Returns an object representing the selected cluster, if any. */
+layout.getSelectedCluster = function getSelectedCluster() {
+  if (!state.clustersel) { return { id: -1, nodes: [] }; }
+  return {
+    id: repId(state.clustersel),
+    nodes: _.map(state.clustersel.nodes, function(n) { return n.id; })
+  };
+};
+
+function updateclustersel(cluster) {
+  if (d3.event) {
+    var se = d3.event.sourceEvent || d3.event;
+    if (se.handledClustersel) {
+      return;
+    }
+    se.handledClustersel = true;
+  }
+  state.clustersel = cluster;
+  state.linksel.classed('clustersel', function(d) {
+    return d.cluster === state.clustersel;
+  });
+  if (cluster == null) {
+    $(layout).trigger({
+      type: 'clustersel',
+      id: -1,
+      nodes: []
+    });
+  } else {
+    $(layout).trigger({
+      type: 'clustersel',
+      id: repId(cluster),
+      nodes: _.map(cluster.nodes, function(n) { return n.id; })
+    });
+  }
 }
 
 function repId(cluster) {
@@ -170,8 +208,20 @@ function rebuild() {
 function start() {
   state.linksel = state.linksel
     .data(state.force.links(), function(d) { return d.key });
-  state.linksel.enter().insert('line').attr({class: 'link'})
-    .call(linkdrag);
+  state.linksel.enter().insert('line')
+    .attr({
+      class: function(d) {
+        var result = 'link cluster_' + d.cluster.id;
+        if (d.cluster === state.clustersel) {
+          result += ' clustersel';
+        }
+        return result;
+      }
+    })
+    .call(linkdrag)
+    .on('mousedown.clustersel', function(d) {
+      updateclustersel(d.cluster);
+    });
   state.linksel.exit().remove();
 
   state.nodesel = state.nodesel
@@ -299,6 +349,7 @@ function nodedrag() {
         d2.px = d2.x;
         d2.py = d2.y;
       });
+      updateclustersel(d.cluster);
     }).on('drag.cluster', function(d) {
       d.px += d3.event.dx;
       d.py += d3.event.dy;
@@ -337,9 +388,11 @@ function nodedrag() {
         d2.fixed &= ~2;
       });
       var closest = findJoinNode(d);
+      var cluster = null;
       if (closest) {
         // Report an event that a node has switched to a different cluster.
-        event = { type: 'join', node: d.id, cluster: repId(closest.cluster) };
+        cluster = closest.cluster;
+        event = { type: 'join', node: d.id, cluster: repId(cluster) };
         addNodeToCluster(d, closest.cluster);
       } else if (d.cluster && d.cluster.nodes.length > 1) {
         var dx = d.cluster.x - d.px, dy = d.cluster.y - d.py,
@@ -350,6 +403,7 @@ function nodedrag() {
           layout.addCluster([d.id]);
           d.cluster.x = d.x;
           d.cluster.y = d.y;
+          cluster = d.cluster;
         }
       }
       state.joins = [];
@@ -358,6 +412,7 @@ function nodedrag() {
       // Finally: report events after all UI is done.
       if (event) {
         $(layout).trigger(event);
+        updateclustersel(cluster);
       }
     });
   }
@@ -373,20 +428,20 @@ function updatejoins() {
 function linkdrag() {
   if (!state.linkdrag) {
     state.linkdrag = d3.behavior.drag().on('dragstart.cluster', function(d) {
-      initClusterCoords(d.source.cluster);
-      d.source.cluster.nodes.map(function(n) {
+      initClusterCoords(d.cluster);
+      d.cluster.nodes.map(function(n) {
         n.fixed |= 2;
       });
     }).on('drag.cluster', function(d) {
-      d.source.cluster.x += d3.event.dx;
-      d.source.cluster.y += d3.event.dy;
-      d.source.cluster.nodes.map(function(n) {
+      d.cluster.x += d3.event.dx;
+      d.cluster.y += d3.event.dy;
+      d.cluster.nodes.map(function(n) {
         n.px += d3.event.dx;
         n.py += d3.event.dy;
       });
       state.force.resume();
     }).on('dragend.cluster', function(d) {
-      d.source.cluster.nodes.map(function(n) {
+      d.cluster.nodes.map(function(n) {
         n.fixed &= ~2;
       });
     });
