@@ -108,12 +108,13 @@ var parseStudentList = function(classroom) {
   var student_list = $("#add_student_box").val();
   student_list = student_list.replace(/\n/g, '1)(*3hf:Z');
   student_list = student_list.split('1)(*3hf:Z');
-  
   var studentArray = [];
+  var final_data = [];
   var nextStudentID = classroom.getNextStudentID();
   for (var i=0; i<student_list.length; i++) {
     var row_list = student_list[i].replace(/\t/g, '1)(*3hf:Z');
     row_list = row_list.split('1)(*3hf:Z');
+    console.log(row_list);
     if (row_list.length == 1) {
       row_list[0] = row_list[0].replace(/;/g, ',');
       var name_list = row_list[0].split(",");
@@ -126,21 +127,26 @@ var parseStudentList = function(classroom) {
       }
     } else if (row_list.length == 2) {
       studentArray.push(new Student(row_list[0], nextStudentID));
+      console.log("adsf");
       nextStudentID++;
+      //TODO: why is this commented out??? copy paste parsing doesn't work without it
       // final_data.push({
-      //   name: row_list[0],
-      //    prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})
-      // });
+      // name: row_list[0],
+      // prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})});
+
+      final_data.push({
+        name: row_list[0],
+         prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})});
     } else {
         studentArray.push(new Student(row_list[0], nextStudentID));
         nextStudentID++;
-        //   name: row_list[0],
-      //    prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""}),
-      //    avoid:row_list[2].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})
-      // });
+        // name: row_list[0], prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""}), avoid:row_list[2].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})});
+        final_data.push({
+        name: row_list[0],
+         prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""}),
+         avoid:row_list[2].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})});
       }
     }
-  console.log(studentArray)
   return studentArray;
 }
 
@@ -302,7 +308,6 @@ function addRow(student, classroom, scrollLeft, scrollTop) {
   else{
       $('.sidebar').css({'height': height1+"px"});
   }
-  console.log("ST: "+scrollTop);
    window.scrollTo(scrollLeft, scrollTop);
 
 
@@ -409,14 +414,7 @@ $(document).ready(function() {
   $(document).on('keyup', "#add_student_box", function(e) {
     var charCode = e.which || e.keyCode;
     if (charCode == '13'){
-      //$("#classname_input").css('visibility', 'visible');
-      //$("#button_container").css('visibility', 'visible');
-      //$("#group_size_container").css('visibility', 'visible');
-      //$("#control_container").css('visibility', 'visible');
-      //$("table th.student_name").css('visibility', 'visible');
-      //$("table th.pair_with").css('visibility', 'visible');
-      //$("table th.dont_pair_with").css('visibility', 'visible');
-
+      console.log($("#add_student_box").val());
       var studentArray = parseStudentList(classroom);
       for (var i = 0; i < studentArray.length; i++){
         classroom.add(studentArray[i]);
@@ -427,9 +425,14 @@ $(document).ready(function() {
     }
   });
 
-  $(document).on('paste', "#add_student_box", function(e) {
-    var pastedata = $(this).val();
-  });
+  $("#add_student_box").on('paste', function(e) {setTimeout(function() {
+
+    var e = $.Event( 'keyup', { which: $.ui.keyCode.ENTER } );
+    $('#add_student_box').trigger(e);
+
+
+
+  }), 0});
 
   //drag and drop behavior for name tiles
   $("table").on('mouseenter',".tile_name", function() {
