@@ -177,7 +177,11 @@ function start() {
   state.nodesel = state.nodesel
     .data(state.force.nodes(), function(d) { return d.id; } );
 
-  var ins = state.nodesel.enter().insert('g').classed('node', true);
+  var ins = state.nodesel.enter().insert('g').classed('node', true).attr({
+    'id': function(d) {
+      return 'node_' + d.id;
+    }
+  });
   var radius = 25;
   ins.append('circle').attr({
     cx: 0, cy: 0, r: radius
