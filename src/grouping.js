@@ -56,11 +56,8 @@ grouping.fromJSON(jsonGrouping)
 function Grouping(classroom) {
 
     var self = this;
-    
-    //randomly generated groups
-    self.random_groups = [];
+    self.random_groups = []; //randomly generated groups
     self.pinned_groups = []; //explicitly enforced groups
-    self.banned_groups = []; //explicitly banned groups
 
     //get number of groups in the current grouping
     function getNumberOfGroups() {
@@ -193,29 +190,29 @@ function Grouping(classroom) {
         return update_flag;
     }
 
-    // adds a student group to the list of banned groups
-    function banGroup(group_id) {
-        var update_flag = false;
-        var location = locateGroup(group_id);
-        if (location.state === 'random' && location.index > 0) {
-            self.pinned_groups.push(random_groups.splice(location.index)[0]);
-            update_flag = true;
-            checkRep();
-        }
-        return update_flag;
-    }
+    // // adds a student group to the list of banned groups
+    // function banGroup(group_id) {
+    //     var update_flag = false;
+    //     var location = locateGroup(group_id);
+    //     if (location.state === 'random' && location.index > 0) {
+    //         self.pinned_groups.push(random_groups.splice(location.index)[0]);
+    //         update_flag = true;
+    //         checkRep();
+    //     }
+    //     return update_flag;
+    // }
 
-    //removes a group from the list of banned groups
-    function unbanGroup(group_id) {
-        var update_flag = false;
-        var idx = locateGroup(group_id);
-        if (location.state === 'banned' && location.index > 0) {
-            self.random_groups.push(pinned_groups.splice(location.index)[0]);
-            update_flag = true;
-            checkRep();
-        }
-        return update_flag;
-    }
+    // //removes a group from the list of banned groups
+    // function unbanGroup(group_id) {
+    //     var update_flag = false;
+    //     var idx = locateGroup(group_id);
+    //     if (location.state === 'banned' && location.index > 0) {
+    //         self.random_groups.push(pinned_groups.splice(location.index)[0]);
+    //         update_flag = true;
+    //         checkRep();
+    //     }
+    //     return update_flag;
+    // }
 
     //switch student from one group to another group
     function assignStudentToGroup(student_id, group_id) {
@@ -225,7 +222,6 @@ function Grouping(classroom) {
         if (old_group_location.state === 'random') {
             old_idx = old_group_location.index;
             var student = self.random_groups[old_idx].remove(student_id);
-            // console.log('removed student', student.toString())
             if (group_id == null) {
                 //add student to new group
                 // console.log('adding student to new group', self.random_groups)
@@ -293,12 +289,6 @@ function Grouping(classroom) {
             group.fromJSON(obj.pinned_groups[i]);
             self.pinned_groups.push(group);
         }
-        self.banned_groups = [];
-        for (var i = 0; i < obj.banned_groups.length; i++) {
-            var group = new Group();
-            group.fromJSON(obj.banned_groups[i]);
-            self.banned_groups.push(group);
-        }
         return true;
     }
 
@@ -325,4 +315,3 @@ function Grouping(classroom) {
     }
 
 }
-

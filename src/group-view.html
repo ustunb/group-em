@@ -59,6 +59,7 @@
 var MIN_STUDENTS_PER_GROUP = 2;
 var MAX_STUDENTS_PER_GROUP = Number.POSITIVE_INFINITY;
 var GROUP_SIZE_FADE_SPEED = 50;
+var TIME_TO_REVEAL_EACH_GROUP = 600;
 
 var classroom = new Classlist();
 var layout = new ClusterLayout('svg');
@@ -91,7 +92,7 @@ function updateLayout(layout, students, assignments){
     layout.addCluster(assignments[i].getStudentIDs());
   }
   layout.concealClusters();
-  layout.startReveal(600);
+  layout.startReveal(TIME_TO_REVEAL_EACH_GROUP);
 }
 
 var updateLocalStorage = function(grouping){

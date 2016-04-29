@@ -118,7 +118,7 @@ table th.dont_pair_with  {
 }
 
 table th.remove {
-    width: 12%;
+    width: 22%;
     border-top-style: hidden;
     border-left-style: hidden;
     border-right-style: hidden;
@@ -152,7 +152,7 @@ table td.student_name {
 }
 
 table td.remove {
-    width: 12%;
+    /*width: 12%;*/
     font-size:18px;
     vertical-align: middle;
     text-align: center;

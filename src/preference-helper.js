@@ -82,10 +82,8 @@ getProposedScore = function(studentID, groupIDs, groupScore, preferenceMatrix) {
 //randomly assigns students weigh
 assignStudentsWithPreferences = function(studentArray, students_per_group) {
 
-    console.log('studentArray', studentArray)
     //create preference matrix 
     var preferenceMatrix = createPreferenceMatrix(studentArray);
-    // console.log('initialized preference matrix', preferenceMatrix);
 
     //address weird preference issues through matrix
     preferenceMatrix = fixPreferences(preferenceMatrix);
