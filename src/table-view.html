@@ -51,7 +51,7 @@
 <input type="text" id="classname_input"></input>
 </th>
 </tr>
-<tr>
+<tr class="heading_row">
   <th unselectable="on" class="student_name">Student</th>
   <th unselectable="on" class="pair_with">Pair With</th>
   <th unselectable="on" class="dont_pair_with">Don't Pair With</th>
@@ -185,6 +185,8 @@ var updateStudentsPerGroup = function(classroom, new_students_per_group){
 
 //redraws table at each state change
 var updatePage = function(classroom) {
+  // Put UI in special mode if the classroom is empty.
+  $('body').toggleClass('emptyclassroom', classroom.getStudents().length == 0);
   var scrollLeft = window.pageXOffset ||
   (document.documentElement || document.body.parentNode || document.body).scrollLeft;
 
@@ -199,7 +201,6 @@ var updatePage = function(classroom) {
   }
   updateGroupemButton(classroom);
   updateLocalStorage(classroom);
-
 }
 
 var updateLocalStorage = function(classroom){
