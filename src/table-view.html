@@ -186,7 +186,11 @@ var updateStudentsPerGroup = function(classroom, new_students_per_group){
 //redraws table at each state change
 var updatePage = function(classroom) {
   // Put UI in special mode if the classroom is empty.
-  $('body').toggleClass('emptyclassroom', classroom.getStudents().length == 0);
+  var classsize = classroom.getStudents().length;
+  $('body').toggleClass('emptyclassroom', classsize == 0);
+  $('body').toggleClass('mediumclassroom', classsize > 5);
+  $('body').toggleClass('largeclassroom', classsize > 10);
+
   var scrollLeft = window.pageXOffset ||
   (document.documentElement || document.body.parentNode || document.body).scrollLeft;
 
