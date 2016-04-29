@@ -55,7 +55,6 @@ svg line.link {
  cursor: move;
  cursor: -webkit-grab;
  stroke: #EFEDE7;
- stroke-width: 75px;
  stroke-linecap: round;
 }
 

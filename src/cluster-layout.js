@@ -2,6 +2,11 @@ function ClusterLayout(svg) {
 
 var layout = this;
 
+var CIRCLE_RADIUS = 32;    // Radius of a single node circle
+var CLUSTER_WIDTH = 88;    // Minimum diameter of cluster shell
+var SPLIT_DISTANCE = 176;  // Distance for splitting apart
+var JOIN_DISTANCE = 88;    // Distance for joining together
+
 var state = {};
 
 function clear() {
@@ -237,6 +242,7 @@ function start() {
     .data(state.force.links(), function(d) { return d.key });
   state.linksel.enter().insert('line')
     .attr({
+      'stroke-width': CLUSTER_WIDTH,
       class: function(d) {
         var result = 'link cluster_' + d.cluster.id;
         if (d.cluster === state.clustersel) {
@@ -259,7 +265,7 @@ function start() {
       return 'node_' + d.id;
     }
   });
-  var radius = 25;
+  var radius = CIRCLE_RADIUS;
   ins.append('circle').attr({
     cx: 0, cy: 0, r: radius
   });
@@ -343,8 +349,6 @@ function initClusterCoords(cluster) {
 }
 
 var fixedAfterDrag = 0;
-var splitDistance = 150;
-var joinDistance = 75;
 
 function distance(a, b) {
   var dx = a.x - b.x, dy = a.y - b.y;
@@ -357,7 +361,7 @@ function findJoinNode(d) {
     if (node2 === d || node2.cluster && node2.cluster === d.cluster) {
       return;
     }
-    if (distance(node2, d) < joinDistance) {
+    if (distance(node2, d) < JOIN_DISTANCE) {
       if (!closest || distance(node2, d) < distance(closest, d)) {
         closest = node2;
       }
@@ -399,7 +403,7 @@ function nodedrag() {
             d.cluster.y = d.py;
           } else {
             var dx = d.cluster.x - d.px, dy = d.cluster.y - d.py;
-            breaking = dx * dx + dy * dy > splitDistance * splitDistance;
+            breaking = dx * dx + dy * dy > SPLIT_DISTANCE * SPLIT_DISTANCE;
           }
         }
       }
@@ -423,7 +427,7 @@ function nodedrag() {
         addNodeToCluster(d, closest.cluster);
       } else if (d.cluster && d.cluster.nodes.length > 1) {
         var dx = d.cluster.x - d.px, dy = d.cluster.y - d.py,
-            split = dx * dx + dy * dy > splitDistance * splitDistance;
+            split = dx * dx + dy * dy > SPLIT_DISTANCE * SPLIT_DISTANCE;
         if (split) {
           // Report an event that a node has gone to its own new cluster.
           event = { type: 'join', node: d.id, cluster: null };
