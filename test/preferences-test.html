@@ -1,0 +1,41 @@
+<script src="../external_js/lodash.js"></script>
+<script src="../external_js/jquery-1.12.2.js"></script>
+<script src="../src/student.js"></script>
+<script src="../src/group.js"></script>
+<script src="../src/grouping.js"></script>
+<script src="../src/classlist.js"></script>
+<script src="../src/preference-helper.js"></script>
+<script>
+
+function assert(b) {
+if (!b) throw new Error('failed assertion');
+}
+
+//create a randomly generated classroom
+var maxTestStudents = 10
+var testStudentList = [];
+
+var testStudentA = new Student('Berk', 1, {'prefer': [2], 'avoid': [3]})
+testStudentList.push(testStudentA);
+
+var testStudentB = new Student('Esther', 2, {'prefer': [1]})
+testStudentList.push(testStudentB);
+
+var testStudentC = new Student('Danielle', 3, {'prefer': [1]})
+testStudentList.push(testStudentC);
+
+var testStudentPerGroup = 2
+assignments = assignStudentsWithPreferences(testStudentList, testStudentPerGroup);
+
+console.log(assignments.length, 'groups')
+for (var i = 0; i < assignments.length; i++){
+    console.log('group i', assignments[i])    
+}
+
+
+
+
+
+
+console.log("preferences.js passed all tests")
+</script>

@@ -1,13 +1,13 @@
-/* Depends on
- *
- * lodash.js
- * student.js
- * group.js
- * classroom.js
- *
- */
+/* 
 
-/* HOW TO USE THIS CLASS 
+// DEPENDS ON 
+
+lodash.js
+student.js
+group.js
+classroom.js
+
+// HOW TO USE THIS CLASS 
 
 //create a new Grouping
 
@@ -263,7 +263,7 @@ function Grouping(classroom) {
         return _.concat(self.random_groups, self.pinned_groups);
     }
 
-    toJSON = function() {
+    function toJSON() {
         var jsonGrouping = {};
         jsonGrouping['random_groups'] = [];
         for (var i = 0; i < self.random_groups.length; i++) {
@@ -280,7 +280,7 @@ function Grouping(classroom) {
         return JSON.stringify(jsonGrouping);
     }
 
-    fromJSON = function(jsonGrouping) {
+    function fromJSON(jsonGrouping) {
         var obj = JSON.parse(jsonGrouping);
         self.random_groups = [];
         for (var i = 0; i < obj.random_groups.length; i++) {
@@ -300,7 +300,7 @@ function Grouping(classroom) {
             group.fromJSON(obj.banned_groups[i]);
             self.banned_groups.push(group);
         }
-        return true
+        return true;
     }
 
     //public methods
