@@ -5,6 +5,9 @@ var layout = this;
 var state = {};
 
 function clear() {
+  if (state.force) {
+    state.force.stop();
+  }
   window.state = state = {
     nodes_by_id: {},     // By node id
     clusters_by_id: {},  // By cluster id
@@ -14,6 +17,8 @@ function clear() {
     nodes: [],
     links: [],
     joins: [],
+    hidden_clusters: 0,
+    reveal_timer: null,
     rebuilding: false,
     svg: d3.select(svg),
     force: d3.layout.force().charge(-400).linkDistance(60).gravity(0),
@@ -49,15 +54,37 @@ function clear() {
 clear();
 layout.clear = clear;
 
-function startbounce() {
-  // TODO: eliminate links, and animate notes
+function concealClusters() {
+  state.hidden_clusters = state.clusters.length;
+  rebuild();
 }
-layout.startbounce = startbounce;
+layout.concealClusters = concealClusters;
 
-function endbounce() {
-  // TODO: start force layout
+function startReveal(delay) {
+  delay = delay || 1000;
+  clearTimeout(state.reveal_timer);
+  state.reveal_timer = setTimeout(continueReveal, delay);
+  // TODO: eliminate links, and animate notes
+  function continueReveal() {
+    if (state.hidden_clusters > 0) {
+      state.hidden_clusters -= 1;
+      rebuild();
+      state.reveal_timer = setTimeout(continueReveal, delay);
+    } else {
+      state.reveal_timer = null;
+    }
+  }
 }
-layout.endbounce = endbounce;
+layout.startReveal = startReveal;
+
+
+function endReveal() {
+  clearTimeout(state.reveal_timer);
+  state.reveal_timer = null;
+  state.hidden_clusters = 0;
+  rebuild();
+}
+layout.endReveal = endReveal;
 
 
 layout.addNode = function addNode(id, obj) {
@@ -170,7 +197,7 @@ function rebuild() {
   // Rebuild the state.links array, reusing any links that
   // were already existing.
   var new_links = [];
-  for (var j = 0; j < state.clusters.length; ++j) {
+  for (var j = 0; j < state.clusters.length - state.hidden_clusters; ++j) {
     var cluster = state.clusters[j]
     for (var k = 1; k < cluster.nodes.length; ++k) {
       var target = cluster.nodes[k];
@@ -264,7 +291,7 @@ function resize() {
 }
 
 // Position objects according to their coordinates.
-var gravity = 0.1;
+var gravity = 0.08;
 function tick() {
   var size = state.force.size(),
       alpha = state.force.alpha(),
