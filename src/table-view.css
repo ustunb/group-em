@@ -33,9 +33,14 @@ body, html {
 }
 
 .emptyclassroom #button_row,
-.emptyclassroom .heading_row {
+.emptyclassroom .heading_row,
+.emptyclassroom #link_to_group_view {
   opacity: 0.1;
 }
+.emptyclassroom #link_to_group_view:hover {
+  background: none;
+}
+
 
 table {
     margin: auto;
