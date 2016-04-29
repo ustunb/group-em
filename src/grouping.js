@@ -7,13 +7,14 @@
  *
  */
 
-/* create a new Grouping
+/* HOW TO USE THIS CLASS 
+
+//create a new Grouping
 
 var grouping = new Grouping(classroom);
 
-*/
+//get node/edge information for D3
 
-/* get node/edge information for D3
 var students_per_group = 2
 var grouping = new Grouping(classroom);
 grouping.shuffle(students_per_group);
@@ -27,34 +28,35 @@ for (var j = 0; j < groupArray.length; j++) {
     }
 }
 
-*/
-
-/* remove a student from a group, then add them to another group
- * given student_id and group_id (:= lowest student id of all students in group)
+// remove a student from a group, then add them to another group
+// given student_id and group_id (:= lowest student id of all students in group)
 
 grouping.assignStudentToGroup(student_id, group_id);
 
-*to drop them in the middle of nowhere (use)
+// to drop students in the middle of nowhere:
 
 grouping.assignStudentToGroup(student_id);
 grouping.assignStudentToGroup(student_id, null);
 
-*/
+// pin/unpin a group
 
-/* pin/unpin a group
+update_flag = grouping.pinGroup(group_id) //returns true if pinning succeeds; false if pinning failed
+update_flag = grouping.unpinGroup(group_id) //returns true if unpinning succeeds; false if unpinning failed
 
-TODO
+//saving to JSON String
 
-*/
+var jsonGrouping = grouping.toJSON()
 
-/* ban/unban a group
+//loading from JSON String
 
-TODO
+var grouping = new Grouping() //initialize empty grouping
+grouping.fromJSON(jsonGrouping) 
 
 */
 function Grouping(classroom) {
 
     var self = this;
+    
     //randomly generated groups
     self.random_groups = [];
     self.pinned_groups = []; //explicitly enforced groups
@@ -159,6 +161,7 @@ function Grouping(classroom) {
         return groupString.join('\n');
     }
 
+    //return a list of all students
     function getStudents() {
         var studentArray = getGroups().map(function(group) {
             return group.getStudents();
@@ -260,23 +263,7 @@ function Grouping(classroom) {
         return _.concat(self.random_groups, self.pinned_groups);
     }
 
-    //public methods
-    self.getNumberOfGroups = getNumberOfGroups;
-    self.getNumberOfStudents = getNumberOfStudents;
-    self.getGroups = getGroups;
-    self.getStudents = getStudents;
-    self.getPinnedGroups = getPinnedGroups;
-    self.getRandomGroups = getRandomGroups;
-    self.toString = toString;
-    self.getGroupIDOf = getGroupIDOf;
-    self.shuffle = shuffle;
-    self.assignStudentToGroup = assignStudentToGroup;
-    self.pinGroup = pinGroup
-    self.unpinGroup = unpinGroup
-        // self.banGroup = banGroup
-        //self.unbanGroup = unbanGroup
-
-    self.toJSON = function() {
+    toJSON = function() {
         var jsonGrouping = {};
         jsonGrouping['random_groups'] = [];
         for (var i = 0; i < self.random_groups.length; i++) {
@@ -293,7 +280,7 @@ function Grouping(classroom) {
         return JSON.stringify(jsonGrouping);
     }
 
-    self.fromJSON = function(jsonGrouping) {
+    fromJSON = function(jsonGrouping) {
         var obj = JSON.parse(jsonGrouping);
         self.random_groups = [];
         for (var i = 0; i < obj.random_groups.length; i++) {
@@ -316,10 +303,27 @@ function Grouping(classroom) {
         return true
     }
 
-    //initialize
+    //public methods
+    self.getNumberOfGroups = getNumberOfGroups;
+    self.getNumberOfStudents = getNumberOfStudents;
+    self.getGroups = getGroups;
+    self.getStudents = getStudents;
+    self.getPinnedGroups = getPinnedGroups;
+    self.getRandomGroups = getRandomGroups;
+    self.toString = toString;
+    self.getGroupIDOf = getGroupIDOf;
+    self.shuffle = shuffle;
+    self.assignStudentToGroup = assignStudentToGroup;
+    self.pinGroup = pinGroup
+    self.unpinGroup = unpinGroup
+    self.toJSON = toJSON;
+    self.fromJSON = fromJSON;
+
+    //initialization
     if (classroom != null) {
         self.random_groups.push(new Group(classroom.getStudents()));
         checkRep();
     }
 
 }
+

@@ -127,6 +127,10 @@ table tr {
     height: 8ex;
 }
 
+.mediumclassroom table tr {
+    height: auto;
+}
+
 /*TABLE CELLS*/
 table td {
     width: 38%;
@@ -226,19 +230,31 @@ table td p span:hover {
 }
 
 .tile_name:nth-of-type(1) {
-    height: 90%;
     width: 90%;
-    max-height: 40px;
     max-width: 300px;
     line-height: 30px;
     background: #60BADF;
-    min-height: 40px;
+    height: 40px;
     font-size: 20px;
     vertical-align: middle;
     text-align: center;
     box-sizing: border-box;
 }
 
+.largeclassroom .tile_name:nth-of-type(1),
+.largeclassroom table td p {
+    height: 25px;
+    font-size: medium;
+    line-height: 1;
+    box-sizing: border-box;
+    vertical-align: middle;
+}
+.largeclassroom table td p span {
+    font-size: 90%;
+}
+.largeclassroom table td {
+    padding: 0 2px;
+}
 
 .tile_name:hover, .tile_name:nth-of-type(2) {
     box-shadow: 0 3px 11px #939085;
