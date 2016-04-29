@@ -31,7 +31,7 @@ function Classlist(studentArray) {
         }, 0).toString(2);
     }
 
-    // adds a new student to this group
+    // adds a new student to this list
     // returns true if student is successfully added to list of students
     function add(student) {
         var update_flag = false;
