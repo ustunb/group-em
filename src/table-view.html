@@ -205,7 +205,7 @@ var updatePage = function(classroom) {
 
 var updateLocalStorage = function(classroom){
   localStorage.setItem('classroom', classroom.toJSON());
-  var student_per_group = $("#group_size_container").data('students_per_group')
+  var student_per_group = $("#group_size_container").data('students_per_group');
   if (Number(student_per_group) === student_per_group && student_per_group % 1 === 0){
     localStorage.setItem('students_per_group', $("#group_size_container").data('students_per_group'));
   }
@@ -570,7 +570,13 @@ $(document).ready(function() {
 
   $('input:checkbox').change(
     function(){
+
         $("body").toggleClass('hideprefs', !$(this).is(':checked'));
+        var savedstate = "hide";
+        if ($(this).is(':checked')) {
+          savedstate = "show";
+        }
+        localStorage.setItem('hideprefs', savedstate);
     });
 
   /*group size input*/
@@ -613,7 +619,22 @@ $(document).ready(function() {
   });
 
   //initialize classroom and students per group
+  $("body").removeClass();
+  $("body").addClass("hideprefs");
   var storedClassroom = localStorage.getItem('classroom');
+  var hide = localStorage.getItem('hideprefs');
+  console.log(hide);
+  if (hide == "hide") {
+    console.log("here");
+    $('input:checkbox').attr('checked', false);
+    $('input:checkbox').trigger('change');
+  }
+  else {
+    $('input:checkbox').attr('checked', true);
+    $('input:checkbox').trigger('change');
+  }
+
+
   if (storedClassroom == null && ADD_INITIAL_LIST) {
     classroom.add(new Student('berk', 1, {'prefer':[2], 'avoid':[3], 'pinned':[], 'banned':[]}));
     classroom.add(new Student('david', 2, {'prefer':[1], 'avoid':[4], 'pinned':[], 'banned':[]}));
