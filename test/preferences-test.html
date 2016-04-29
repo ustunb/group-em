@@ -15,6 +15,31 @@ if (!b) throw new Error('failed assertion');
 var maxTestStudents = 10
 var testStudentList = [];
 
+//test that two students that want to be with each other are always paired
+var testStudentA = new Student('Berk', 1, {'prefer': [2], 'avoid': [30,4]})
+var testStudentB = new Student('Esther', 2, {'prefer': [1], 'avoid': [4]})
+var testStudentC = new Student('Max', 30, {'prefer': [4], 'avoid': [1]})
+var testStudentD = new Student('Danielle', 4, {'prefer': [30],  'avoid': [1,2]})
+
+testStudentList.push(testStudentA);
+testStudentList.push(testStudentB);
+testStudentList.push(testStudentC);
+testStudentList.push(testStudentD);
+
+var testStudentPerGroup = 3;
+var groupedStudents = assignStudentsWithPreferences(testStudentList, testStudentPerGroup);
+var assignments = [];
+for (var i = 0; i < groupedStudents.length; i++){
+    assignments.push(groupedStudents[i].map(function(s){return s.id();}))
+}
+
+console.log(assignments.length, 'groups')
+for (var i = 0; i < assignments.length; i++){
+    console.log('group i', assignments[i])
+}
+
+
+//test that conflicting preferences are overridden
 var testStudentA = new Student('Berk', 1, {'prefer': [2], 'avoid': [3]})
 testStudentList.push(testStudentA);
 
@@ -24,13 +49,31 @@ testStudentList.push(testStudentB);
 var testStudentC = new Student('Danielle', 3, {'prefer': [1]})
 testStudentList.push(testStudentC);
 
-var testStudentPerGroup = 2
-assignments = assignStudentsWithPreferences(testStudentList, testStudentPerGroup);
+var testStudentPerGroup = 2;
+groupedStudents = assignStudentsWithPreferences(testStudentList, testStudentPerGroup);
+
+var assignments = [];
+for (var i = 0; i < groupedStudents.length; i++){
+    assignments.push(groupedStudents[i].map(function(s){return s.id();}))
+}
 
 console.log(assignments.length, 'groups')
 for (var i = 0; i < assignments.length; i++){
-    console.log('group i', assignments[i])    
+    console.log('group i', assignments[i])
 }
+
+var N_TESTS = 10;
+var n = 0;
+while (n < N_TESTS){
+    assignments = assignStudentsWithPreferences(testStudentList, testStudentPerGroup);
+    for (var i = 0; i < assignments.length; i++){
+        assert(_.intersection([1, 3], assignments[i]).length < 2);
+    }
+    n++;
+}
+
+
+
 
 
 
@@ -39,3 +82,4 @@ for (var i = 0; i < assignments.length; i++){
 
 console.log("preferences.js passed all tests")
 </script>
+<!--  -->

@@ -253,9 +253,8 @@ function Grouping(classroom) {
             return group.getStudents()
         });
         studentArray = _.flatten(studentArray);
-        studentArray = _.shuffle(studentArray);
-        studentArray = _.chunk(studentArray, students_per_group);
-        self.random_groups = studentArray.map(function(students) {
+        var groupedStudentArray = assignStudentsWithPreferences(studentArray, students_per_group);
+        self.random_groups = groupedStudentArray.map(function(students) {
             return new Group(students);
         })
         console.log(toString())

@@ -6,8 +6,6 @@ lodash.js
 student.js
 group.js
 classroom.js
-
-
 */
 
 
@@ -60,7 +58,6 @@ createPreferenceMatrix = function(studentArray) {
 fixPreferences = function(preferenceMatrix) {
     var CONFLICT_PENALTY = 100.0;
     var M = preferenceMatrix.length;
-    console.log(preferenceMatrix)
     for (var i = 0; i < M; i++) {
         for (var j = 0; j < M; j++) {
             if ((preferenceMatrix[i][j] > 0) && (preferenceMatrix[j][i] < 0)) {
@@ -85,25 +82,27 @@ getProposedScore = function(studentID, groupIDs, groupScore, preferenceMatrix) {
 //randomly assigns students weigh
 assignStudentsWithPreferences = function(studentArray, students_per_group) {
 
+    console.log('studentArray', studentArray)
     //create preference matrix 
     var preferenceMatrix = createPreferenceMatrix(studentArray);
-    console.log('initialized preference matrix', preferenceMatrix);
+    // console.log('initialized preference matrix', preferenceMatrix);
 
     //address weird preference issues through matrix
     preferenceMatrix = fixPreferences(preferenceMatrix);
-    console.log('fixed preference matrix', preferenceMatrix);
+    // console.log('fixed preference matrix', preferenceMatrix);
 
     //initialize variables required to create new groups
     var nStudents = studentArray.length;
     var nGroups = Math.ceil(nStudents / students_per_group);
-    var groupIDs = []
-    var groupScores = [] 
+    var groupIDs = [];
+    var groupScores = []; 
     for (var j = 0; j < nGroups; j++){
         groupIDs.push([]);
         groupScores.push(0.0);
     }
 
     //reorder students
+    
     studentArray = _.shuffle(studentArray);
 
     //shuffle the order of students
@@ -113,22 +112,53 @@ assignStudentsWithPreferences = function(studentArray, students_per_group) {
         var proposedScores = _.clone(groupScores);
 
         //compute score of adding student i to every group that has space
-        for (var j = 0; j < groupIDs.length; j++) {
+        for (var j = 0; j < nGroups; j++) {
             if (groupIDs[j].length < students_per_group) {
                 proposedScores[j] = getProposedScore(studentID, groupIDs[j], proposedScores[j], preferenceMatrix);
-            } else {
-                proposedScores[j] = Number.NEGATIVE_INFINITY;
             }
         }
 
-        //add student to group that maximizes the proposed score
+        //find best group for student
         var ind = proposedScores.indexOf(_.max(proposedScores));
-        console.log('proposedScores', proposedScores)
-        groupScores[ind] = _.clone(proposedScores[ind]);
+        
+        //if this is the last student, and there are multiple empty groups, 
+        //then make sure that student is allocated to a group that is missing 
+        //one student (so as to have as many fully formed groups as possible)
+        if (i == (nStudents - 1)) {
+            var groupsMissingOneStudent = [];
+            for (var j = 0; j < nGroups; j++){
+                if (groupIDs[j].length == (students_per_group - 1)){
+                    groupsMissingOneStudent.push(j);
+                }
+            }
+            if ((groupsMissingOneStudent.length > 0) && (groupsMissingOneStudent.indexOf(ind) < 0)){
+                ind = _.sample(groupsMissingOneStudent);
+            }
+        }
+
         groupIDs[ind].push(studentID);
-        console.log('adding student ', studentID, ' to group with ', groupIDs)
+        //update score
+        if (groupIDs[ind].length == students_per_group){
+            groupScores[ind] = NaN;
+        } else {
+            groupScores[ind] = _.clone(proposedScores[ind]);
+        }
+        // console.log('adding student ', studentID, ' to group with ', groupIDs)
     }
-    return groupIDs;
+
+    //rearrange student objects into an array of group arrays
+    //[[student1. student2] [student 3, student 4]]
+    var studentIDs = studentArray.map(function(s){return s.id()});
+    var groupingArray = [];
+    for (var j = 0; j < nGroups; j++){
+        var groupArray = [];
+        for (var k = 0; k < groupIDs[j].length; k++){
+            var idx = studentIDs.indexOf(groupIDs[j][k]);
+            groupArray.push(studentArray[idx])
+        }
+        groupingArray.push(groupArray);
+    }
+    return groupingArray;
 }
 
 
