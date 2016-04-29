@@ -146,25 +146,28 @@ function Classlist(studentArray) {
         var obj = JSON.parse(jsonClasslist);
         self.students = [];
 
-        //get IDs of all students in JSON object
-        var allIDs = []
-        for (var i = 0; i < obj.students.length; i++) {
-            var studentObj = JSON.parse(obj.students[i]);
-            allIDs.push(studentObj.id);
-        }
-
-        //create student objects
-        for (var i = 0; i < obj.students.length; i++) {
-            var studentObj = JSON.parse(obj.students[i]);
-            for (key in studentObj.preferences){//make sure that preferences do not include missing students
-                studentObj.preferences[key] = _.intersection(allIDs, studentObj.preferences[key]);
+        if (obj && obj.students) {
+            //get IDs of all students in JSON object
+            var allIDs = []
+            for (var i = 0; i < obj.students.length; i++) {
+                var studentObj = JSON.parse(obj.students[i]);
+                allIDs.push(studentObj.id);
             }
-            self.students.push(new Student(studentObj.name, studentObj.id, studentObj.preferences));
+    
+            //create student objects
+            for (var i = 0; i < obj.students.length; i++) {
+                var studentObj = JSON.parse(obj.students[i]);
+                for (key in studentObj.preferences){//make sure that preferences do not include missing students
+                    studentObj.preferences[key] = _.intersection(allIDs, studentObj.preferences[key]);
+                }
+                self.students.push(new Student(studentObj.name, studentObj.id, studentObj.preferences));
+            }
+            
+            self.studentIDs = self.students.map(function(student) {
+                return student.id();
+            });
+
         }
-        
-        self.studentIDs = self.students.map(function(student) {
-            return student.id();
-        })
         self.maxStudentID = _.max(self.studentIDs);
         self.size = self.students.length;
         self.value = valueOf();
