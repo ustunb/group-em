@@ -164,10 +164,16 @@ table td.remove:hover {
     cursor: pointer;
 }
 
-table td.remove:before {
+table .remove:before {
     font-family: FontAwesome;
     font-size: 18px;
     content: '\f014';
+}
+
+table th.remove {
+    color: gainsboro;
+    font-weight: normal;
+    padding: 7px 8px 0 8px;
 }
 
 /*TILES */
