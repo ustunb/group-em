@@ -127,9 +127,8 @@ function Classlist(studentArray) {
     }
 
     self.getStudentNames = function() {
-        return map(self.students, function (s){s.name()});
+        return self.students.map(function (s){return s.name()});
     }
-
 
     //initialization
     if (studentArray != null) {

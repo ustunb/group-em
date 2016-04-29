@@ -17,7 +17,6 @@
 <link type="text/css" rel='stylesheet' href="css/jquery.pagewalkthrough.css">
 
 
-
 <body class = "hideprefs">
 <div class="container">
 <div class="sidebar">
@@ -163,6 +162,27 @@ $("#button_container").tooltipster({
     position: 'right',
   });
 
+//format duplicate student names
+var adjustNameForDuplicates = function(studentName, classroom){
+  var MAX_DUPLICATE_NAMES = 1000;
+  var currentNames = classroom.getStudentNames();
+  console.log(currentNames)
+  var duplicateCount = 1;
+  var proposedName = studentName;
+  while (duplicateCount < MAX_DUPLICATE_NAMES){
+    console.log(proposedName)
+    console.log(_.includes(currentNames, proposedName))
+    if (_.includes(currentNames, proposedName)){
+      duplicateCount++;
+      proposedName = studentName + " " + duplicateCount.toString();
+    } else {
+      break
+    }
+  }
+  studentName = proposedName;
+  return studentName;
+}
+
 var parseStudentList = function(classroom) {
   var student_list = $("#add_student_box").val();
   student_list = student_list.replace(/\n/g, '1)(*3hf:Z');
@@ -170,23 +190,23 @@ var parseStudentList = function(classroom) {
   var studentArray = [];
   var final_data = [];
   var nextStudentID = classroom.getNextStudentID();
-  for (var i=0; i<student_list.length; i++) {
+
+  for (var i = 0; i < student_list.length; i++) {
     var row_list = student_list[i].replace(/\t/g, '1)(*3hf:Z');
     row_list = row_list.split('1)(*3hf:Z');
-    console.log(row_list);
     if (row_list.length == 1) {
       row_list[0] = row_list[0].replace(/;/g, ',');
       var name_list = row_list[0].split(",");
-      for (var k=0; k< name_list.length; k++){
+      for (var k = 0; k< name_list.length; k++){
         var studentName = name_list[k].trim();
-        if (studentName.length > 0){
-          studentArray.push(new Student(studentName, nextStudentID));
-          nextStudentID++;
+          if (studentName.length > 1){
+            studentName = adjustNameForDuplicates(studentName, classroom);
+            studentArray.push(new Student(studentName, nextStudentID));
+            nextStudentID++;
+          }
         }
-      }
     } else if (row_list.length == 2) {
       studentArray.push(new Student(row_list[0], nextStudentID));
-      console.log("adsf");
       nextStudentID++;
       //TODO: why is this commented out??? copy paste parsing doesn't work without it
       // final_data.push({

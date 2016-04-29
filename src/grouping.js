@@ -190,30 +190,6 @@ function Grouping(classroom) {
         return update_flag;
     }
 
-    // // adds a student group to the list of banned groups
-    // function banGroup(group_id) {
-    //     var update_flag = false;
-    //     var location = locateGroup(group_id);
-    //     if (location.state === 'random' && location.index > 0) {
-    //         self.pinned_groups.push(random_groups.splice(location.index)[0]);
-    //         update_flag = true;
-    //         checkRep();
-    //     }
-    //     return update_flag;
-    // }
-
-    // //removes a group from the list of banned groups
-    // function unbanGroup(group_id) {
-    //     var update_flag = false;
-    //     var idx = locateGroup(group_id);
-    //     if (location.state === 'banned' && location.index > 0) {
-    //         self.random_groups.push(pinned_groups.splice(location.index)[0]);
-    //         update_flag = true;
-    //         checkRep();
-    //     }
-    //     return update_flag;
-    // }
-
     //switch student from one group to another group
     function assignStudentToGroup(student_id, group_id) {
         // console.log('assigning student', 'student_id', student_id, 'group_id', group_id);
@@ -268,10 +244,6 @@ function Grouping(classroom) {
         for (var i = 0; i < self.pinned_groups.length; i++) {
             jsonGrouping['pinned_groups'].push(self.pinned_groups[i].toJSON());
         }
-        jsonGrouping['banned_groups'] = [];
-        for (var i = 0; i < self.banned_groups.length; i++) {
-            jsonGrouping['banned_groups'].push(self.banned_groups[i].toJSON());
-        }
         return JSON.stringify(jsonGrouping);
     }
 
@@ -303,8 +275,8 @@ function Grouping(classroom) {
     self.getGroupIDOf = getGroupIDOf;
     self.shuffle = shuffle;
     self.assignStudentToGroup = assignStudentToGroup;
-    self.pinGroup = pinGroup
-    self.unpinGroup = unpinGroup
+    self.pinGroup = pinGroup;
+    self.unpinGroup = unpinGroup;
     self.toJSON = toJSON;
     self.fromJSON = fromJSON;
 

@@ -141,6 +141,4 @@ function Student(name, id, preferences) {
     self.isPinned = function() {
         return self.preferences['pinned'].length > 0
     }
-
-
 }
