@@ -1,6 +1,7 @@
 <meta charset='utf-8'>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <script src="../external_js/lodash.js"></script>
 <script src="../external_js/jquery-1.12.2.js"></script>
 <script src="../external_js/jquery-ui.js"></script>
@@ -12,6 +13,10 @@
 
 <link rel="stylesheet" href="../src/sidebar.css">
 <link rel='stylesheet' href="../src/table-view.css">
+
+<link type="text/css" rel='stylesheet' href="css/jquery.pagewalkthrough.css">
+<script type="text/javascript" src="jquery.pagewalkthrough.js"></script>
+
 
 <body class = "hideprefs">
 <div class="container">
@@ -52,7 +57,7 @@
 </th>
 </tr>
 <tr class="heading_row">
-  <th unselectable="on" class="student_name">Student</th>
+  <th unselectable="on" class="student_name">Student Name</th>
   <th unselectable="on" class="pair_with">Pair With</th>
   <th unselectable="on" class="dont_pair_with">Don't Pair With</th>
   <th unselectable="on" class="remove"></th>
@@ -82,12 +87,66 @@
 </tfoot>
 </table>
 </div>
-</body>
 
+    <div id="walkthrough-content">
+      <div id="walkthrough-1">
+        <h2>Welcome to the Group'em website</h2>
+        <p> Group'em helps teachers to make groups for their class projects</p>
+        <p>Click next to continue the tour</p>
+      </div>
+
+      <div id="walkthrough-2">
+        <p> &nbsp; </p>
+         <p> &nbsp; </p>
+        <p style="color: black">Type the student names here </p>
+        <p style="color: black"> You can also paste the names from a spreadsheet: </p>
+        <img src="Student_table.png" width="300">
+        </div>
+      <div id="walkthrough-3">
+        Turn on Preferences to indicate which students would like to work together and which would not. 
+      </div>
+    </div>
+
+</body>
+<script>
+
+    if(!localStorage.seenwalkthrough )
+    {
+
+        $('body').pagewalkthrough({
+        name: 'introduction',
+        steps: [/*{
+           popup: {
+               content: '#walkthrough-1',
+               type: 'modal'
+           }
+        }, */
+        {
+            wrapper: '#add_student_box',
+            popup: {
+                content: '#walkthrough-2',
+                type: 'tooltip',
+                position: 'above'
+            }
+        }, {
+            wrapper: '.teachermode_switch',
+            popup: {
+                content: '#walkthrough-3',
+                type: 'tooltip',
+                position: 'right'
+            }   
+        }]
+    });
+          //$('body').pagewalkthrough('show');
+          localStorage.seenwalkthrough = "seen"; 
+    }
+</script>
 <script src="../src/classlist.js"></script>
 <script src="../src/student.js"></script>
 
 <script>
+
+
 var ADD_INITIAL_LIST = false;
 var ADD_CLASSNAME_PLACEHOLDER = "enter class name"
 var ADD_STUDENT_BOX_PLACEHOLDER = "paste or enter student names like this:\nAlice, Bob, Cory, David"
@@ -356,6 +415,7 @@ function detectPaste(textarea, callback) {
 });
  **/
 $(document).ready(function() {
+
 
   $("#add_student_box").focus();
   
@@ -656,6 +716,12 @@ $(document).ready(function() {
   updatePage(classroom);
   updateStudentsPerGroup(classroom, $("#group_size_container").data('students_per_group'));
   updateLocalStorage(classroom);
+
+
+
+
+    // Show the tour
+
   
 });
 
