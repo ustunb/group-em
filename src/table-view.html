@@ -7,6 +7,7 @@
 <script src="../external_js/jquery-ui.js"></script>
 <script src="../external_js/jquery.tooltipster.min.js"></script>
 <script src="../external_js/jquery.pagewalkthrough.js"></script>
+<script src="../external_js/jquery.pagewalkthrough.min.js"></script>
 
 <link href="../src/toggle_button.css" rel="stylesheet">
 <link href='https://fonts.googleapis.com/css?family=Raleway:400,300' rel='stylesheet' type='text/css'>
@@ -140,9 +141,9 @@
           localStorage.seenwalkthrough = "seen"; 
     }
 </script>
+
 <script src="../src/classlist.js"></script>
 <script src="../src/student.js"></script>
-
 <script>
 
 
@@ -198,7 +199,7 @@ var parseStudentList = function(classroom) {
       var name_list = row_list[0].split(",");
       for (var k = 0; k< name_list.length; k++){
         var studentName = name_list[k].trim();
-          if (studentName.length > 1){
+          if (studentName.length > 0){
             studentName = adjustNameForDuplicates(studentName, classroom);
             classroom.add(new Student(studentName, nextStudentID));
           }
@@ -503,12 +504,8 @@ $(document).ready(function() {
   });
 
   $("#add_student_box").on('paste', function(e) {setTimeout(function() {
-
     var e = $.Event( 'keyup', { which: $.ui.keyCode.ENTER } );
     $('#add_student_box').trigger(e);
-
-
-
   }), 0});
 
   //drag and drop behavior for name tiles
@@ -728,10 +725,6 @@ $(document).ready(function() {
   updatePage(classroom);
   updateStudentsPerGroup(classroom, $("#group_size_container").data('students_per_group'));
   updateLocalStorage(classroom);
-
-
-
-
     // Show the tour
 
   
