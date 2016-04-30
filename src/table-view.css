@@ -118,7 +118,7 @@ table th.dont_pair_with  {
 }
 
 table th.remove {
-    width: 22%;
+    width: 12%;
     border-top-style: hidden;
     border-left-style: hidden;
     border-right-style: hidden;
@@ -152,7 +152,7 @@ table td.student_name {
 }
 
 table td.remove {
-    /*width: 12%;*/
+    width: 12%;
     font-size:18px;
     vertical-align: middle;
     text-align: center;
@@ -570,15 +570,15 @@ input[type=number]::-webkit-inner-spin-button:focus  input[type=number]::-webkit
     content: '\f007';
     }*/
 
-    /*FOCUS EFFECTS FOR TEXT INPUT ELEMENTS */
-    input[type=text], textarea {
+/*FOCUS EFFECTS FOR TEXT INPUT ELEMENTS */
+input[type=text], textarea {
       -webkit-transition: all 0.10s ease-in-out;
       -moz-transition: all 0.10s ease-in-out;
       -ms-transition: all 0.10s ease-in-out;
       -o-transition: all 0.10s ease-in-out;
       outline: none;
-      padding: 3px 0px 3px 3px;
-      margin: 5px 1px 3px 0px;
+      /* padding: 3px 0px 3px 3px; */
+      /* margin: 5px 1px 3px 0px; */
       border: 3px solid #BCBAB4;
       vertical-align: middle;
   }
@@ -590,8 +590,8 @@ input[type=number]::-webkit-inner-spin-button:focus  input[type=number]::-webkit
       /*border: 0px;*/
       box-shadow: 0 0 5px #BCBAB4;
       background: #f9efec;
-      padding: 3px 0px 3px 3px;
-      margin: 5px 1px 3px 0px;
+      /*padding: 3px 0px 3px 3px;*/
+      /*margin: 5px 1px 3px 0px;*/
   }
 
 
@@ -599,7 +599,7 @@ input[type=number]::-webkit-inner-spin-button:focus  input[type=number]::-webkit
       /*border: 3px solid #BCBAB4; */
       /*box-shadow: 0 0 4px #BCBAB4;*/
       /*border: 3px solid #CC99FF;*/
-      border: none;
+      border: 3px solid gray;
       box-shadow: 0 0 5px #BCBAB4;
       background: white;
       position: relative;
