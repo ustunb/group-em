@@ -187,11 +187,10 @@ var parseStudentList = function(classroom) {
   var student_list = $("#add_student_box").val();
   student_list = student_list.replace(/\n/g, '1)(*3hf:Z');
   student_list = student_list.split('1)(*3hf:Z');
-  var studentArray = [];
   var final_data = [];
-  var nextStudentID = classroom.getNextStudentID();
 
   for (var i = 0; i < student_list.length; i++) {
+    var nextStudentID = classroom.getNextStudentID();
     var row_list = student_list[i].replace(/\t/g, '1)(*3hf:Z');
     row_list = row_list.split('1)(*3hf:Z');
     if (row_list.length == 1) {
@@ -201,24 +200,20 @@ var parseStudentList = function(classroom) {
         var studentName = name_list[k].trim();
           if (studentName.length > 1){
             studentName = adjustNameForDuplicates(studentName, classroom);
-            studentArray.push(new Student(studentName, nextStudentID));
-            nextStudentID++;
+            classroom.add(new Student(studentName, nextStudentID));
           }
         }
     } else if (row_list.length == 2) {
-      studentArray.push(new Student(row_list[0], nextStudentID));
-      nextStudentID++;
+      classroom.add(new Student(row_list[0], nextStudentID));
       //TODO: why is this commented out??? copy paste parsing doesn't work without it
       // final_data.push({
       // name: row_list[0],
       // prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})});
-
       final_data.push({
         name: row_list[0],
          prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})});
     } else {
-        studentArray.push(new Student(row_list[0], nextStudentID));
-        nextStudentID++;
+        classroom.add(new Student(row_list[0], nextStudentID));
         // name: row_list[0], prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""}), avoid:row_list[2].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})});
         final_data.push({
         name: row_list[0],
@@ -226,7 +221,7 @@ var parseStudentList = function(classroom) {
          avoid:row_list[2].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})});
       }
     }
-  return studentArray;
+  return classroom;
 }
 
 
@@ -500,10 +495,7 @@ $(document).ready(function() {
     var charCode = e.which || e.keyCode;
     if (charCode == '13'){
       console.log($("#add_student_box").val());
-      var studentArray = parseStudentList(classroom);
-      for (var i = 0; i < studentArray.length; i++){
-        classroom.add(studentArray[i]);
-      }
+      classroom = parseStudentList(classroom);
       $("#add_student_box").val("");
       updatePage(classroom);
       updateLocalStorage(classroom); 
