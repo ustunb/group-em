@@ -26,7 +26,7 @@ function clear() {
     reveal_timer: null,
     rebuilding: false,
     svg: d3.select(svg),
-    force: d3.layout.force().charge(-400).linkDistance(60).gravity(0),
+    force: d3.layout.force().charge(-200).linkDistance(70).gravity(0),
     clustersel: null,
     zoomsel: null,
     linksel: null,
@@ -297,7 +297,7 @@ function resize() {
 }
 
 // Position objects according to their coordinates.
-var gravity = 0.08;
+var gravity = 0.05;
 function tick() {
   var size = state.force.size(),
       alpha = state.force.alpha(),
@@ -309,10 +309,16 @@ function tick() {
       var y = size[1] / 2;
       var boost = 1;
       // Custom gravity: each cluster has its own gravitational center.
+      // apply this center after alpha proceeds a bit.
+      if (alpha < 0.065 && node.cluster &&
+          (isNaN(node.cluster.x) || isNaN(node.cluster.y))) {
+        node.cluster.x = node.x;
+        node.cluster.y = node.y;
+      }
       if (node.cluster && !isNaN(node.cluster.x) && !isNaN(node.cluster.y)) {
-        x = node.cluster.x;
-        y = node.cluster.y;
-        boost = 2;
+        x = (x + 4 * node.cluster.x) / 5;
+        y = (y + 4 * node.cluster.y) / 5;
+        boost = 5;
       }
       var scale = node.cluster && node.cluster.nodes.length || 1;
       node.x += (x - node.x) * k * boost;
