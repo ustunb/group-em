@@ -101,23 +101,62 @@ function endReveal() {
 layout.endReveal = endReveal;
 
 
-layout.addNode = function addNode(id, obj) {
-  var node = {id: id, ndata: obj, cluster: null};
+layout.addNode = function addNode(id, obj, location) {
+  var node = {id: id, data: obj, cluster: null};
   state.nodes.push(node);
+  if (location) {
+    node.x = location.x;
+    node.y = location.y;
+  }
   state.nodes_by_id[id] = node;
   invalidate();
 }
 
-layout.addCluster = function addCluster(node_id_list) {
+layout.addCluster = function addCluster(node_id_list, location) {
   var id = state.next_cluster_id++;
   var cluster = { id: id, nodes: [] }
   node_id_list.map(function(sid) {
     addNodeToCluster(state.nodes_by_id[sid], cluster);
   });
+  if (location) {
+    cluster.x = location.x;
+    cluster.y = location.y;
+  }
   state.clusters.push(cluster);
   state.clusters_by_id[id] = cluster;
   invalidate();
 }
+
+function getAllNodes() {
+  var result = [];
+  for (var j = 0; j < state.nodes.length; ++j) {
+    var node = state.nodes[j];
+    var exp = {id: node.id, data: node.data, location: null};
+    if (!isNaN(node.x)) {
+      exp.location = { x: node.x, y: node.y };
+    }
+    result.push(exp);
+  }
+  return result;
+}
+layout.getAllNodes = getAllNodes;
+
+function getAllClusters() {
+  var result = [];
+  for (var j = 0; j < state.clusters.length; ++j) {
+    var cluster = state.clusters[j];
+    var exp = {
+      nodes: cluster.nodes.map(function(n) { return n.id; }),
+      location: null
+    }
+    if (!isNaN(cluster.x)) {
+      exp.location = { x: cluster.x, y: cluster.y };
+    }
+    result.push(exp);
+  }
+  return result;
+}
+layout.getAllClusters = getAllClusters;
 
 /* Returns an object representing the selected cluster, if any. */
 layout.getSelectedCluster = function getSelectedCluster() {
@@ -283,11 +322,11 @@ function start() {
     'text-anchor': 'middle',
     y: 1
   }).text(function(d) {
-    return '' + d.ndata;
+    return '' + d.data;
   }).style({
     font: 'Arial',
     'font-size': function(d) {
-      var t = '' + d.ndata;
+      var t = '' + d.data;
       return Math.min(20, (2 * radius - 8) /
                       this.getComputedTextLength() * 16) + "px"; }
   });
