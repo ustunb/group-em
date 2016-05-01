@@ -26,7 +26,7 @@ function clear() {
     reveal_timer: null,
     rebuilding: false,
     svg: d3.select(svg),
-    force: d3.layout.force().charge(-200).linkDistance(70).gravity(0),
+    force: d3.layout.force().charge(-320).linkDistance(70).gravity(0),
     clustersel: null,
     zoomsel: null,
     linksel: null,
