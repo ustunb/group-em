@@ -88,10 +88,16 @@ table th.student_name {
 }
 
 table td.candrop.pair_with {
-    background: rgba(106, 213, 162, 0.2);
+    box-shadow: 0 0 10px rgb(106, 213, 162);
+    opacity: 0.999;
+    z-index: 1;
+    background: none;
 }
 table td.candrop.dont_pair_with {
-    background: rgba(243, 147, 84, 0.2);
+    box-shadow: 0 0 10px rgb(243, 147, 84);
+    opacity: 0.999;
+    z-index: 1;
+    background: none;
 }
 
 table th.pair_with {
