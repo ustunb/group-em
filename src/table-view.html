@@ -44,6 +44,9 @@
         </span>
       </p>
     </li>
+    <li>
+      <a id = "help_button">Help</a>
+    </li>
 </ul>
 </div>
 </div>
@@ -921,6 +924,36 @@ $(document).ready(function() {
       alert("should never get here since groupem button should be disabled if size < MIN_STUDENTS_PER_GROUP")
     }
   });
+
+
+  $("#help_button").click(function()     {
+
+        $('body').pagewalkthrough({
+        name: 'introduction',
+        steps: [/*{
+           popup: {
+               content: '#walkthrough-1',
+               type: 'modal'
+           }
+        }, */
+        {
+            wrapper: '#add_student_box',
+            popup: {
+                content: '#walkthrough-2',
+                type: 'tooltip',
+                position: 'above'
+            }
+        }, {
+            wrapper: '.teachermode_switch',
+            popup: {
+                content: '#walkthrough-3',
+                type: 'tooltip',
+                position: 'right'
+            }   
+        }]
+    });
+          $('body').pagewalkthrough('show');
+    });
 
   //initialize classroom and students per group
   $("body").removeClass();
