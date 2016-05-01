@@ -184,47 +184,171 @@ var adjustNameForDuplicates = function(studentName, classroom){
   return studentName;
 }
 
+//parse student list from textbox
 var parseStudentList = function(classroom) {
-  var student_list = $("#add_student_box").val();
-  student_list = student_list.replace(/\n/g, '1)(*3hf:Z');
-  student_list = student_list.split('1)(*3hf:Z');
-  var final_data = [];
+/**
+text format:
+- no tab characters
+- names must be separated by commas
 
-  for (var i = 0; i < student_list.length; i++) {
-    var nextStudentID = classroom.getNextStudentID();
-    var row_list = student_list[i].replace(/\t/g, '1)(*3hf:Z');
-    row_list = row_list.split('1)(*3hf:Z');
-    if (row_list.length == 1) {
-      row_list[0] = row_list[0].replace(/;/g, ',');
-      var name_list = row_list[0].split(",");
-      for (var k = 0; k< name_list.length; k++){
-        var studentName = name_list[k].trim();
-          if (studentName.length > 0){
-            studentName = adjustNameForDuplicates(studentName, classroom);
-            classroom.add(new Student(studentName, nextStudentID));
-            nextStudentID = classroom.getNextStudentID();
-          }
+spreadsheet format:
+- no headers! 
+- case sensitive
+- names in column 1, prefer in column 2, avoid in column 3; 
+- users can paste in column 1, column 1+2, column 1+2+3 but not 1+3
+- duplicate names will be parsed and incremented (David, David 2, David 3)
+- if a students name is duplicated, and that name is in preferences, then parser will interpret first instance
+- all names listed in the preferences from a spreadsheet must be included in the student column of that spreadsheet
+- if a name in the preferences is not in the student column, then it is dropped
+- preferences are validated (student cannot prefer self, student cannot simultaneously prefer/avoid self); 
+- incoherent preferences are dropped
+- if user adds David by textbox first, then adds spreadsheet with David under preferences then David is dropped
+*/
+
+    var rawText = $("#add_student_box").val();
+    rawText = rawText.replace(/\n/g, '1)(*3hf:Z'); //remove newlines
+    rawText = rawText.replace(/\r\n/g, '1)(*3hf:Z'); //remove windows newlines
+    rawText = rawText.split('1)(*3hf:Z'); //magic
+    rawText = _.compact(rawText); //remove blank spaces
+    // console.log('raw_text before parsing', rawText);
+
+    //determine if text is spreadsheet or not
+    var rawTextHasSingleRow = (rawText.length == 1);
+    var rawTextContainsTabs = (rawText[0].search(/\t/g) > 0);
+    var rawTextHasMultipleNamesInNameColumn = (rawText[0].split(",").length > 1);
+    var parseText = rawTextHasMultipleNamesInNameColumn || (rawTextHasSingleRow && !rawTextContainsTabs);
+    var parseSpreadsheet = !parseText;
+
+    //parse normal text
+    if (parseText) {
+        console.log('PARSING TEXT FROM INPUT BOX AS TEXT');
+        for (var i = 0; i < rawText.length; i++) {
+            var row = rawText[i].replace(/\t/g, '1)(*3hf:Z');
+            row = row.split('1)(*3hf:Z');
+            if (row.length > 0) {
+                raw_name_column = row[0].split(",");
+                for (var k = 0; k < raw_name_column.length; k++) {
+                    var name = raw_name_column[k].trim();
+                    if (name.length > 0) {
+                        var studentID = classroom.getNextStudentID();
+                        var studentName = adjustNameForDuplicates(name, classroom);
+                        classroom.add(new Student(studentName, studentID));
+                    }
+                }
+            }
         }
-    } else if (row_list.length == 2) {
-      classroom.add(new Student(row_list[0], nextStudentID));
-      //TODO: why is this commented out??? copy paste parsing doesn't work without it
-      // final_data.push({
-      // name: row_list[0],
-      // prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})});
-      final_data.push({
-        name: row_list[0],
-         prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})});
-    } else {
-        classroom.add(new Student(row_list[0], nextStudentID));
-        // name: row_list[0], prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""}), avoid:row_list[2].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})});
-        final_data.push({
-        name: row_list[0],
-         prefer:row_list[1].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""}),
-         avoid:row_list[2].split(",").map(function (str) {return str.trim();}).filter(function(str) {return str != ""})});
-      }
     }
-  return classroom;
+
+    //parse spreadsheet text
+    if (parseSpreadsheet) {
+        console.log('PARSING TEXT FROM INPUT BOX AS SPREADSHEET');
+        
+        //parse names, prefer preferences and avoid preferences into separate lists
+        var parsedNames = [];
+        var parsedPrefer = [];
+        var parsedAvoid = [];
+
+        for (var i = 0; i < rawText.length; i++) {
+            var row = rawText[i].replace(/\t/g, '1)(*3hf:Z');
+            row = row.split('1)(*3hf:Z');
+            if (row.length > 0) {
+                
+                name_cell = row[0].split(",");
+                name_cell = _.head(_.compact(_.map(name_cell, _.trim)));
+                var prefer_cell = [];
+                var avoid_cell = [];
+                if (row.length > 1) {
+                    prefer_cell = row[1].split(",");
+                }
+                if (row.length > 2){
+                    avoid_cell = row[2].split(",");
+                }
+                prefer_cell = _.compact(_.map(prefer_cell,_.trim));
+                avoid_cell = _.compact(_.map(avoid_cell,_.trim));
+                
+                parsedNames.push(name_cell);
+                parsedPrefer.push(prefer_cell);
+                parsedAvoid.push(avoid_cell);
+            }
+        }
+
+        // console.log('parsedNames', parsedNames)
+        // console.log('parsedPrefer', parsedPrefer)
+        // console.log('parsedAvoid', parsedAvoid)
+
+        //add students one by one to the classroom object and create a name to ID dictionary
+        var nameToID = {};
+        var preferenceArray = [];
+        for (var i = 0; i < parsedNames.length; i++) {
+            var studentID = classroom.getNextStudentID();
+            var studentName = adjustNameForDuplicates(parsedNames[i], classroom);
+            var successfulAddition = classroom.add(new Student(studentName, studentID));
+            if (successfulAddition) {
+                nameToID[parsedNames[i]] = studentID;
+                preferenceArray.push({
+                    id: studentID,
+                    name: parsedNames[i],
+                    prefer: parsedPrefer[i],
+                    avoid: parsedAvoid[i],
+                });
+            }
+        }
+
+        //translate preferences from names to IDs and validate preferences
+        for (var i = 0; i < preferenceArray.length; i++) {
+            var studentID = preferenceArray[i]['id'];
+            var studentName = preferenceArray[i]['name'];
+            var preferNames = preferenceArray[i]['prefer'];
+            var avoidNames = preferenceArray[i]['avoid'];
+            // console.log('id', studentID, 'name', studentName, 'preferNames', preferNames, 'avoidNames', avoidNames);
+
+            //translate names to ids
+            var preferIDs = [];
+            var avoidIDs = [];
+            for (var j = 0; j < preferNames.length; j++) {
+                if (preferNames[j] in nameToID) {
+                    preferIDs.push(nameToID[preferNames[j]]);
+                }
+            }
+            for (var j = 0; j < avoidNames.length; j++) {
+                if (avoidNames[j] in nameToID) {
+                    avoidIDs.push(nameToID[avoidNames[j]]);
+                }
+            }
+
+            //validate preferences (cannot contain own ID; must be unique; no conflicts)
+            preferIDs = _.difference(preferIDs, [studentID])
+            avoidIDs = _.difference(avoidIDs, [studentID])
+            var conflicts = _.intersection(preferIDs, avoidIDs);
+            if (conflicts.length > 0) {
+                console.log('user inputted conflicting preferences!')
+                preferIDs = _.difference(preferIDs, conflicts);
+                avoidIDs = _.difference(avoidIDs, conflicts);
+            }
+            preferenceArray[i]['prefer'] = preferIDs;
+            preferenceArray[i]['avoid'] = avoidIDs;
+            // console.log('id', studentID, 'name', studentName, 'preferIDs', preferIDs, 'avoidIDs', avoidIDs);
+        }
+
+        //add preferences to each student
+        for (var i = 0; i < preferenceArray.length; i++) {
+            var studentID = preferenceArray[i]['id'];
+            var preferIDs = preferenceArray[i]['prefer'];
+            var avoidIDs = preferenceArray[i]['avoid'];
+            student = classroom.getStudentFromID(studentID);
+            // console.log('before', student.toString());
+            for (var j = 0; j < preferIDs.length; j++) {
+                student.addToPreferences('prefer', preferIDs[j]);
+            }
+            for (var j = 0; j < avoidIDs.length; j++) {
+                student.addToPreferences('avoid', avoidIDs[j]);
+            }
+            // console.log('after', student.toString());
+        }
+    }
+    return classroom;
 }
+
 
 
 var updateGroupemButton = function(classroom){
