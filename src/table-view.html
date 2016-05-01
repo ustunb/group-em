@@ -44,6 +44,9 @@
       </p>
     </li>
     <li>
+      <a id = "new_class">New Class</a>
+    </li>
+    <li>
       <a id = "help_button">Help</a>
     </li>
 </ul>
@@ -726,7 +729,6 @@ $(document).ready(function() {
   // Content editable behavior for pair_with / dont_pair_with cells
   $("table").on('click', 'td.pair_with,td.dont_pair_with', function (e) {
     if (!$(this).is('td')) { return; }
-    console.log('whee');
     startEditing(this);
   });
 
@@ -922,6 +924,12 @@ $(document).ready(function() {
     } else {
       alert("should never get here since groupem button should be disabled if size < MIN_STUDENTS_PER_GROUP")
     }
+  });
+
+  $("#new_class").click(function() {
+    classroom = new Classlist();
+    localStorage.removeItem('classroom');
+    updatePage(classroom);
   });
 
 
