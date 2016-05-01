@@ -42,6 +42,13 @@ body, html {
 
 }
 
+#help_button:before {
+  font-family: FontAwesome;
+  font-size: 18px;
+  content: '\f29c   ';
+  text-align: left;
+
+}
 .emptyclassroom #button_row,
 .emptyclassroom .heading_row,
 .emptyclassroom #link_to_group_view {
