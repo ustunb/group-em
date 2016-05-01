@@ -87,6 +87,13 @@ table th.student_name {
     /*visibility:hidden;*/
 }
 
+table td.candrop.pair_with {
+    background: rgba(106, 213, 162, 0.2);
+}
+table td.candrop.dont_pair_with {
+    background: rgba(243, 147, 84, 0.2);
+}
+
 table th.pair_with {
     width: 25%;
     color: #6AD5A2;

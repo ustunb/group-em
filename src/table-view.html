@@ -633,6 +633,36 @@ $(document).ready(function() {
     $('#add_student_box').trigger(e);
   }), 0});
 
+  function lightDroppable() {
+    // Get the studentID of the tile being dragged, and determine
+    // if it is a blue tile or not because the rules are slightly different.
+    var blueTile = false;
+    var studentID = $(this).data('studentID');
+    if (!studentID) {
+       studentID = $(this).parent().data('studentID');
+       blueTile = true;
+    }
+    // We should not be allowed to drag into a cell that already contains
+    // a tile with our studentID, nor into the row with the blue tile for
+    // our studentID.
+    var omitRows = $('p').filter(function() {
+      return $(this).data('studentID') == studentID;
+    }).closest('tr').add($('td').filter(function() {
+      return $(this).data('studentID') == studentID;
+    }));
+    // If we are dragging a non-blue tile, we can drag within our row.
+    if (!blueTile) {
+      omitRows = omitRows.not($(this).closest('tr'));
+    }
+    $('.pair_with,.dont_pair_with').filter(function() {
+      return $(this).closest(omitRows).length == 0;
+    }).toggleClass('candrop', true);
+  }
+
+  function clearDroppable() {
+    $('.candrop').toggleClass('candrop', false);
+  }
+
   //drag and drop behavior for name tiles
   $("table").on('mouseenter',".tile_name", function() {
     $(this).css( 'cursor', 'grabbing' )
@@ -641,6 +671,8 @@ $(document).ready(function() {
     var todrag = $(this);
     var tileStudentID = todrag.parent().data("studentID")
     todrag.draggable({
+        start: lightDroppable,
+        stop: clearDroppable,
         helper: 'clone',
         cursorAt: { top: 8, left: 20 }, /* To deal with small tile */
         revert: true,
@@ -649,8 +681,7 @@ $(document).ready(function() {
         opacity: 0.75,
     });
 
-    //todo add for loop + hoverClass to highlight areas that are droppable
-  $(".pair_with").droppable({
+    $(".pair_with").droppable({
       accept: "p",
       drop: function(event, ui) {
         var targetStudentID = $(event.target).data("studentID");
@@ -661,11 +692,11 @@ $(document).ready(function() {
                 updatePage(classroom);
                 updateLocalStorage(classroom); 
               } 
-        } 
-      }
-   });
+           }
+        }
+    });
 
-  $(".dont_pair_with").droppable({
+    $(".dont_pair_with").droppable({
       accept: "p",
       drop: function(event,ui) {
         var targetStudentID = $(this).data("studentID");
@@ -679,7 +710,7 @@ $(document).ready(function() {
           
         }
       }
-  });
+    });
   });
 
   //drag and drop behavior for pair_with tiles
@@ -688,7 +719,12 @@ $(document).ready(function() {
     var todrag = $(this);
     var tileStudentID = todrag.data("studentID");
     var sourceStudentID = todrag.parent().data("studentID");
-    todrag.draggable({revert: true, cancel: 'span'});
+    todrag.draggable({
+        start: lightDroppable,
+        stop: clearDroppable,
+        revert: true,
+        cancel: 'span'
+   });
 
   $(".pair_with").droppable({
       accept: "p",
@@ -730,7 +766,12 @@ $(document).ready(function() {
     var tileStudentID = todrag.data("studentID");
     var sourceStudentID = todrag.parent().data("studentID");
 
-    todrag.draggable({revert: true, cancel: 'span'});
+    todrag.draggable({
+        start: lightDroppable,
+        stop: clearDroppable,
+        revert: true,
+        cancel: 'span'
+    });
 
     $(".pair_with").droppable({
       accept: "p",
