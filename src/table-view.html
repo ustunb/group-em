@@ -6,8 +6,7 @@
 <script src="../external_js/jquery-1.12.2.js"></script>
 <script src="../external_js/jquery-ui.js"></script>
 <script src="../external_js/jquery.tooltipster.min.js"></script>
-<script src="../external_js/jquery.pagewalkthrough.js"></script>
-<script src="../external_js/jquery.pagewalkthrough.min.js"></script>
+<script src="jquery.pagewalkthrough.js"></script>
 
 <link href="../src/toggle_button.css" rel="stylesheet">
 <link href='https://fonts.googleapis.com/css?family=Raleway:400,300' rel='stylesheet' type='text/css'>
@@ -43,6 +42,9 @@
             <label for="cmn-toggle-4"></label>
         </span>
       </p>
+    </li>
+    <li>
+      <a id = "help_button">Help</a>
     </li>
 </ul>
 </div>
@@ -97,7 +99,7 @@
 
       <div id="walkthrough-2">
         <p> &nbsp; </p>
-         <p> &nbsp; </p>
+        <p> &nbsp; </p>
         <p style="color: black">Type the student names here </p>
         <p style="color: black"> You can also paste the names from a spreadsheet: </p>
         <img src="Student_table.png" width="300">
@@ -663,6 +665,71 @@ $(document).ready(function() {
     $('.candrop').toggleClass('candrop', false);
   }
 
+  var ENABLE_INLINE_ENTRY = true;
+
+  // The code below supports inline entry of pair-with and dont-pair-with
+  // preferences.  It is not done yet, but it won't take much work to
+  // complete.  All that needs to be implemented is the "addTypedPreference"
+  // function at the bbottom of this section - that currently just logs
+  // a message saying which student preference was added.
+  if (ENABLE_INLINE_ENTRY) {
+    function selectAll(editable) {
+      var sel, range;
+      if (window.getSelection && document.createRange) {
+        range = document.createRange();
+        range.selectNodeContents(editable);
+        sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } else if (document.body.createTextRange) {
+        range = document.body.createTextRange();
+        range.moveToElementText(editable);
+        range.select();
+      }
+    }
+    var editableSpan = null;
+    function startEditing(cell) {
+      if (editableSpan) finishEditing();
+      editableSpan = $('<div class=directentry contentEditable=true>')
+          .appendTo(cell);
+      editableSpan.on('keydown', function(e) {
+        if (e.which == 13 || // enter
+            e.which == 9 || // tab
+            e.which == 188 || // comma
+            e.which == 186) { // semicolon
+          finishEditing();
+          setTimeout(function() {
+            startEditing(cell);
+          }, 0);
+        }
+      });
+      editableSpan.on('blur', finishEditing);
+      selectAll(editableSpan[0]);
+      editableSpan.focus();
+    }
+
+    function finishEditing() {
+      addTypedPreference(
+          editableSpan.closest('tr').find('td').eq(0).data('studentID'),
+          editableSpan.closest('tr').find('td').eq(0).text(),
+          editableSpan.closest('td').hasClass('pair_with') ? 'prefer' : 'avoid',
+          editableSpan.text().trim());
+      editableSpan.remove();
+      editableSpan = null;
+    }
+
+    function addTypedPreference(studentID, studentName, pref, typedName) {
+      console.log('typed pref:', studentID, studentName, pref, typedName);
+    }
+  }
+
+  // Content editable behavior for pair_with / dont_pair_with cells
+  $("table").on('click', 'td.pair_with,td.dont_pair_with', function (e) {
+    if (!$(this).is('td')) { return; }
+    console.log('whee');
+    startEditing(this);
+  });
+
   //drag and drop behavior for name tiles
   $("table").on('mouseenter',".tile_name", function() {
     $(this).css( 'cursor', 'grabbing' )
@@ -856,6 +923,36 @@ $(document).ready(function() {
       alert("should never get here since groupem button should be disabled if size < MIN_STUDENTS_PER_GROUP")
     }
   });
+
+
+  $("#help_button").click(function()     {
+
+        $('body').pagewalkthrough({
+        name: 'introduction',
+        steps: [/*{
+           popup: {
+               content: '#walkthrough-1',
+               type: 'modal'
+           }
+        }, */
+        {
+            wrapper: '#add_student_box',
+            popup: {
+                content: '#walkthrough-2',
+                type: 'tooltip',
+                position: 'above'
+            }
+        }, {
+            wrapper: '.teachermode_switch',
+            popup: {
+                content: '#walkthrough-3',
+                type: 'tooltip',
+                position: 'right'
+            }   
+        }]
+    });
+          $('body').pagewalkthrough('show');
+    });
 
   //initialize classroom and students per group
   $("body").removeClass();
