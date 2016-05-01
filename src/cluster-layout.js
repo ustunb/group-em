@@ -10,6 +10,9 @@ var JOIN_DISTANCE = 88;    // Distance for joining together
 var state = {};
 
 function clear() {
+  if (state.reveal_timer) {
+    endReveal();
+  }
   if (state.force) {
     state.force.stop();
   }
@@ -27,6 +30,7 @@ function clear() {
     rebuilding: false,
     svg: d3.select(svg),
     force: d3.layout.force().charge(-320).linkDistance(70).gravity(0),
+    margins: null,
     clustersel: null,
     zoomsel: null,
     linksel: null,
@@ -49,7 +53,7 @@ function clear() {
   state.zoom = d3.behavior.zoom().scaleExtent([0.3,7.0]);
   state.zoom.on('zoom', function() {
     state.zoomsel.attr("transform",
-        "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+       "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
   });
   state.svg.call(state.zoom).on('mousedown.zoom', null);
   state.svg.on('mousedown.clustersel', function() { updateclustersel(null); });
@@ -64,6 +68,11 @@ function concealClusters() {
   rebuild();
 }
 layout.concealClusters = concealClusters;
+
+function setMargins(margins) {
+  state.margins = _.clone(margins);
+}
+layout.setMargins = setMargins;
 
 function startReveal(delay) {
   delay = delay || 1000;
@@ -323,6 +332,12 @@ function tick() {
       var scale = node.cluster && node.cluster.nodes.length || 1;
       node.x += (x - node.x) * k * boost;
       node.y += (y - node.y) * k * boost;
+      if (state.margins) {
+        node.x = Math.max(state.margins.left + CIRCLE_RADIUS,
+            Math.min(size[0] - state.margins.right - CIRCLE_RADIUS, node.x));
+        node.y = Math.max(state.margins.top + CIRCLE_RADIUS,
+            Math.min(size[1] - state.margins.bottom - CIRCLE_RADIUS, node.y));
+      }
     }
   }
   state.linksel.attr('x1', function(d) { return d.source.x; });

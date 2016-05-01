@@ -63,6 +63,8 @@ var TIME_TO_REVEAL_EACH_GROUP = 600;
 
 var classroom = new Classlist();
 var layout = new ClusterLayout('svg');
+
+
 $(layout).on('clustersel', function(e) {
   console.log(e);
 });
@@ -85,6 +87,9 @@ if (storedStudentsPerGroup != null){
 
 function updateLayout(layout, students, assignments){  
   layout.clear();
+  // Enforce a bounding box.
+  layout.setMargins({left: 230, top: 0, bottom: 120, right: 0});
+
   for (var i = 0; i < students.length; i++) {
     layout.addNode(students[i].id(), students[i].name());
   }
