@@ -231,6 +231,12 @@ table td p.ui-draggable-dragging {
     cursor: grabbing;
 }
 
+.directentry {
+    display: inline-block;
+    padding: 0px;
+    margin: 2px 2px 5px;
+    vertical-align: bottom;
+}
 
 /* delete element in tiles */
 table td p span:hover {
