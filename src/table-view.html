@@ -710,12 +710,15 @@ $(document).ready(function() {
             e.which == 186) { // semicolon
           // Use some dead reckoning to recover cursor position after
           // re-rendering the whole table.
-          var rememberedLocation = $('td').index(cell);
+          var editable_cells = 'td.pair_with,td.dont_pair_with';
+          var rememberedLocation = $(editable_cells).index(cell);
+          // Handle tab order: exiting with tab brings cursor to next/prev cell.
+          if (e.which == 9) { rememberedLocation += e.shiftKey ? -1 : 1; }
           // Read what was typed and commit the transaction.
           finishEditing();
           // Try bringing cursor back to the same cell.
           setTimeout(function() {
-            startEditing($('td').eq(rememberedLocation));
+            startEditing($(editable_cells).eq(rememberedLocation));
           }, 0);
         }
       });
