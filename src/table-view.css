@@ -42,6 +42,15 @@ body, html {
 
 }
 
+#cssmenu .invisible {
+    display: none;
+}
+
+#cssmenu #undo {
+    color: white;
+    font-size: 13px;
+}
+
 #help_button:before {
   font-family: FontAwesome;
   font-size: 18px;

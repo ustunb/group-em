@@ -47,6 +47,9 @@
       <a id = "new_class">New Class</a>
     </li>
     <li>
+      <div class = "invisible" id = "undo_div"><a id = "undo" class="fa fa-undo">   Undo</a></div>
+    </li>
+    <li>
       <a id = "help_button">Help</a>
     </li>
 </ul>
@@ -58,6 +61,9 @@
 <thead>
 <tr>
 <th id="classname_row" colspan="4">
+<!-- positioned at top right
+<div class = "invisible" id = "undo_div"><a id = "undo" class="fa fa-undo">   Undo</a></div>
+-->
 <input type="text" id="classname_input"></input>
 </th>
 </tr>
@@ -992,8 +998,23 @@ $(document).ready(function() {
   });
 
   $("#new_class").click(function() {
+    if (classroom.getSize() > 0) {
+      savedclass = localStorage.getItem('classroom');
+      //savedclass = classroom.fromJSON(savedclass);
+      classroom = new Classlist();
+      localStorage.removeItem('classroom');
+      $("#undo_div").removeClass();
+      updatePage(classroom);
+    }
+  });
+
+  $("#undo").click(function() {
     classroom = new Classlist();
-    localStorage.removeItem('classroom');
+    classroom.fromJSON(savedclass);
+    console.log(classroom);
+    //updateLocalStorage(classroom);
+    localStorage.setItem('classroom', classroom);
+    $("#undo_div").addClass('invisible');
     updatePage(classroom);
   });
 
