@@ -102,15 +102,13 @@ table th.student_name {
 
 table td.candrop.pair_with, table td.candrop.dont_pair_with {
     background: none;
-    opacity: 0.999;
-    z-index: 1;
 }
 
 table td.candrop.pair_with.highlight {
-    box-shadow: 0 0 10px rgb(106, 213, 162);
+    box-shadow: inset 0 0 10px rgb(106, 213, 162);
 }
 table td.candrop.dont_pair_with.highlight {
-    box-shadow: 0 0 10px rgb(243, 147, 84);
+    box-shadow: inset 0 0 10px rgb(243, 147, 84);
 }
 
 table th.pair_with {
