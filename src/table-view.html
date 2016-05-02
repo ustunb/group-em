@@ -35,10 +35,10 @@
    <li class='last'><a id='link_to_group_view' href='group-view.html'></a></li>
    <li class='teachermode_switch'>
       <p>
-        <span id='teachermode_text'>Preferences</span>
+        <span id='teachermode_text'>preferences</span>
 
         <span class="switch">
-            <input id="cmn-toggle-4" class="cmn-toggle cmn-toggle-round-flat" type="checkbox">
+            <input id="cmn-toggle-4" class="cmn-toggle cmn-toggle-round-flat init" type="checkbox">
             <label for="cmn-toggle-4"></label>
         </span>
       </p>
@@ -114,7 +114,7 @@
         <img src="Student_table.png" width="300">
         </div>
       <div id="walkthrough-3">
-        Turn on Preferences to indicate which students would like to work together and which would not. 
+        Turn on preferences to indicate which students would like to work together and which would not. 
       </div>
     </div>
 
@@ -758,6 +758,7 @@ $(document).ready(function() {
 
     $(".pair_with").droppable({
       accept: "p",
+      hoverClass: "highlight",
       drop: function(event, ui) {
         var targetStudentID = $(event.target).data("studentID");
         if (targetStudentID != tileStudentID){
@@ -773,6 +774,7 @@ $(document).ready(function() {
 
     $(".dont_pair_with").droppable({
       accept: "p",
+      hoverClass: "highlight",
       drop: function(event,ui) {
         var targetStudentID = $(this).data("studentID");
         if (targetStudentID != tileStudentID){
@@ -803,6 +805,7 @@ $(document).ready(function() {
 
   $(".pair_with").droppable({
       accept: "p",
+      hoverClass: "highlight",
       drop: function(event, ui) {
         var targetStudentID = $(this).data("studentID");
         if ((targetStudentID != tileStudentID) && (targetStudentID != sourceStudentID)){
@@ -820,6 +823,7 @@ $(document).ready(function() {
 
     $(".dont_pair_with").droppable({
       accept: "p",
+      hoverClass: "highlight",
       drop: function(event,ui) {
         var targetStudentID = $(this).data("studentID");
         if (targetStudentID != tileStudentID) {
@@ -850,6 +854,7 @@ $(document).ready(function() {
 
     $(".pair_with").droppable({
       accept: "p",
+      hoverClass: "highlight",
       drop: function(event, ui) {
         var targetStudentID = $(this).data("studentID");
         if (targetStudentID != tileStudentID){
@@ -865,6 +870,7 @@ $(document).ready(function() {
 
     $(".dont_pair_with").droppable({
       accept: "p",
+      hoverClass: "highlight",
       drop: function(event,ui) {
         var targetStudentID = $(this).data("studentID");
         if ((targetStudentID != tileStudentID) && (targetStudentID != sourceStudentID)){
@@ -884,7 +890,6 @@ $(document).ready(function() {
 
   $('input:checkbox').change(
     function(){
-
         $("body").toggleClass('hideprefs', !$(this).is(':checked'));
         var savedstate = "hide";
         if ($(this).is(':checked')) {
@@ -1009,14 +1014,20 @@ $(document).ready(function() {
   var hide = localStorage.getItem('hideprefs');
   console.log(hide);
   if (hide == "hide") {
-    console.log("here");
-    $('input:checkbox').attr('checked', false);
-    $('input:checkbox').trigger('change');
+    $('input:checkbox')
+            .addClass('init').prop('checked', false)
+            .trigger('change');
   }
   else {
-    $('input:checkbox').attr('checked', true);
-    $('input:checkbox').trigger('change');
+    $('input:checkbox')
+            .addClass('init').prop('checked', true)
+            .trigger('change');
   }
+  setTimeout(function() {
+    // Enable transitions after initialization by removing the init class.
+    // I do not know why this requires a delay.
+    $('input:checkbox').removeClass('init');
+  }, 0);
 
 
   if (storedClassroom == null && ADD_INITIAL_LIST) {
