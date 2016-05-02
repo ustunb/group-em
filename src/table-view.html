@@ -38,7 +38,7 @@
         <span id='teachermode_text'>preferences</span>
 
         <span class="switch">
-            <input id="cmn-toggle-4" class="cmn-toggle cmn-toggle-round-flat" type="checkbox">
+            <input id="cmn-toggle-4" class="cmn-toggle cmn-toggle-round-flat init" type="checkbox">
             <label for="cmn-toggle-4"></label>
         </span>
       </p>
@@ -884,7 +884,6 @@ $(document).ready(function() {
 
   $('input:checkbox').change(
     function(){
-
         $("body").toggleClass('hideprefs', !$(this).is(':checked'));
         var savedstate = "hide";
         if ($(this).is(':checked')) {
@@ -975,14 +974,20 @@ $(document).ready(function() {
   var hide = localStorage.getItem('hideprefs');
   console.log(hide);
   if (hide == "hide") {
-    console.log("here");
-    $('input:checkbox').attr('checked', false);
-    $('input:checkbox').trigger('change');
+    $('input:checkbox')
+            .addClass('init').prop('checked', false)
+            .trigger('change');
   }
   else {
-    $('input:checkbox').attr('checked', true);
-    $('input:checkbox').trigger('change');
+    $('input:checkbox')
+            .addClass('init').prop('checked', true)
+            .trigger('change');
   }
+  setTimeout(function() {
+    // Enable transitions after initialization by removing the init class.
+    // I do not know why this requires a delay.
+    $('input:checkbox').removeClass('init');
+  }, 0);
 
 
   if (storedClassroom == null && ADD_INITIAL_LIST) {

@@ -180,6 +180,20 @@ input.cmn-toggle-round-flat:checked + label:after {
   background-color: #8ce196;
 }
 
+/* Addition of init class to avoid transition during initialization */
+input.cmn-toggle-round-flat.init + label,
+input.cmn-toggle-round-flat.init + label:after,
+input.cmn-toggle-round-flat.init + label:before {
+  -webkit-transition: background 0s;
+  -moz-transition: background 0s;
+  -o-transition: background 0s;
+  transition: background 0s;
+  -webkit-transition: margin 0s;
+  -moz-transition: margin 0s;
+  -o-transition: margin 0s;
+  transition: margin 0s;
+}
+
 /* ============================================================
   SWITCH 3 - YES NO
 ============================================================ */
