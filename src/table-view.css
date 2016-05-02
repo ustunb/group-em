@@ -273,6 +273,7 @@ table td p span:hover {
     vertical-align: middle;
     text-align: center;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 .largeclassroom .tile_name:nth-of-type(1),
