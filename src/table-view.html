@@ -991,7 +991,7 @@ $(document).ready(function() {
             popup: {
                 content: '#walkthrough-4',
                 type: 'tooltip',
-                position: 'bottom'
+                position: classroom.getSize() < 3 ? 'bottom' : 'top'
             }
         }, {
             wrapper: '.teachermode_switch',
