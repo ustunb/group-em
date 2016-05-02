@@ -683,18 +683,20 @@ $(document).ready(function() {
   // a message saying which student preference was added.
   if (ENABLE_INLINE_ENTRY) {
     function selectAll(editable) {
-      var sel, range;
-      if (window.getSelection && document.createRange) {
-        range = document.createRange();
-        range.selectNodeContents(editable);
-        sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-      } else if (document.body.createTextRange) {
-        range = document.body.createTextRange();
-        range.moveToElementText(editable);
-        range.select();
-      }
+      try {
+        var sel, range;
+        if (window.getSelection && document.createRange) {
+          range = document.createRange();
+          range.selectNodeContents(editable);
+          sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        } else if (document.body.createTextRange) {
+          range = document.body.createTextRange();
+          range.moveToElementText(editable);
+          range.select();
+        }
+      } catch (e) { }
     }
     var editableSpan = null;
     function startEditing(cell) {
@@ -706,9 +708,14 @@ $(document).ready(function() {
             e.which == 9 || // tab
             e.which == 188 || // comma
             e.which == 186) { // semicolon
+          // Use some dead reckoning to recover cursor position after
+          // re-rendering the whole table.
+          var rememberedLocation = $('td').index(cell);
+          // Read what was typed and commit the transaction.
           finishEditing();
+          // Try bringing cursor back to the same cell.
           setTimeout(function() {
-            startEditing(cell);
+            startEditing($('td').eq(rememberedLocation));
           }, 0);
         }
       });
@@ -727,8 +734,52 @@ $(document).ready(function() {
       editableSpan = null;
     }
 
+    // Does a rough match for the student name, preferring an exact match,
+    // but allowing a case-insensitive prefix match.
+    function findClosestStudentMatch(typedName) {
+      var students = classroom.getStudents();
+      var bestMatch = null;
+      var bestScore = 0;
+      for (var j = 0; j < students.length; ++j) {
+        var student = students[j];
+        var name = student.name();
+        if (name == typedName) {
+          return student;
+        }
+        var matchedCase = true;
+        for (var k = 0; k < name.length && k < typedName.length; ++k) {
+          if (name[k] != typedName[k]) {
+            if (name[k].toLowerCase() != typedName[k].toLowerCase()) {
+              break;
+            }
+            matchedCase = false;
+          }
+        }
+        var score = k * 2 - (matchedCase ? 0 : 1);
+        if (score > bestScore) {
+          console.log('score is', score, 'for', student.name());
+          bestScore = score;
+          bestMatch = student;
+        }
+      }
+      return bestMatch;
+    }
+
     function addTypedPreference(studentID, studentName, pref, typedName) {
-      console.log('typed pref:', studentID, studentName, pref, typedName);
+      // Figure out which student name was (approximately) typed.
+      var typedStudent = findClosestStudentMatch(typedName);
+      if (typedStudent == null) {
+        return;
+      }
+      // Figure out which row we were typing into.
+      var prefStudent = classroom.getStudentFromID(studentID);
+      if (prefStudent == null || prefStudent == typedStudent) {
+        return;
+      }
+      // Modify the actual preference.
+      prefStudent.addToPreferences(pref, typedStudent.id());
+      updatePage(classroom);
+      updateLocalStorage(classroom);
     }
   }
 
