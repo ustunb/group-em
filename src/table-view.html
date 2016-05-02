@@ -107,6 +107,12 @@
         <p style="color: black"> You can also paste the names from a spreadsheet: </p>
         <img src="Student_table.png" width="300">
         </div>
+
+        <div id="walkthrough-4">
+        <p>Type the student names here </p>
+        <p> You can also paste the names from a spreadsheet: </p>
+        <img src="Student_table.png" width="300">
+        </div>
       <div id="walkthrough-3">
         Turn on Preferences to indicate which students would like to work together and which would not. 
       </div>
@@ -935,6 +941,9 @@ $(document).ready(function() {
 
   $("#help_button").click(function()     {
 
+    if(classroom.getSize()==0)
+    {
+      console.log("shruti");
         $('body').pagewalkthrough({
         name: 'introduction',
         steps: [/*{
@@ -960,6 +969,37 @@ $(document).ready(function() {
         }]
     });
           $('body').pagewalkthrough('show');
+    }
+
+    else{
+
+        $('body').pagewalkthrough({
+        name: 'introduction',
+        steps: [/*{
+           popup: {
+               content: '#walkthrough-1',
+               type: 'modal'
+           }
+        }, */
+        {
+            wrapper: '#add_student_box',
+            popup: {
+                content: '#walkthrough-4',
+                type: 'tooltip',
+                position: 'bottom'
+            }
+        }, {
+            wrapper: '.teachermode_switch',
+            popup: {
+                content: '#walkthrough-3',
+                type: 'tooltip',
+                position: 'right'
+            }   
+        }]
+    });
+          $('body').pagewalkthrough('show');
+    }
+
     });
 
   //initialize classroom and students per group
