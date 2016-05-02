@@ -100,17 +100,17 @@ table th.student_name {
     /*visibility:hidden;*/
 }
 
-table td.candrop.pair_with {
-    box-shadow: 0 0 10px rgb(106, 213, 162);
+table td.candrop.pair_with, table td.candrop.dont_pair_with {
+    background: none;
     opacity: 0.999;
     z-index: 1;
-    background: none;
 }
-table td.candrop.dont_pair_with {
+
+table td.candrop.pair_with.highlight {
+    box-shadow: 0 0 10px rgb(106, 213, 162);
+}
+table td.candrop.dont_pair_with.highlight {
     box-shadow: 0 0 10px rgb(243, 147, 84);
-    opacity: 0.999;
-    z-index: 1;
-    background: none;
 }
 
 table th.pair_with {

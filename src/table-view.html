@@ -752,6 +752,7 @@ $(document).ready(function() {
 
     $(".pair_with").droppable({
       accept: "p",
+      hoverClass: "highlight",
       drop: function(event, ui) {
         var targetStudentID = $(event.target).data("studentID");
         if (targetStudentID != tileStudentID){
@@ -767,6 +768,7 @@ $(document).ready(function() {
 
     $(".dont_pair_with").droppable({
       accept: "p",
+      hoverClass: "highlight",
       drop: function(event,ui) {
         var targetStudentID = $(this).data("studentID");
         if (targetStudentID != tileStudentID){
@@ -797,6 +799,7 @@ $(document).ready(function() {
 
   $(".pair_with").droppable({
       accept: "p",
+      hoverClass: "highlight",
       drop: function(event, ui) {
         var targetStudentID = $(this).data("studentID");
         if ((targetStudentID != tileStudentID) && (targetStudentID != sourceStudentID)){
@@ -814,6 +817,7 @@ $(document).ready(function() {
 
     $(".dont_pair_with").droppable({
       accept: "p",
+      hoverClass: "highlight",
       drop: function(event,ui) {
         var targetStudentID = $(this).data("studentID");
         if (targetStudentID != tileStudentID) {
@@ -844,6 +848,7 @@ $(document).ready(function() {
 
     $(".pair_with").droppable({
       accept: "p",
+      hoverClass: "highlight",
       drop: function(event, ui) {
         var targetStudentID = $(this).data("studentID");
         if (targetStudentID != tileStudentID){
@@ -859,6 +864,7 @@ $(document).ready(function() {
 
     $(".dont_pair_with").droppable({
       accept: "p",
+      hoverClass: "highlight",
       drop: function(event,ui) {
         var targetStudentID = $(this).data("studentID");
         if ((targetStudentID != tileStudentID) && (targetStudentID != sourceStudentID)){
