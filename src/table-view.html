@@ -523,8 +523,12 @@ function addRow(student, classroom, scrollLeft, scrollTop) {
     $("#" + tileID).data('studentID', avoidIDs[i]);  
   }
 
-
+  // Make the sidebar as tall as any content.
   $('.sidebar').height(Math.max($(window).height(), $(document).height()));
+  // Do it again in a moment after other things may have changed!
+  setTimeout(function() {
+    $('.sidebar').height(Math.max($(window).height(), $(document).height()));
+  }, 0);
   window.scrollTo(scrollLeft, scrollTop);
 }
 
