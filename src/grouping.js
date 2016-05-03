@@ -163,7 +163,7 @@ function Grouping(classroom) {
         groupString.push('-'.repeat(60));
         for (var i = 0; i < self.pinned_groups.length; i++) {
             var groupID =self.pinned_groups[i].getGroupID()
-            groupString.push('Group ' + groupID  + '\n' + self.pinned_groups[i].toString());
+            groupString.push('Group ' + groupID  + '\n' + self.pinned_groups[i].toString() + '\n');
         }
         return groupString.join('\n');
     }
@@ -180,9 +180,8 @@ function Grouping(classroom) {
     function pinGroup(group_id) {
         var update_flag = false;
         var location = locateGroup(group_id);
-        console.log('location in pinGroup', location)
         if (location.state === 'random' && location.index > -1) {
-            var group = self.random_groups.splice(location.index)[0]
+            var group = self.random_groups.splice(location.index, 1)[0]
             self.pinned_groups.push(group);
             update_flag = true;
             checkRep();
@@ -193,9 +192,10 @@ function Grouping(classroom) {
     //removes a group from the list of pinned groups
     function unpinGroup(group_id) {
         var update_flag = false;
-        var idx = locateGroup(group_id);
+        var location = locateGroup(group_id);
         if (location.state === 'pinned' && location.index > -1) {
-            self.random_groups.push(self.pinned_groups.splice(location.index)[0]);
+            var group = self.pinned_groups.splice(location.index, 1)[0]
+            self.random_groups.push(group);
             update_flag = true;
             checkRep();
         }
