@@ -790,6 +790,8 @@ $(document).ready(function() {
       if (typedStudent == null) {
         if(typedName)
         {
+          $("#error1").text("No student named \"" + typedName +
+              "\" is in the list"); 
           document.getElementById("error1").style.visibility = "visible"; 
         }
         return;
