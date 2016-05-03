@@ -31,8 +31,7 @@ body > div {
 }
 
 svg circle, svg g text {
-  cursor: move;
-  cursor: -webkit-grab;
+  cursor: cell;
 }
 
 svg g.node text {
@@ -52,8 +51,9 @@ svg g.node circle {
 }
 
 svg line.link {
- cursor: move;
+ cursor: grab;
  cursor: -webkit-grab;
+ /*cursor: -webkit-grab;*/
  stroke: #EFEDE7;
  stroke-linecap: round;
 }
