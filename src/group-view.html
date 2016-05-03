@@ -28,6 +28,7 @@
 <ul>
    <li class='last' ><a id='link_to_table_view' href='table-view.html'></a></li>
    <li class='active'><a id='link_to_group_view' href='#'></a></li>
+   <li><a id="pinbutton">Pin</a></li>
 </ul>
 </div>
 </div>
@@ -63,11 +64,6 @@ var TIME_TO_REVEAL_EACH_GROUP = 600;
 
 var classroom = new Classlist();
 var layout = new ClusterLayout('svg');
-
-
-$(layout).on('clustersel', function(e) {
-  console.log(e);
-});
 
 /*load data from localStorage*/
 var storedClassroom = localStorage.getItem('classroom');
@@ -178,6 +174,26 @@ isValidStudentsPerGroup = function(group_size){
   var sizeOK = (group_size >= MIN_STUDENTS_PER_GROUP) && (group_size <= MAX_STUDENTS_PER_GROUP);
   return typeOK && sizeOK
 }
+
+$(layout).on('clustersel', function(e) {
+  console.log(e, e.id, e.nodes);
+  $("#pinbutton").css("visibility","visible");
+
+});
+
+$("#pinbutton").click(function() {
+  var cluster = layout.getSelectedCluster();
+  if (!grouping.isPinnedGroup(cluster.id)) {
+    grouping.pinGroup(cluster.id);
+    
+  }
+})
+
+
+
+
+
+
 </script>
 
 </body>

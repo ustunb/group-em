@@ -41,6 +41,11 @@ body{
   background: #4C5365; 
 }
 
+#pinbutton {
+ visibility: hidden;
+ color: white; 
+}
+
 #logo_container {
   width: 100%;
   height: 100%;
