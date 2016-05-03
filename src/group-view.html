@@ -28,6 +28,7 @@
 <ul>
    <li class='last' ><a id='link_to_table_view' href='table-view.html'></a></li>
    <li class='active'><a id='link_to_group_view' href='#'></a></li>
+   <li><a id="pinbutton">Pin</a></li>
 </ul>
 </div>
 </div>
@@ -272,6 +273,21 @@ $("#increase_group_size").click(function(){
     updateStudentsPerGroup(new_students_per_group);
   }
   $("#increase_group_size").blur();
+})
+
+//pinning listeners
+$(layout).on('clustersel', function(e) {
+  console.log(e, e.id, e.nodes);
+  $("#pinbutton").css("visibility","visible");
+
+});
+
+$("#pinbutton").click(function() {
+  var cluster = layout.getSelectedCluster();
+  if (!grouping.isPinnedGroup(cluster.id)) {
+    grouping.pinGroup(cluster.id);
+    
+  }
 })
 
 </script>
