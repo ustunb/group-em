@@ -127,7 +127,7 @@ function reloadLayout(grouping, layout, storedNodes, storedClusters){
     console.log('storedNode', storedNode);
     if (storedNode != null){
         if ((storedNode.x != null) && (storedNode.y != null)){
-            console.log('loading storedNode');
+            console.log('loading node location from localStorage', storedNode);
             layout.addNode(storedNode.id, storedNode.data, {x: storedNode.x, y: storedNode.y});
         }
     } else {
@@ -138,10 +138,12 @@ function reloadLayout(grouping, layout, storedNodes, storedClusters){
   for (var i = 0; i < assignments.length; i++) {
     var groupIDs = assignments[i].getStudentIDs();
     var storedCluster = _.find(storedClusters, function (o){return !_.isEmpty(_.intersection(o.nodes, groupIDs));});
-    console.log('storedCluster', storedCluster);
     if (storedCluster != null){
         if ((storedCluster.x != null) && (storedCluster.y != null)){
+          console.log('loading cluster location from localStorage', storedNode);
           layout.addCluster(groupIDs, {x: storedCluster.x, y: storedCluster.y});
+        } else {
+          layout.addCluster(groupIDs);    
         }
     } else {
       layout.addCluster(groupIDs);
