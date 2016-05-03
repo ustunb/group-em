@@ -7,28 +7,14 @@
 
 function Classlist(studentArray) {
 
-    // Rep Invariants
-    // size >= 0
-    // students must be distinct
     var self = this;
-
-    //private fields
+    self.name=[];
     self.students = [];
     self.studentIDs = [];
-    self.maxStudentID = 0;
-    self.size = 0;
-    self.value = "0"; //store value in cache
 
     // checks to see if student is in list of students
     function has(studentID) {
         return self.studentIDs.indexOf(studentID) > -1
-    }
-
-    //returns unique identifier for this group (group = [1,2,5] <=> group_ID = "10011")
-    function valueOf() {
-        return _.reduce(self.students, function(bin, s) {
-            return bin + Math.pow(2, s.id() - 1);
-        }, 0).toString(2);
     }
 
     // adds a new student to this list
@@ -39,8 +25,6 @@ function Classlist(studentArray) {
         if (!self.has(studentID)) {
             self.students.push(student);
             self.studentIDs.push(studentID);
-            self.value += Math.pow(2, studentID);
-            self.size++;
             update_flag = true;
             checkRep();
         }
@@ -54,14 +38,8 @@ function Classlist(studentArray) {
             idx = self.studentIDs.indexOf(studentID);
             student = self.students.splice(idx, 1)[0];
             self.studentIDs.splice(idx, 1);
-            self.value -= Math.pow(2, studentID);
-            self.size--;
             for (i = 0; i < self.size; i++) {
-                console.log('before removal')
-                console.log(self.students[i].toString())
                 self.students[i].removeFromPreferences('all', studentID);
-                console.log('after removal')
-                console.log(self.students[i].toString())
             }
             update_flag = true;
             checkRep();
@@ -78,12 +56,30 @@ function Classlist(studentArray) {
         }
     }
 
+    //returns a unique student ID for a new student
     function getNextStudentID() {
-        if (self.size === 0) {
-            return 1;
-        } else {
+        if (self.students.length > 0 ) {
             return _.max(self.studentIDs) + 1;
+        } else {
+            return 1;
         }
+    }
+
+
+    function getSize() {
+        return self.students.length;
+    }
+
+    function getStudents() {
+        return _.clone(self.students);
+    }
+
+    function getStudentIDs() {
+        return _.clone(self.studentIDs);
+    }
+
+    function getStudentNames(){
+        return self.students.map(function (s){return s.name()});
     }
 
     //returns list of groups in current grouping
@@ -94,14 +90,21 @@ function Classlist(studentArray) {
         return classString;
     }
 
+    //returns unique identifier for this group (group = [1,2,5] <=> group_ID = "10011")
+    function valueOf() {
+        return _.reduce(self.students, function(bin, s) {
+            return bin + Math.pow(2, s.id() - 1);
+        }, 0).toString(2);
+    }
+
     //returns true iff this self has the same students as thatGroup    
     function equals(that) {
-        return self.value === that.valueOf()
+        return valueOf() === that.valueOf()
     }
 
     //check representation invariants
     function checkRep() {
-        if (self.size < 0) throw new Error('size of group must be non-negative');
+        return true;
     }
 
     //attach public methods to object
@@ -112,29 +115,17 @@ function Classlist(studentArray) {
     self.getStudentFromID = getStudentFromID;
     self.getNextStudentID = getNextStudentID;
     self.toString = toString;
-    self.valueOf = valueOf();
-
-    self.getSize = function() {
-        return self.size;
-    }
-
-    self.getStudents = function() {
-        return _.clone(self.students);
-    }
-
-    self.getStudentIDs = function() {
-        return _.clone(self.studentIDs);
-    }
-
-    self.getStudentNames = function() {
-        return self.students.map(function (s){return s.name()});
-    }
+    self.valueOf = valueOf;
+    self.getSize = getSize;
+    self.getStudents = getStudents;
+    self.getStudentNames = getStudentNames;
+    self.getStudentIDs = getStudentIDs;
 
     //initialization
     if (studentArray != null) {
         for (var i = 0; i < studentArray.length; i++) {
             if (!self.add(studentArray[i])) {
-                throw new Error('student array should contain distinct students');
+                throw new Error('need to initialize classlist using an array of Students with unique IDs');
             }
         }
         checkRep();
@@ -146,6 +137,7 @@ function Classlist(studentArray) {
         self.students = [];
 
         if (obj && obj.students) {
+            
             //get IDs of all students in JSON object
             var allIDs = []
             for (var i = 0; i < obj.students.length; i++) {
@@ -167,20 +159,18 @@ function Classlist(studentArray) {
             });
 
         }
-        self.maxStudentID = _.max(self.studentIDs);
-        self.size = self.students.length;
-        self.value = valueOf();
         return true
     }
 
     self.toJSON = function() {
-        var jsonClasslist = {};
-        var jsonClasslist = {};
-        jsonClasslist['students'] = [];
-        for (var i = 0; i < self.size; i++) {
-            console.log(self.students[i].toJSON());
+        var jsonClasslist = {
+            students: [],
+        };
+
+        for (var i = 0; i < self.students.length; i++) {
             jsonClasslist['students'].push(self.students[i].toJSON());
         }
+
         return JSON.stringify(jsonClasslist);
     }
 

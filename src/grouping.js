@@ -155,7 +155,6 @@ function Grouping(classroom) {
         for (var i = 0; i < self.random_groups.length; i++) {
             var groupID = self.random_groups[i].getGroupID()
             groupString.push('Group ' + groupID + '\n' + self.random_groups[i].toString() + '\n');
-
         }
         groupString.push('-'.repeat(60));
         groupString.push('Pinned Groups');
