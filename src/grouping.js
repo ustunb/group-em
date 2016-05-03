@@ -179,7 +179,7 @@ function Grouping(classroom) {
         var update_flag = false;
         var location = locateGroup(group_id);
         if (location.state === 'random' && location.index > 0) {
-            self.pinned_groups.push(random_groups.splice(location.index)[0]);
+            self.pinned_groups.push(self.random_groups.splice(location.index)[0]);
             update_flag = true;
             checkRep();
         }
@@ -191,7 +191,7 @@ function Grouping(classroom) {
         var update_flag = false;
         var idx = locateGroup(group_id);
         if (location.state === 'pinned' && location.index > 0) {
-            self.random_groups.push(pinned_groups.splice(location.index)[0]);
+            self.random_groups.push(self.pinned_groups.splice(location.index)[0]);
             update_flag = true;
             checkRep();
         }
@@ -237,8 +237,11 @@ function Grouping(classroom) {
         self.random_groups = groupedStudentArray.map(function(students) {
             return new Group(students);
         })
-        console.log(toString())
         checkRep();
+        return _.concat(self.random_groups, self.pinned_groups);
+    }
+
+    function getAssignments(){
         return _.concat(self.random_groups, self.pinned_groups);
     }
 
@@ -275,6 +278,7 @@ function Grouping(classroom) {
     //public methods
     self.getNumberOfGroups = getNumberOfGroups;
     self.getNumberOfStudents = getNumberOfStudents;
+    self.getAssignments = getAssignments;
     self.getGroups = getGroups;
     self.getStudents = getStudents;
     self.getPinnedGroups = getPinnedGroups;
