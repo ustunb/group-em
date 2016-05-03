@@ -82,7 +82,7 @@ function Grouping(classroom) {
         }
         for (var i = 0; i < self.pinned_groups.length; i++) {
             if (self.pinned_groups[i].has(student_id)) {
-                return pinned_groups[i].getGroupID();
+                return self.pinned_groups[i].getGroupID();
             }
         }
     }
@@ -160,8 +160,8 @@ function Grouping(classroom) {
         groupString.push('Pinned Groups');
         groupString.push('-'.repeat(60));
         for (var i = 0; i < self.pinned_groups.length; i++) {
-            var groupID =
-                groupString.push('Group ' + getGroupID() + '\n' + self.pinned_groups[i].toString());
+            var groupID =self.pinned_groups[i].getGroupID()
+            groupString.push('Group ' + groupID  + '\n' + self.pinned_groups[i].toString());
         }
         return groupString.join('\n');
     }
@@ -214,12 +214,38 @@ function Grouping(classroom) {
             } else {
                 //add student to existing group;
                 var new_group_location = locateGroup(group_id);
+                if (new_group_location.state === 'random'){
+                    self.random_groups[new_group_location.index].add(student);    
+                } else if (new_group_location.state === 'pinned'){
+                    self.pinned_groups[new_group_location.index].add(student);    
+                }
+            }
+            //delete group from random groups;
+            if (self.random_groups[old_idx].getSize() == 0) {
+                self.random_groups.splice(old_idx, 1);
+            }
+        } else if (old_group_location.state === 'pinned') {
+            old_idx = old_group_location.index;
+            var student = self.pinned_groups[old_idx].remove(student_id);
+            if (group_id == null) {
+                //add student to new group
+                // console.log('adding student to new group', self.random_groups)
+                self.random_groups.push(new Group([student]));
+                console.log(self.random_groups)
+            } else {
+                //add student to existing group;
+                var new_group_location = locateGroup(group_id);
                 // console.log(student.toString())
-                self.random_groups[new_group_location.index].add(student);
+                var new_group_location = locateGroup(group_id);
+                if (new_group_location.state === 'random'){
+                    self.random_groups[new_group_location.index].add(student);    
+                } else if (new_group_location.state === 'pinned'){
+                    self.pinned_groups[new_group_location.index].add(student);    
+                }
             }
 
             //delete group from random groups;
-            if (self.random_groups[old_idx].getSize() == 0) {
+            if (self.pinned_groups[old_idx].getSize() == 0) {
                 self.random_groups.splice(old_idx, 1);
             }
         }

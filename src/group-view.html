@@ -28,7 +28,6 @@
 <ul>
    <li class='last' ><a id='link_to_table_view' href='table-view.html'></a></li>
    <li class='active'><a id='link_to_group_view' href='#'></a></li>
-   <li><a id="pinbutton">Pin</a></li>
 </ul>
 </div>
 </div>
@@ -61,30 +60,39 @@ var MIN_STUDENTS_PER_GROUP = 2;
 var MAX_STUDENTS_PER_GROUP = Number.POSITIVE_INFINITY;
 var GROUP_SIZE_FADE_SPEED = 50;
 var TIME_TO_REVEAL_EACH_GROUP = 600;
+var SVG_MARGINS = {left: 230, top: 0, bottom: 120, right: 0};
 
-var classroom = new Classlist();
-var layout = new ClusterLayout('svg');
-
-/*load data from localStorage*/
+// load stored variables from localStorage
+var storedGrouping = localStorage.getItem('grouping');
+var storedNodes = localStorage.getItem('nodeLocations');
+var storedClusters = localStorage.getItem('clusterLocations');
 var storedClassroom = localStorage.getItem('classroom');
-if (storedClassroom != null){
-  classroom.fromJSON(storedClassroom);
-  console.log('loading classroom grom local storage', classroom.toString());
-}
-
 var storedStudentsPerGroup = parseInt(localStorage.getItem('students_per_group'));
+
 if (storedStudentsPerGroup != null){
   console.log('found students_per_group in local storage = ', storedStudentsPerGroup);
   $("#group_size_container").data('students_per_group', storedStudentsPerGroup);
 } else {
-  console.log('did not find students_per_group in local storage; setting students_per_group to ', MIN_STUDENTS_PER_GROUP);
+  console.log('did not find students_per_group in local storage; should not get here!');
+  console.log('setting students_per_group to ', MIN_STUDENTS_PER_GROUP);
   $("#group_size_container").data('students_per_group', MIN_STUDENTS_PER_GROUP); 
 }
 
-function updateLayout(layout, students, assignments){  
+// initialize layout 
+var layout = new ClusterLayout('svg');
+$(layout).on('clustersel', function(e) {
+  console.log(e);
+});
+
+function updateLayout(grouping, layout){  
+  
+  var students = grouping.getStudents();
+  var assignments = grouping.getAssignments();
+  
   layout.clear();
+  
   // Enforce a bounding box.
-  layout.setMargins({left: 230, top: 0, bottom: 120, right: 0});
+  layout.setMargins(SVG_MARGINS);
 
   for (var i = 0; i < students.length; i++) {
     layout.addNode(students[i].id(), students[i].name());
@@ -92,18 +100,91 @@ function updateLayout(layout, students, assignments){
   for (var i = 0; i < assignments.length; i++) {
     layout.addCluster(assignments[i].getStudentIDs());
   }
+  
   layout.concealClusters();
   layout.startReveal(TIME_TO_REVEAL_EACH_GROUP);
+
 }
 
-var updateLocalStorage = function(grouping){
-  localStorage.setItem('students_per_group', $("#group_size_container").data('students_per_group'));
-  if (grouping != null){
-    localStorage.setItem('grouping', grouping.toJSON());
+
+function reloadLayout(grouping, layout, storedNodes, storedClusters){ 
+  
+  layout.clear();
+  layout.setMargins(SVG_MARGINS);
+  console.log('storedNodes', storedNodes)
+  console.log('storedClusters', storedClusters)
+  storedNodes = JSON.parse(storedNodes);
+  storedClusters = JSON.parse(storedClusters);
+  console.log('parsedNodes', storedNodes)
+  console.log('parsedClusters', storedClusters)
+  
+  var students = grouping.getStudents();
+  var assignments = grouping.getAssignments();
+
+  for (var i = 0; i < students.length; i++) {
+    var studentID = students[i].id();
+    var storedNode = _.find(storedNodes, function (o){return o.id == studentID;});
+    console.log('storedNode', storedNode);
+    if (storedNode != null){
+        if ((storedNode.x != null) && (storedNode.y != null)){
+            console.log('loading storedNode');
+            layout.addNode(storedNode.id, storedNode.data, {x: storedNode.x, y: storedNode.y});
+        }
+    } else {
+      layout.addNode(studentID, students[i].name());  
+    }
+  }
+
+  for (var i = 0; i < assignments.length; i++) {
+    var groupIDs = assignments[i].getStudentIDs();
+    var storedCluster = _.find(storedClusters, function (o){return !_.isEmpty(_.intersection(o.nodes, groupIDs));});
+    console.log('storedCluster', storedCluster);
+    if (storedCluster != null){
+        if ((storedCluster.x != null) && (storedCluster.y != null)){
+          layout.addCluster(groupIDs, {x: storedCluster.x, y: storedCluster.y});
+        }
+    } else {
+      layout.addCluster(groupIDs);
+    }
   }
 }
 
-/*group size input*/
+var updateLocalStorage = function(grouping, layout) {
+    localStorage.setItem('students_per_group', $("#group_size_container").data('students_per_group'));
+
+    if (grouping != null) {
+        localStorage.setItem('grouping', grouping.toJSON());
+    }
+    
+    if (layout != null) {
+
+        var storedNodes = layout.getAllNodes();
+        var storedClusters = layout.getAllClusters();
+        
+        for (var i = 0; i < storedNodes.length; i++) {
+            storedNodes[i].x = storedNodes[i].location.x;
+            storedNodes[i].y = storedNodes[i].location.y;
+        }
+        
+        for (var i = 0; i < storedClusters.length; i++) {
+          if (storedClusters[i].location != null){
+            storedClusters[i].x = storedClusters[i].location.x;
+            storedClusters[i].y = storedClusters[i].location.y;
+          }
+        }
+        
+        var jsonNodes = JSON.stringify(storedNodes);
+        var jsonClusters = JSON.stringify(storedClusters);
+        console.log('SAVING nodes/clusters to localStorage:')
+        console.log('nodes', storedNodes);
+        console.log('clusters', storedClusters);
+        console.log('JSON.stringify(nodes)', jsonNodes);
+        console.log('JSON.stringify(clusters)', jsonClusters);
+        localStorage.setItem('nodeLocations', jsonNodes);
+        localStorage.setItem('clusterLocations', jsonClusters);
+    }
+}
+
 var updateStudentsPerGroup = function(new_students_per_group){ 
     console.log('updating students per group from '  + 
                 $("#group_size_container").data('students_per_group')  +
@@ -125,29 +206,51 @@ var updateStudentsPerGroup = function(new_students_per_group){
     updateLocalStorage();
 }
 
-//create random pairs of students
-var grouping = new Grouping(classroom);
-var assignments = grouping.shuffle($("#group_size_container").data('students_per_group'));
-var students = grouping.getStudents();
-updateLayout(layout, students, assignments);
+//intialization
+var reloadGrouping = (storedGrouping != null);
+var reloadLocations = (reloadGrouping) && (storedNodes != null) && (storedClusters != null);
+var reloadClassroom = (!reloadGrouping) && (storedClassroom != null);
+
+if (reloadGrouping) {
+  
+  var grouping = new Grouping();
+  grouping.fromJSON(storedGrouping);
+
+  if (reloadLocations){
+    console.log('RELOADING LOCATIONS')
+    console.log('storedNodes', storedNodes)
+    console.log('storedClusters', storedClusters)
+    reloadLayout(grouping, layout, storedNodes, storedClusters);
+  } else {
+    updateLayout(grouping, layout);
+  }
+
+} else if (reloadClassroom) {
+
+  var classroom = new Classlist();
+  classroom.fromJSON(storedClassroom);
+  console.log('loading classroom from local storage', classroom.toString());
+  var grouping = new Grouping(classroom);
+  grouping.shuffle($("#group_size_container").data('students_per_group'));
+  updateLayout(grouping, layout);
+
+}
 updateStudentsPerGroup($("#group_size_container").data('students_per_group'));
-updateLocalStorage(grouping);
+updateLocalStorage(grouping, layout);  
 
-
-//join event listener (for manual group updates)
+//event listeners
 $(layout).on('join', function(e) {
   console.log('adding', e.node, 'to', e.cluster);
   grouping.assignStudentToGroup(e.node, e.cluster);
   console.log('new grouping', grouping.toString());
-  // updateLocalStorage(grouping) //todo when we reload grouping from disk
+  updateLocalStorage(grouping, layout) //todo when we reload grouping from disk
 });
 
 //shuffle listener
 $('#shuffle_button').on('click', function(e) {
-  var students_per_group  = $("#group_size_container").data('students_per_group');
-  var assignments = grouping.shuffle(students_per_group);
-  updateLayout(layout, students, assignments);
-  updateLocalStorage(grouping);
+  grouping.shuffle($("#group_size_container").data('students_per_group'));
+  updateLayout(grouping, layout);
+  updateLocalStorage(grouping, layout);
 });
 
 $("#decrease_group_size").click(function(){
@@ -166,33 +269,8 @@ $("#increase_group_size").click(function(){
   if (new_students_per_group > students_per_group){
     updateStudentsPerGroup(new_students_per_group);
   }
-  $("#decrease_group_size").blur();
+  $("#increase_group_size").blur();
 })
-  
-isValidStudentsPerGroup = function(group_size){
-  var typeOK = (typeof group_size === 'number') && (group_size % 1 === 0);
-  var sizeOK = (group_size >= MIN_STUDENTS_PER_GROUP) && (group_size <= MAX_STUDENTS_PER_GROUP);
-  return typeOK && sizeOK
-}
-
-$(layout).on('clustersel', function(e) {
-  console.log(e, e.id, e.nodes);
-  $("#pinbutton").css("visibility","visible");
-
-});
-
-$("#pinbutton").click(function() {
-  var cluster = layout.getSelectedCluster();
-  if (!grouping.isPinnedGroup(cluster.id)) {
-    grouping.pinGroup(cluster.id);
-    
-  }
-})
-
-
-
-
-
 
 </script>
 

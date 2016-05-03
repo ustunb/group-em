@@ -1011,6 +1011,9 @@ $(document).ready(function() {
   $("#groupem_button").click(function(){
     if (classroom.getSize() >= MIN_STUDENTS_PER_GROUP){
       location.href = "group-view.html";
+      localStorage.removeItem('grouping')
+      localStorage.removeItem('nodeLocations');
+      localStorage.removeItem('clusterLocations');
     } else {
       alert("should never get here since groupem button should be disabled if size < MIN_STUDENTS_PER_GROUP")
     }
