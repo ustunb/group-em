@@ -127,10 +127,8 @@ function reloadLayout(grouping, layout, storedNodes, storedClusters){
     var storedNode = _.find(storedNodes, function (o){return o.id == studentID;});
     console.log('storedNode', storedNode);
     if (storedNode != null){
-        if ((storedNode.x != null) && (storedNode.y != null)){
-            console.log('loading node location from localStorage', storedNode);
-            layout.addNode(storedNode.id, storedNode.data, {x: storedNode.x, y: storedNode.y});
-        }
+      console.log('loading node location from localStorage', storedNode);
+      layout.addNode(storedNode.id, storedNode.data, storedNode.location)
     } else {
       layout.addNode(studentID, students[i].name());  
     }
@@ -140,13 +138,8 @@ function reloadLayout(grouping, layout, storedNodes, storedClusters){
     var groupIDs = assignments[i].getStudentIDs();
     var storedCluster = _.find(storedClusters, function (o){return !_.isEmpty(_.intersection(o.nodes, groupIDs));});
     if (storedCluster != null){
-      console.log('found a matching cluster', storedCluster);
-        if ((storedCluster.x != null) && (storedCluster.y != null)){
-          console.log('loading cluster location from localStorage', storedNode);
-          layout.addCluster(groupIDs, {x: storedCluster.x, y: storedCluster.y});
-        } else {
-          layout.addCluster(groupIDs);    
-        }
+      console.log('loading cluster location from localStorage', storedCluster);
+      layout.addCluster(groupIDs, storedCluster.location);
     } else {
       layout.addCluster(groupIDs);
     }
@@ -165,17 +158,17 @@ var updateLocalStorage = function(grouping, layout) {
         var storedNodes = layout.getAllNodes();
         var storedClusters = layout.getAllClusters();
         
-        for (var i = 0; i < storedNodes.length; i++) {
-            storedNodes[i].x = storedNodes[i].location.x;
-            storedNodes[i].y = storedNodes[i].location.y;
-        }
+        // for (var i = 0; i < storedNodes.length; i++) {
+        //     storedNodes[i].x = storedNodes[i].location.x;
+        //     storedNodes[i].y = storedNodes[i].location.y;
+        // }
         
-        for (var i = 0; i < storedClusters.length; i++) {
-          if (storedClusters[i].location != null){
-            storedClusters[i].x = storedClusters[i].location.x;
-            storedClusters[i].y = storedClusters[i].location.y;
-          }
-        }
+        // for (var i = 0; i < storedClusters.length; i++) {
+        //   if (storedClusters[i].location != null){
+        //     storedClusters[i].x = storedClusters[i].location.x;
+        //     storedClusters[i].y = storedClusters[i].location.y;
+        //   }
+        // }
         
         var jsonNodes = JSON.stringify(storedNodes);
         var jsonClusters = JSON.stringify(storedClusters);
@@ -216,28 +209,20 @@ var reloadLocations = (reloadGrouping) && (storedNodes != null) && (storedCluste
 var reloadClassroom = (!reloadGrouping) && (storedClassroom != null);
 
 if (reloadGrouping) {
-  
   var grouping = new Grouping();
   grouping.fromJSON(storedGrouping);
-
-  if (reloadLocations){
-    console.log('RELOADING LOCATIONS')
-    console.log('storedNodes', storedNodes)
-    console.log('storedClusters', storedClusters)
-    reloadLayout(grouping, layout, storedNodes, storedClusters);
+  if (reloadGrouping){
+      reloadLayout(grouping, layout, storedNodes, storedClusters);
   } else {
-    updateLayout(grouping, layout);
+      updateLayout(grouping, layout)
   }
-
 } else if (reloadClassroom) {
-
   var classroom = new Classlist();
   classroom.fromJSON(storedClassroom);
   console.log('loading classroom from local storage', classroom.toString());
   var grouping = new Grouping(classroom);
   grouping.shuffle($("#group_size_container").data('students_per_group'));
   updateLayout(grouping, layout);
-
 }
 updateStudentsPerGroup($("#group_size_container").data('students_per_group'));
 updateLocalStorage(grouping, layout);  
@@ -297,6 +282,7 @@ $("#pinbutton").click(function() {
 
 $(layout).on('endbounce', function() {
   console.log('bounce animation has stopped');
+  updateLocalStorage(grouping, layout);
 });
 </script>
 
