@@ -279,9 +279,20 @@ $("#increase_group_size").click(function(){
 //pinning listeners
 $(layout).on('clustersel', function(e) {
   console.log(e, e.id, e.nodes);
-  $("#pinbutton").css("visibility","visible");
+  var cluster = layout.getSelectedCluster();
+  var groupID = cluster.id;
+  if (grouping.isPinnedGroup(groupID)) {
+    $("#pinbutton").html("unpin");
+    $("#pinbutton").css("visibility","visible");
+  }
+  else {
+    $("#pinbutton").html("pin");
+    $("#pinbutton").css("visibility","visible");
+  }
 
 });
+
+
 
 $("#pinbutton").click(function() {
   var cluster = layout.getSelectedCluster();
@@ -290,7 +301,13 @@ $("#pinbutton").click(function() {
     if (!grouping.isPinnedGroup(groupID)) {
       console.log('pinning group ', groupID);
       var update_flag = grouping.pinGroup(groupID);
-      console.log(grouping.toString());
+      $("#pinbutton").html("unpin");
+
+    }
+    else {
+      console.log('unpinning group ', groupID);
+      grouping.unpinGroup(groupID);
+      $("#pinbutton").html("pin");
     }  
   }
 })
