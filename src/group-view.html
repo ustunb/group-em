@@ -280,8 +280,7 @@ $("#pinbutton").click(function() {
   }
 })
 
-$(layout).on('endbounce', function() {
-  console.log('bounce animation has stopped');
+$(layout).on('endbounce enddrag', function() {
   updateLocalStorage(grouping, layout);
 });
 </script>
