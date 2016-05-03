@@ -6,6 +6,7 @@ var CIRCLE_RADIUS = 32;    // Radius of a single node circle
 var CLUSTER_WIDTH = 88;    // Minimum diameter of cluster shell
 var SPLIT_DISTANCE = 176;  // Distance for splitting apart
 var JOIN_DISTANCE = 88;    // Distance for joining together
+var LINK_CONSTANT = 36;    // Proportional to the link strength
 
 var state = {};
 
@@ -29,7 +30,7 @@ function clear() {
     reveal_timer: null,
     rebuilding: false,
     svg: d3.select(svg),
-    force: d3.layout.force().charge(-320).linkDistance(70).gravity(0),
+    force: d3.layout.force().charge(-320).linkDistance(calcLink).gravity(0),
     margins: null,
     clustersel: null,
     zoomsel: null,
@@ -342,6 +343,11 @@ function resize() {
     parseFloat(state.svg.style('width')),
     parseFloat(state.svg.style('height'))
   ]);
+}
+
+// Let larger clusters have looser links.
+function calcLink(d) {
+  return LINK_CONSTANT * (Math.sqrt(d.cluster.nodes.length + 1) + 0.5);
 }
 
 // Position objects according to their coordinates.
