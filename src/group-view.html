@@ -284,9 +284,13 @@ $(layout).on('clustersel', function(e) {
 
 $("#pinbutton").click(function() {
   var cluster = layout.getSelectedCluster();
-  if (!grouping.isPinnedGroup(cluster.id)) {
-    grouping.pinGroup(cluster.id);
-    
+  if (cluster.id > -1){
+    var groupID = cluster.id;
+    if (!grouping.isPinnedGroup(groupID)) {
+      console.log('pinning group ', groupID);
+      var update_flag = grouping.pinGroup(groupID);
+      console.log(grouping.toString());
+    }  
   }
 })
 
