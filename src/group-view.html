@@ -287,13 +287,15 @@ $("#pinbutton").click(function() {
     var groupID = cluster.id;
     if (!grouping.isPinnedGroup(groupID)) {
       console.log('pinning group ', groupID);
-      var update_flag = grouping.pinGroup(groupID);
+      grouping.pinGroup(groupID);
+      $('.cluster_' + groupID ).addClass('pinned_cluster');
       $("#pinbutton").html("unpin");
 
     }
     else {
       console.log('unpinning group ', groupID);
       grouping.unpinGroup(groupID);
+      $('.cluster_' + groupID).removeClass('pinned_cluster');
       $("#pinbutton").html("pin");
     }  
   }
