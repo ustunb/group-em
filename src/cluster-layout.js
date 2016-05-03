@@ -57,9 +57,14 @@ function clear() {
        "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
   });
   state.svg.call(state.zoom).on('mousedown.zoom', null);
-  state.svg.on('mousedown.clustersel', function() { updateclustersel(null); });
+  state.svg.on('mousedown.clustersel', function() {
+    updateclustersel(null);
+  });
   resize();
   state.force.on('tick', tick);
+  state.force.on('end', function() {
+    $(layout).trigger({ type: 'endbounce' });
+  });
 }
 clear();
 layout.clear = clear;
