@@ -63,7 +63,7 @@ svg line.link.clustersel {
  stroke: #DFDDE7;
 }
 
-svg line.link.pinnedCluster {
+svg line.link.pinned_cluster {
   stroke: #80d85f;
 }
 
