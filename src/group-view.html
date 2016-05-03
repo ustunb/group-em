@@ -140,6 +140,7 @@ function reloadLayout(grouping, layout, storedNodes, storedClusters){
     var groupIDs = assignments[i].getStudentIDs();
     var storedCluster = _.find(storedClusters, function (o){return !_.isEmpty(_.intersection(o.nodes, groupIDs));});
     if (storedCluster != null){
+      console.log('found a matching cluster', storedCluster);
         if ((storedCluster.x != null) && (storedCluster.y != null)){
           console.log('loading cluster location from localStorage', storedNode);
           layout.addCluster(groupIDs, {x: storedCluster.x, y: storedCluster.y});

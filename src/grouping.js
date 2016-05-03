@@ -211,17 +211,18 @@ function Grouping(classroom) {
         if (old_group_location.state === 'random') {
             old_idx = old_group_location.index;
             var student = self.random_groups[old_idx].remove(student_id);
-            //delete group from random groups;
+            
+            //delete empty groups
             if (self.random_groups[old_idx].getSize() == 0) {
                 self.random_groups.splice(old_idx, 1);
             }
         }
-        
+
         if (old_group_location.state === 'pinned') {
             old_idx = old_group_location.index;
             var student = self.pinned_groups[old_idx].remove(student_id);
 
-            //delete group from random groups;
+            //delete empty groups
             if (self.pinned_groups[old_idx].getSize() == 0) {
                 self.pinned_groups.splice(old_idx, 1);
             }
