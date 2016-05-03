@@ -293,7 +293,7 @@ function start() {
     .attr({
       'stroke-width': CLUSTER_WIDTH,
       class: function(d) {
-        var result = 'link cluster_' + d.cluster.id;
+        var result = 'link cluster_' + repId(d.cluster);
         if (d.cluster === state.clustersel) {
           result += ' clustersel';
         }
