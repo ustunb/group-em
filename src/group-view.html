@@ -28,7 +28,7 @@
 <ul>
    <li class='last' ><a id='link_to_table_view' href='table-view.html'></a></li>
    <li class='active'><a id='link_to_group_view' href='#'></a></li>
-   <li><a id="pinbutton">Pin</a></li>
+   <li><a id="pinbutton">Pin <span id="pinnames"></span></a></li>
 </ul>
 </div>
 </div>
@@ -264,7 +264,7 @@ $("#increase_group_size").click(function(){
 //pinning listeners
 $(layout).on('clustersel', function(e) {
   console.log(e, e.id, e.nodes);
-  $("#pinbutton").css("visibility","visible");
+  $("#pinbutton").css("visibility", e.id < 0 ? "hidden" : "visible");
 
 });
 

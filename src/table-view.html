@@ -1,3 +1,4 @@
+<!doctype html>
 <meta charset='utf-8'>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -523,17 +524,8 @@ function addRow(student, classroom, scrollLeft, scrollTop) {
   }
 
 
-  var height = $('.container').height();
-  var height1 = $('.classroom').height();
-  if(height>height1){
-      $('.sidebar').css({'height': height+"px"});
-  }
-  else{
-      $('.sidebar').css({'height': height1+"px"});
-  }
-   window.scrollTo(scrollLeft, scrollTop);
-
-
+  $('.sidebar').height(Math.max($(window).height(), $(document).height()));
+  window.scrollTo(scrollLeft, scrollTop);
 }
 
 //HANDLE COPY PASTING  http://stackoverflow.com/questions/3211505/detect-pasted-text-with-ctrlv-or-right-click-paste
