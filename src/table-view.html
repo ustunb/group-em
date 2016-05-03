@@ -47,7 +47,7 @@
       <a id = "new_class">New Class</a>
     </li>
     <li>
-      <div class = "invisible" id = "undo_div"><a id = "undo" class="fa fa-undo">   Undo</a></div>
+      <div class = "invisible" id = "undo_div"><a id = "undo" class="fa fa-undo"> Undo</a></div>
     </li>
     <li>
       <a id = "help_button">Help</a>
@@ -57,6 +57,7 @@
 </div>
 
 <div class="content">
+<div id="error1" class="alert-box error"><span>error: </span>Enter a valid student name</div>
 <table class="classroom">
 <thead>
 <tr>
@@ -574,7 +575,6 @@ function detectPaste(textarea, callback) {
  **/
 $(document).ready(function() {
 
-
   $("#add_student_box").focus();
   
   $(document).on('click', ".remove", function(e) {
@@ -584,6 +584,10 @@ $(document).ready(function() {
         updatePage(classroom);
       }
     } 
+  });
+
+       $(document).on('click', ".container", function(e) {
+      document.getElementById("error1").style.visibility = "hidden";
   });
 
   $(document).on('click', ".removePreferTile", function(e) {
@@ -714,6 +718,7 @@ $(document).ready(function() {
             e.which == 9 || // tab
             e.which == 188 || // comma
             e.which == 186) { // semicolon
+
           // Use some dead reckoning to recover cursor position after
           // re-rendering the whole table.
           var editable_cells = 'td.pair_with,td.dont_pair_with';
@@ -721,8 +726,10 @@ $(document).ready(function() {
           // Handle tab order: exiting with tab brings cursor to next/prev cell.
           if (e.which == 9) { rememberedLocation += e.shiftKey ? -1 : 1; }
           // Read what was typed and commit the transaction.
+          document.getElementById("error1").style.visibility = "hidden";
           finishEditing();
           // Try bringing cursor back to the same cell.
+
           setTimeout(function() {
             startEditing($(editable_cells).eq(rememberedLocation));
           }, 0);
@@ -734,6 +741,7 @@ $(document).ready(function() {
     }
 
     function finishEditing() {
+
       addTypedPreference(
           editableSpan.closest('tr').find('td').eq(0).data('studentID'),
           editableSpan.closest('tr').find('td').eq(0).text(),
@@ -776,13 +784,24 @@ $(document).ready(function() {
 
     function addTypedPreference(studentID, studentName, pref, typedName) {
       // Figure out which student name was (approximately) typed.
+      console.log("typedname is");
+      console.log(typedName);
       var typedStudent = findClosestStudentMatch(typedName);
       if (typedStudent == null) {
+        if(typedName)
+        {
+          document.getElementById("error1").style.visibility = "visible"; 
+        }
         return;
       }
       // Figure out which row we were typing into.
       var prefStudent = classroom.getStudentFromID(studentID);
-      if (prefStudent == null || prefStudent == typedStudent) {
+      if (prefStudent == null || prefStudent == typedStudent) { 
+        if(typedName)
+        {
+          $("#error1").text("A Student cannot be entered in his own preferences"); 
+          document.getElementById("error1").style.visibility = "visible"; 
+        }
         return;
       }
       // Modify the actual preference.

@@ -48,7 +48,7 @@ body, html {
 
 #cssmenu #undo {
     color: white;
-    font-size: 13px;
+    font-size: 20px;
 }
 
 #help_button:before {
@@ -67,6 +67,28 @@ body, html {
   background: none;
 }
 
+.alert-box {
+        color:black;
+        border-radius:8px;
+        font-family:'Raleway', sans-serif;
+        text-align: center;
+        font-size:15px;
+        padding:5px 36px;
+        margin:10px;
+    }
+
+#error1{
+    visibility: hidden; 
+}
+.alert-box span {
+        font-weight:bolder;
+        text-transform:uppercase;
+    }
+
+    .error {
+        background:#ff9494 url('images/error.png') no-repeat 10px 50%;
+        border:1px solid #f5aca6;
+    }
 
 table {
     margin: auto;
