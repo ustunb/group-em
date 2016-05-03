@@ -114,6 +114,15 @@ function Grouping(classroom) {
         };
     }
 
+    function isPinnedGroup(group_id){
+         for (var i = 0; i < self.pinned_groups.length; i++){
+            if (self.pinned_groups[i].has(group_id)) {
+                return true;
+            }
+         }
+         return false;
+    }
+
     //get a copy of the groups
     function getGroups() {
         checkRep();
@@ -277,6 +286,7 @@ function Grouping(classroom) {
     self.assignStudentToGroup = assignStudentToGroup;
     self.pinGroup = pinGroup;
     self.unpinGroup = unpinGroup;
+    self.isPinnedGroup = isPinnedGroup;
     self.toJSON = toJSON;
     self.fromJSON = fromJSON;
 
