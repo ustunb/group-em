@@ -516,6 +516,7 @@ function nodedrag() {
         $(layout).trigger(event);
         updateclustersel(cluster);
       }
+      $(layout).trigger({type: 'enddrag'});
     });
   }
   this.call(state.nodedrag);
@@ -546,6 +547,7 @@ function linkdrag() {
       d.cluster.nodes.map(function(n) {
         n.fixed &= ~2;
       });
+      $(layout).trigger({type: 'enddrag'});
     });
   }
   this.call(state.linkdrag);

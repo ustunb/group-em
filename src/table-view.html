@@ -1,3 +1,4 @@
+<!doctype html>
 <meta charset='utf-8'>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -47,7 +48,7 @@
       <a id = "new_class">New Class</a>
     </li>
     <li>
-      <div class = "invisible" id = "undo_div"><a id = "undo" class="fa fa-undo"> Undo</a></div>
+      <div class = "invisible" id = "undo_div"><a id = "undo"><span class="fa fa-undo"></span> Undo</a></div>
     </li>
     <li>
       <a id = "help_button">Help</a>
@@ -522,18 +523,13 @@ function addRow(student, classroom, scrollLeft, scrollTop) {
     $("#" + tileID).data('studentID', avoidIDs[i]);  
   }
 
-
-  var height = $('.container').height();
-  var height1 = $('.classroom').height();
-  if(height>height1){
-      $('.sidebar').css({'height': height+"px"});
-  }
-  else{
-      $('.sidebar').css({'height': height1+"px"});
-  }
-   window.scrollTo(scrollLeft, scrollTop);
-
-
+  // Make the sidebar as tall as any content.
+  $('.sidebar').height(Math.max($(window).height(), $(document).height()));
+  // Do it again in a moment after other things may have changed!
+  setTimeout(function() {
+    $('.sidebar').height(Math.max($(window).height(), $(document).height()));
+  }, 0);
+  window.scrollTo(scrollLeft, scrollTop);
 }
 
 //HANDLE COPY PASTING  http://stackoverflow.com/questions/3211505/detect-pasted-text-with-ctrlv-or-right-click-paste
@@ -790,6 +786,8 @@ $(document).ready(function() {
       if (typedStudent == null) {
         if(typedName)
         {
+          $("#error1").text("No student named \"" + typedName +
+              "\" is in the list"); 
           document.getElementById("error1").style.visibility = "visible"; 
         }
         return;

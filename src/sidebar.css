@@ -194,6 +194,7 @@ body{
 }
 #teachermode_text {
   padding-right: 5%;
+  padding-left: 20px;
 }
 #cssmenu ul li:hover > ul {
   visibility: visible;
