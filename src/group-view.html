@@ -287,17 +287,19 @@ $("#pinbutton").click(function() {
     var groupID = cluster.id;
     if (!grouping.isPinnedGroup(groupID)) {
       console.log('pinning group ', groupID);
-      grouping.pinGroup(groupID);
+      var update_flag = grouping.pinGroup(groupID);
       $('.cluster_' + groupID ).addClass('pinned_cluster');
       $("#pinbutton").html("unpin");
 
-    }
-    else {
+    } else {
       console.log('unpinning group ', groupID);
-      grouping.unpinGroup(groupID);
+      var update_flag = grouping.unpinGroup(groupID);
       $('.cluster_' + groupID).removeClass('pinned_cluster');
       $("#pinbutton").html("pin");
-    }  
+    }
+    if (update_flag){
+      updateLocalStorage(grouping, layout);
+    }
   }
 })
 
