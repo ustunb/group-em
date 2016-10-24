@@ -1,22 +1,16 @@
 # Git Ignore File
 # This file tells git what kind of files to ignore in commits
 
-#Sublime Stuff
-.sublime-workspace
-.sublime-project
-
-# R Stuff
-.Rhistory
-.Rapp.history
-.RData
-.Rproj.user/
+# OSX File Types
+scrap/
 
 # OSX File Types
 .dropbox
-.DS_Store
-.DS_Store?
+*.DS_Store
 ._*
 .Spotlight-V100
+*.sublime-workspace
+*.sublime-project
 .Trashes
 ehthumbs.db
 Thumbs.db
