@@ -27,19 +27,83 @@ body, html {
   height: 100%;
 }
 
-#walkthrough-content {
-    display: none;
+
+.box {
+  width: 40%;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.2);
+  padding: 35px;
+  border: 2px solid #fff;
+  border-radius: 20px/50px;
+  background-clip: padding-box;
+  text-align: center;
 }
 
-.container {
-  width: 100%;
-  height: 100%;
+
+.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  transition: opacity 500ms;
+  visibility: hidden;
+  opacity: 0;
 }
+
+.overlay:target {
+  visibility: visible;
+  opacity: 1;
+}
+
 
 #help_button {
     position: fixed;
     bottom: 0px
 
+}
+
+.popup {
+    position: relative;
+    margin: 20%;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    width: 60%;
+    transition: all 5s ease-in-out;
+}
+
+.popup h2 {
+  margin-top: 0;
+  color: #333;
+  font-weight: bold;
+  text-align: center;
+  font-family: 'Raleway', sans-serif;
+}
+
+.close-popup {
+  position: absolute;
+  top: 0px;
+  right: 15px;
+  transition: all 200ms;
+  font-size: 50px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+}
+.close-popup:hover {
+  color: #06D85F;
+}
+
+#about-text {
+    font-family: 'Raleway', sans-serif;
+    font-size: 20px;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
 }
 
 #cssmenu .invisible {

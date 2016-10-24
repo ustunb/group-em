@@ -28,7 +28,6 @@
 <ul>
    <li class='last' ><a id='link_to_table_view' href='table-view.html'></a></li>
    <li class='active'><a id='link_to_group_view' href='#'></a></li>
-   <li><a id="pinbutton">Pin <span id="pinnames"></span></a></li>
 </ul>
 </div>
 </div>
@@ -262,46 +261,45 @@ $("#increase_group_size").click(function(){
 })
 
 //pinning listeners
-$(layout).on('clustersel', function(e) {
-  console.log(e, e.id, e.nodes);
-  var cluster = layout.getSelectedCluster();
-  var groupID = cluster.id;
-  if (grouping.isPinnedGroup(groupID)) {
-    $("#pinbutton").html("unpin");
-    $("#pinbutton").css("visibility","visible");
-  }
-  else {
-    $("#pinbutton").html("pin");
-    $("#pinbutton").css("visibility","visible");
-  }
+// $(layout).on('clustersel', function(e) {
+//   console.log(e, e.id, e.nodes);
+//   var cluster = layout.getSelectedCluster();
+//   var groupID = cluster.id;
+//   if (grouping.isPinnedGroup(groupID)) {
+//     $("#pinbutton").html("unpin");
+//     $("#pinbutton").css("visibility","visible");
+//   }
+//   else {
+//     $("#pinbutton").html("pin");
+//     $("#pinbutton").css("visibility","visible");
+//   }
 
-  $("#pinbutton").css("visibility", e.id < 0 ? "hidden" : "visible");
+//   $("#pinbutton").css("visibility", e.id < 0 ? "hidden" : "visible");
 
-});
+// });
 
 
+// $("#pinbutton").click(function() {
+//   var cluster = layout.getSelectedCluster();
+//   if (cluster.id > -1){
+//     var groupID = cluster.id;
+//     if (!grouping.isPinnedGroup(groupID)) {
+//       console.log('pinning group ', groupID);
+//       var update_flag = grouping.pinGroup(groupID);
+//       $('.cluster_' + groupID ).addClass('pinned_cluster');
+//       $("#pinbutton").html("unpin");
 
-$("#pinbutton").click(function() {
-  var cluster = layout.getSelectedCluster();
-  if (cluster.id > -1){
-    var groupID = cluster.id;
-    if (!grouping.isPinnedGroup(groupID)) {
-      console.log('pinning group ', groupID);
-      var update_flag = grouping.pinGroup(groupID);
-      $('.cluster_' + groupID ).addClass('pinned_cluster');
-      $("#pinbutton").html("unpin");
-
-    } else {
-      console.log('unpinning group ', groupID);
-      var update_flag = grouping.unpinGroup(groupID);
-      $('.cluster_' + groupID).removeClass('pinned_cluster');
-      $("#pinbutton").html("pin");
-    }
-    if (update_flag){
-      updateLocalStorage(grouping, layout);
-    }
-  }
-})
+//     } else {
+//       console.log('unpinning group ', groupID);
+//       var update_flag = grouping.unpinGroup(groupID);
+//       $('.cluster_' + groupID).removeClass('pinned_cluster');
+//       $("#pinbutton").html("pin");
+//     }
+//     if (update_flag){
+//       updateLocalStorage(grouping, layout);
+//     }
+//   }
+// })
 
 $(layout).on('endbounce enddrag', function() {
   updateLocalStorage(grouping, layout);
